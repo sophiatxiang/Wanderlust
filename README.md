@@ -24,25 +24,44 @@ Share your interests (hobbies, sports, movies/shows, books, etc.), schools, home
 
 **Required Must-have Stories**
 
+* User can create a profile
+    * user can add a name, age, gender, etc.
+    * user can add images
 * User can view others' profiles in their timeline (Name, age, gender, images, location) 
-* User can sign in via Facebook/Instagram or Parse
+    * set up recycler view with basic view holder
+    * display images from the database
+* User can sign in via Facebook/Instagram or Firebase
+    * create login activity
+    * user authentication
 * User can logout
-* User can set location for a major city 
-* User can see/edit their own profile (uploading photos from camera roll- have to research)
-* User can direct message chat (need a new chat for every pair of users- is that difficult?)
+* User can set a vacation destination 
+    * user can choose from a list of destinations
+    * user can search and select location via Google Maps API
+* User can see/edit their own profile 
+    * user can edit user details
+    * user can edit vacation details
+    * user can change images
+* User can direct message chat
+    * set up database
+    * create chat function
+    * update chat function to be between two users only
 
 **Optional Nice-to-have Stories**
 
-* Tapping on a profile takes you to a more detailed screen of their profile
+* Expand beyond a list cities and filter by distance instead 
+    * filter by distance from set location
+* Tapping on a profile takes you to a more detailed screen of their profile 
 * User can "like" profiles
+    * likes are sent to database
+    * create activity for viewing list of likes (recycler view)
+    * populate activity with values from the database
 * User can filter timeline by age, gender, etc. 
-* User can upload more pictures from their phone/take new pictures
+    * user can filter by one category
+    * user can filter by any combination of categories
+* User can upload more pictures from their phone
 * User can select song for their profile (Spotify API?)
-* Expand beyond a list cities and filter by distance instead (GMaps API?)
-* User can view a list of their liked profiles
 * "Stories" feature - post temporary images
 * User can link social media accounts
-* On timeline refresh, only unseen users are showed
 
 
 ### 2. Screen Archetypes
