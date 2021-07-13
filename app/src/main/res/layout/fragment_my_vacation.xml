@@ -9,13 +9,13 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".fragments.ChatFragment">
+        tools:context=".fragments.MyVacationFragment">
 
         <!-- TODO: Update blank fragment layout -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="Chat fragment!!!" />
+            android:text="Vacation fragment!!!" />
 
     </FrameLayout>
 </layout>

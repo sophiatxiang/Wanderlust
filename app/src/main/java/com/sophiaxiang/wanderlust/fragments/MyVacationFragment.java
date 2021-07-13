@@ -12,22 +12,21 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.sophiaxiang.wanderlust.R;
-import com.sophiaxiang.wanderlust.databinding.FragmentFeedBinding;
+import com.sophiaxiang.wanderlust.databinding.FragmentMyVacationBinding;
 
-public class FeedFragment extends Fragment {
+public class MyVacationFragment extends Fragment {
 
-    private FragmentFeedBinding binding;
+    private FragmentMyVacationBinding binding;
 
-    public FeedFragment() {
+    public MyVacationFragment() {
         // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_feed, container, false);
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_my_vacation, container, false);
         return binding.getRoot();
     }
 

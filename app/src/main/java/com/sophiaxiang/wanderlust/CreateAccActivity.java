@@ -2,6 +2,7 @@ package com.sophiaxiang.wanderlust;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,32 +17,27 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.sophiaxiang.wanderlust.databinding.ActivityCreateAccBinding;
 
 public class CreateAccActivity extends AppCompatActivity {
 
     public static final String TAG = "CreateAccActivity";
     private FirebaseAuth mAuth;
-    EditText etEmail;
-    EditText etPassword;
-    Button btnCreateAcc;
+    private ActivityCreateAccBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_create_acc);
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_create_acc);
 
         mAuth = FirebaseAuth.getInstance();
 
-        etEmail = findViewById(R.id.etEmail);
-        etPassword = findViewById(R.id.etPassword);
-        btnCreateAcc = findViewById(R.id.btnCreateAcc);
-
-        btnCreateAcc.setOnClickListener(new View.OnClickListener() {
+        binding.btnCreateAcc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.i(TAG, "onClick login button");
-                String email = etEmail.getText().toString();
-                String password = etPassword.getText().toString();
+                String email = binding.etEmail.getText().toString();
+                String password = binding.etPassword.getText().toString();
                 createAccount(email, password);
             }
         });

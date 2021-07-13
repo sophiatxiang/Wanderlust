@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -11,8 +12,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.sophiaxiang.wanderlust.R;
+import com.sophiaxiang.wanderlust.databinding.FragmentChatBinding;
 
 public class ChatFragment extends Fragment {
+
+    private FragmentChatBinding binding;
 
     public ChatFragment() {
         // Required empty public constructor
@@ -22,7 +26,8 @@ public class ChatFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_chat, container, false);
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_chat, container, false);
+        return binding.getRoot();
     }
 
     @Override

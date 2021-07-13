@@ -2,6 +2,7 @@ package com.sophiaxiang.wanderlust;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,20 +18,18 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.sophiaxiang.wanderlust.databinding.ActivityLoginBinding;
 
 public class LoginActivity extends AppCompatActivity {
 
     public static final String TAG = "LoginActivity";
     private FirebaseAuth mAuth;
-    EditText etEmail;
-    EditText etPassword;
-    Button btnLogin;
-    TextView tvSignUp;
+    ActivityLoginBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_login);
 
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
@@ -38,22 +37,17 @@ public class LoginActivity extends AppCompatActivity {
             goMainActivity();
         }
 
-        etEmail = findViewById(R.id.etEmail);
-        etPassword = findViewById(R.id.etPassword);
-        btnLogin = findViewById(R.id.btnLogin);
-        tvSignUp = findViewById(R.id.tvSignUp);
-
-        btnLogin.setOnClickListener(new View.OnClickListener() {
+        binding.btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.i(TAG, "onClick login button");
-                String email = etEmail.getText().toString();
-                String password = etPassword.getText().toString();
+                String email = binding.etEmail.getText().toString();
+                String password = binding.etPassword.getText().toString();
                 logInUser(email, password);
             }
         });
 
-        tvSignUp.setOnClickListener(new View.OnClickListener() {
+        binding.tvSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(LoginActivity.this, CreateAccActivity.class);
