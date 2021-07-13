@@ -8,15 +8,15 @@
 
 ## Overview
 ### Description
-Share your interests (hobbies, sports, movies/shows, books, etc.), schools, hometown, pictures, etc. and find friends when you move to a new city (or even just in your current city). Filter by distance, or any of the above categories and start chatting via direct message
+Find a travel buddy for your next adventure with Wanderlust! Filter by location, date, age, gender, itinerary destinations, and more to find a perfect match- perhaps even your next lifelong friend. 
 
 ### App Evaluation
-- **Category:** Social
-- **Mobile:** Uses camera, location, and audio (if I have time to add song feature)
-- **Story:** Allows users to connect with people when they move to a new location- or to make new friends in their current location
-- **Market:** Anyone can use this app but it is geared specifically towards those looking to make new friends. In particular, this app provides the most value to those who have recently moved to a new area looking for a casual, easy way to meet new people.
-- **Habit:** Users can swipe to view more profile
-- **Scope:** This app would start out pretty focused with just a basic profile and the abilities to "like" someone and direct message. If I have time, I'd like to add a song for each profile, a common story by location, etc.
+- **Category:** Social, Travel
+- **Mobile:** Uses camera, location, and (potentially) audio
+- **Story:** Allows users to find travel buddies with whom they can explore the world. 
+- **Market:** Wanderlust is geared towards people planning a trip in the near future. In particular, this app appeals to solo travelers who would like a partner (or a few) with whom they can share the experience. 
+- **Habit:** Users can swipe to view more profiles, direct message individuals, and "like" profiles
+- **Scope:** This app would start out pretty focused with just a basic profile, vacation location/date, and the abilities to "like" and direct message users. Once required stories are finished, I'll be integrating Google Maps API to be able to filter by an arbitrary distance (in combination with other categories such as age, gender, etc.). 
 
 ## Product Spec
 
@@ -25,40 +25,21 @@ Share your interests (hobbies, sports, movies/shows, books, etc.), schools, home
 **Required Must-have Stories**
 
 * User can create a profile
-    * user can add a name, age, gender, etc.
-    * user can add images
 * User can view others' profiles in their timeline (Name, age, gender, images, location) 
-    * set up recycler view with basic view holder
-    * display images from the database
 * User can sign in via Facebook/Instagram or Firebase
-    * create login activity
-    * user authentication
 * User can logout
 * User can set a vacation destination 
-    * user can choose from a list of destinations
-    * user can search and select location via Google Maps API
 * User can see/edit their own profile 
-    * user can edit user details
-    * user can edit vacation details
-    * user can change images
 * User can direct message chat
-    * set up database
-    * create chat function
-    * update chat function to be between two users only
 
 **Optional Nice-to-have Stories**
 
 * Expand beyond a list cities and filter by distance instead 
-    * filter by distance from set location
+    * difficult/ambiguous problem: filter by any combination of several ambiguous options: date (flexible i.e., within 2 days), distance (flexible radius), gender, age range (i.e., 18-21), etc.
 * Tapping on a profile takes you to a more detailed screen of their profile 
 * User can "like" profiles
-    * likes are sent to database
-    * create activity for viewing list of likes (recycler view)
-    * populate activity with values from the database
-* User can filter timeline by age, gender, etc. 
-    * user can filter by one category
-    * user can filter by any combination of categories
-* User can upload more pictures from their phone
+* List of "liked" profiles displayed on a separate screen
+* User can upload more/change pictures from their phone camera roll
 * User can select song for their profile (Spotify API?)
 * "Stories" feature - post temporary images
 * User can link social media accounts
@@ -69,12 +50,12 @@ Share your interests (hobbies, sports, movies/shows, books, etc.), schools, home
 * Login Screen
    * User can sign in and sign out 
 * Stream
-   * User can view others' profiles in their timeline (Name, age, gender, images, location)
+   * User can view others' profiles in their timeline (Name, age, gender, images, vacation location/date, etc.)
 * Chat Screen
    * User can direct message chat
 * Profile Screen
    * User can see/edit their own profile 
-   * User can set location for a major city
+   * User can edit their vacation plans
  
 
 ### 3. Navigation
