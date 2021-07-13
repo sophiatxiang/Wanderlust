@@ -42,8 +42,8 @@ dependencies {
     implementation "androidx.recyclerview:recyclerview:${recyclerViewVersion}"
     implementation platform('com.google.firebase:firebase-bom:28.2.1')
     implementation 'com.google.firebase:firebase-database'
-    implementation 'com.firebaseui:firebase-ui-auth:7.2.0'
-
+    implementation 'com.google.firebase:firebase-auth'
 }
+
 
 apply plugin: 'com.google.gms.google-services'
