@@ -28,15 +28,16 @@ Find a travel buddy for your next adventure with Wanderlust! Filter by location,
 * User can view others' profiles in their timeline (Name, age, gender, images, location) 
 * User can sign in via Facebook/Instagram or Firebase
 * User can logout
-* User can set a vacation destination 
+* User can set a vacation destination and dates
 * User can see/edit their own profile 
 * User can direct message chat
 
 **Optional Nice-to-have Stories**
 
-* Expand beyond a list cities and filter by distance instead 
+* Expand beyond a list cities and filter by distance instead (Google Maps API)
     * difficult/ambiguous problem: filter by any combination of several ambiguous options: date (flexible i.e., within 2 days), distance (flexible radius), gender, age range (i.e., 18-21), etc.
-* Tapping on a profile takes you to a more detailed screen of their profile 
+* Search vacation destinations and activities/attractions with autofill (Google Maps API)
+* Tapping on a profile takes you to a more detailed screen of the profile 
 * User can "like" profiles
 * List of "liked" profiles displayed on a separate screen
 * User can upload more/change pictures from their phone camera roll
@@ -53,8 +54,11 @@ Find a travel buddy for your next adventure with Wanderlust! Filter by location,
    * User can view others' profiles in their timeline (Name, age, gender, images, vacation location/date, etc.)
 * Chat Screen
    * User can direct message chat
+* Liked Users Screen
+   * User can view liked profiles
 * Profile Screen
    * User can see/edit their own profile 
+* Vacation Screen
    * User can edit their vacation plans
  
 
@@ -62,42 +66,45 @@ Find a travel buddy for your next adventure with Wanderlust! Filter by location,
 
 **Tab Navigation** (Tab to Screen)
 
-* Settings (Logout)
 * Profile
 * Stream
 * Chat
+* Vacation
+* Liked Users
 
 **Flow Navigation** (Screen to Screen)
 
 * Login
    * Stream
 * Stream
-   * Details
+   * details
+   * Tab Navgation (stream, chats, like users, my vacation, profile)
+   
 
 ## Wireframes
 ### [BONUS] Digital Wireframes & Mockups
-<img src="https://github.com/sophiatxiang/App_TBD/blob/main/wireframes.png" width=600>
+<img src="https://github.com/sophiatxiang/Wanderlust/blob/master/wireframes.png" width=600>
 
 ### [BONUS] Interactive Prototype
 
 ## Schema 
 ### Models
-User:
 
-<img src="https://github.com/sophiatxiang/App_TBD/blob/main/Data%20Models.png" width=600>
+<img src="https://github.com/sophiatxiang/Wanderlust/blob/master/data%20models.png" width=600>
 
-Message:
-
-<img src="https://github.com/sophiatxiang/App_TBD/blob/main/message%20model.png" width=600>
 
 ### Networking
 
 * Home Feed Screen
-    * (Read/GET) Query all users based on selected filters <img src="https://github.com/sophiatxiang/App_TBD/blob/main/Parse%20Query%20Sample.png" width=600>
+    * (Read/GET) Query all users based on selected filters 
     * (Create/POST) Create a new like on a user profile
     * (Delete) Delete existing like
 * Edit Profile Screen
     * (Update/PUT) Update images
-    * (Update/PUT) Update interests, profession, school, etc.
+    * (Update/PUT) Update bio, age, gender, etc.
+* Edit Vacation Screen
+    * (Update/PUT) Update vacation location, activities/attractions, dates, etc.
+* Chat Screen
+    * (Read/GET) Query messages for the specified chat
+    * (Create/POST) Create new messages
 
-- [OPTIONAL: List endpoints if using existing API such as Yelp]
