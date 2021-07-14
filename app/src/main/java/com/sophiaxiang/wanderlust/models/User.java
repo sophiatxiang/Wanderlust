@@ -3,20 +3,38 @@ package com.sophiaxiang.wanderlust.models;
 import java.util.List;
 
 public class User {
+    private String userId;
     private String name;
     private int age;
-    private String gender;
+    private String pronouns;
+    private String from;
+    private String bio;
     private List<User> likedUsers;
 
-    public User(String name, int age, String gender, List<User> likedUsers) {
+    public User(String userId, String name) {
+        this.userId = userId;
+        this.name = name;
+    }
+
+    public User(String userId, String name, int age, String pronouns, String from, String bio) {
+        this.userId = userId;
         this.name = name;
         this.age = age;
-        this.gender = gender;
-        this.likedUsers = likedUsers;
+        this.pronouns = pronouns;
+        this.from = from;
+        this.bio = bio;
     }
 
     public User() {
 
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public String getName() {
@@ -35,12 +53,28 @@ public class User {
         this.age = age;
     }
 
-    public String getGender() {
-        return gender;
+    public String getPronouns() {
+        return pronouns;
     }
 
-    public void setGender(String gender) {
-        this.gender = gender;
+    public void setPronouns(String gender) {
+        this.pronouns = gender;
+    }
+
+    public String getFrom() {
+        return from;
+    }
+
+    public void setFrom(String from) {
+        this.from = from;
+    }
+
+    public String getBio() {
+        return bio;
+    }
+
+    public void setBio(String bio) {
+        this.bio = bio;
     }
 
     public List<User> getLikedUsers() {
@@ -50,4 +84,5 @@ public class User {
     public void setLikedUsers(List<User> likedUsers) {
         this.likedUsers = likedUsers;
     }
+
 }

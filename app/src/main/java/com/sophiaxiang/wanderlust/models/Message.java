@@ -4,11 +4,11 @@ import java.util.Date;
 
 public class Message {
     private String messageText;
-    private String messageSender;
-    private String messageRecipient;
+    private User messageSender;
+    private User messageRecipient;
     private long messageTime;
 
-    public Message(String messageText, String messageSender, String messageRecipient) {
+    public Message(String messageText, User messageSender, User messageRecipient) {
         this.messageText = messageText;
         this.messageSender = messageSender;
         this.messageRecipient = messageRecipient;
@@ -25,23 +25,21 @@ public class Message {
         return messageText;
     }
 
-    public void setMessageText(String messageText) {
-        this.messageText = messageText;
-    }
+    public void setMessageText(String messageText) { this.messageText = messageText; }
 
-    public String getMessageSender() {
+    public User getMessageSender() {
         return messageSender;
     }
 
-    public void setMessageSender(String messageUser) {
+    public void setMessageSender(User messageUser) {
         this.messageSender = messageUser;
     }
 
-    public String getMessageRecipient() {
+    public User getMessageRecipient() {
         return messageRecipient;
     }
 
-    public void setMessageRecipient(String messageUser) {
+    public void setMessageRecipient(User messageUser) {
         this.messageRecipient = messageUser;
     }
 
