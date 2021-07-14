@@ -120,20 +120,20 @@
             android:layout_alignParentStart="true"
             android:layout_marginStart="20dp"
             android:layout_marginTop="20dp"
-            android:text="Pronouns:"
+            android:text="Gender:"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="@color/black" />
 
         <EditText
-            android:id="@+id/etPronouns"
+            android:id="@+id/etGender"
             android:layout_width="260dp"
             android:layout_height="wrap_content"
             android:layout_below="@id/etAge"
             android:layout_alignParentEnd="true"
             android:layout_marginEnd="20dp"
             android:ems="10"
-            android:hint="Pronouns"
-            android:text="she/her" />
+            android:hint="Gender"
+            android:text="female" />
 
         <TextView
             android:id="@+id/textView7"
@@ -151,7 +151,7 @@
             android:id="@+id/etFrom"
             android:layout_width="260dp"
             android:layout_height="wrap_content"
-            android:layout_below="@id/etPronouns"
+            android:layout_below="@id/etGender"
             android:layout_alignParentEnd="true"
             android:layout_marginEnd="20dp"
             android:ems="10"
@@ -219,33 +219,36 @@
             android:textColor="@color/black" />
 
         <ImageView
-            android:id="@+id/imageView2"
+            android:id="@+id/ivImage1"
             android:layout_width="124dp"
             android:layout_height="124dp"
             android:layout_below="@+id/textView10"
             android:layout_alignParentStart="true"
             android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
+            android:scaleType="centerCrop"
             tools:srcCompat="@tools:sample/avatars" />
 
         <ImageView
-            android:id="@+id/imageView3"
+            android:id="@+id/ivImage2"
             android:layout_width="124dp"
             android:layout_height="124dp"
             android:layout_below="@+id/textView10"
             android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
-            android:layout_toRightOf="@+id/imageView2"
+            android:layout_toRightOf="@+id/ivImage1"
+            android:scaleType="centerCrop"
             tools:srcCompat="@tools:sample/avatars" />
 
         <ImageView
-            android:id="@+id/imageView4"
+            android:id="@+id/ivImage3"
             android:layout_width="124dp"
             android:layout_height="124dp"
             android:layout_below="@+id/textView10"
             android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
-            android:layout_toRightOf="@+id/imageView3"
+            android:layout_toRightOf="@+id/ivImage2"
+            android:scaleType="centerCrop"
             tools:srcCompat="@tools:sample/avatars" />
 
 

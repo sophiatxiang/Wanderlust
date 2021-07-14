@@ -1,14 +1,16 @@
 package com.sophiaxiang.wanderlust.models;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class User {
+public class User implements Serializable {
     private String userId;
     private String name;
     private int age;
-    private String pronouns;
+    private String gender;
     private String from;
     private String bio;
+    private String adventureLevel;
     private List<User> likedUsers;
 
     public User(String userId, String name) {
@@ -16,13 +18,14 @@ public class User {
         this.name = name;
     }
 
-    public User(String userId, String name, int age, String pronouns, String from, String bio) {
+    public User(String userId, String name, int age, String gender, String from, String bio, String adventureLevel) {
         this.userId = userId;
         this.name = name;
         this.age = age;
-        this.pronouns = pronouns;
+        this.gender = gender;
         this.from = from;
         this.bio = bio;
+        this.adventureLevel = adventureLevel;
     }
 
     public User() {
@@ -53,12 +56,12 @@ public class User {
         this.age = age;
     }
 
-    public String getPronouns() {
-        return pronouns;
+    public String getGender() {
+        return gender;
     }
 
-    public void setPronouns(String gender) {
-        this.pronouns = gender;
+    public void setGender(String gender) {
+        this.gender = gender;
     }
 
     public String getFrom() {
@@ -75,6 +78,14 @@ public class User {
 
     public void setBio(String bio) {
         this.bio = bio;
+    }
+
+    public String getAdventureLevel() {
+        return adventureLevel;
+    }
+
+    public void setAdventureLevel(String adventureLevel) {
+        this.adventureLevel = adventureLevel;
     }
 
     public List<User> getLikedUsers() {
