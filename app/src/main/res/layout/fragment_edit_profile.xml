@@ -12,7 +12,7 @@
         tools:context=".fragments.ProfileFragment">
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
 
 
             <Button
@@ -239,7 +239,7 @@
                 android:layout_below="@+id/textView10"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="15dp"
-                android:layout_toRightOf="@+id/ivImage1"
+                android:layout_toEndOf="@+id/ivImage1"
                 android:scaleType="centerCrop"
                 tools:srcCompat="@drawable/add_image" />
 
@@ -250,7 +250,7 @@
                 android:layout_below="@+id/textView10"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="15dp"
-                android:layout_toRightOf="@+id/ivImage2"
+                android:layout_toEndOf="@+id/ivImage2"
                 android:scaleType="centerCrop"
                 tools:srcCompat="@drawable/add_image" />
 

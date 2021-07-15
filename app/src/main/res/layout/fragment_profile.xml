@@ -17,7 +17,7 @@
 
             <Button
                 android:id="@+id/btnEditProfile"
-                android:layout_width="wrap_content"
+                android:layout_width="150dp"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/tvBio"
                 android:layout_alignParentEnd="true"
@@ -41,10 +41,10 @@
                 android:layout_below="@id/ivPhotos"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="15dp"
-                android:text="Sophia, 19"
+                android:text="Sophia"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
                 android:textSize="36sp"
-                android:textStyle="bold"/>
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/tvLocationDate"
@@ -106,24 +106,15 @@
                 android:text="4/5" />
 
             <Button
-                android:id="@+id/btnTest"
-                android:layout_width="wrap_content"
+                android:id="@+id/btnEditVacation"
+                android:layout_width="150dp"
                 android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
                 android:layout_below="@id/btnEditProfile"
-                android:layout_marginEnd="25dp"
-                android:backgroundTint="@color/periwinkle"
-                android:text="Edit Profile" />
-
-            <Button
-                android:id="@+id/btnTest1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
-                android:layout_below="@id/btnTest"
+                android:layout_marginTop="5dp"
                 android:layout_marginEnd="25dp"
                 android:backgroundTint="@color/periwinkle"
-                android:text="Edit Profile" />
+                android:text="Edit Vacation" />
 
         </RelativeLayout>
     </ScrollView>

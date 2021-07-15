@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -23,6 +25,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.sophiaxiang.wanderlust.databinding.ActivityCreateAccBinding;
 import com.sophiaxiang.wanderlust.models.User;
+import com.sophiaxiang.wanderlust.models.Vacation;
 
 public class CreateAccActivity extends AppCompatActivity {
 
@@ -36,6 +39,7 @@ public class CreateAccActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_create_acc);
 
+        mDatabase = FirebaseDatabase.getInstance().getReference();
         mAuth = FirebaseAuth.getInstance();
 
         binding.btnCreateAcc.setOnClickListener(new View.OnClickListener() {
@@ -61,6 +65,7 @@ public class CreateAccActivity extends AppCompatActivity {
                             Log.d(TAG, "createUserWithEmail:success");
                             FirebaseUser firebaseUser = mAuth.getCurrentUser();
                             createDatabaseUserProfile(firebaseUser, name);
+                            createDatabaseUserVacation(firebaseUser);
                             goMainActivity();
                         } else {
                             // If sign in fails, display a message to the user.
@@ -72,24 +77,37 @@ public class CreateAccActivity extends AppCompatActivity {
                 });
     }
 
+    private void createDatabaseUserVacation(FirebaseUser firebaseUser) {
+        Vacation vacation = new Vacation(firebaseUser.getUid());
+        mDatabase.child("vacations").child(firebaseUser.getUid()).setValue(vacation)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Toast.makeText(CreateAccActivity.this, "vacation write successful", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e(TAG, "vacation write failure", e);
+                    }
+                });
+    }
+
+
     //create user profile RealTime Database
     private void createDatabaseUserProfile(FirebaseUser firebaseUser, String name) {
-        mDatabase = FirebaseDatabase.getInstance().getReference();
         User user = new User(firebaseUser.getUid(), name);
         mDatabase.child("users").child(user.getUserId()).setValue(user)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        // Write was successful!
-                        // ...
                         Toast.makeText(CreateAccActivity.this, "user write successful", Toast.LENGTH_SHORT).show();
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        // Write failed
-                        // ...
                         Log.e(TAG, "user write failure", e);
                     }
                 });

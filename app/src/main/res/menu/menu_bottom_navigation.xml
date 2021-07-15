@@ -13,11 +13,6 @@
         android:title="Chat"
         app:showAsAction="always" />
     <item
-        android:id="@+id/action_vacation"
-        android:icon="@drawable/vacation_icon"
-        android:title="My Vacation"
-        app:showAsAction="always" />
-    <item
         android:id="@+id/action_profile"
         android:icon="@drawable/profile_icon"
         android:title="Profile"

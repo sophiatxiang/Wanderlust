@@ -1,6 +1,10 @@
 package com.sophiaxiang.wanderlust.models;
 
+import androidx.annotation.ArrayRes;
+
 import java.io.Serializable;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.List;
 
 public class User implements Serializable {
@@ -11,11 +15,13 @@ public class User implements Serializable {
     private String from;
     private String bio;
     private String adventureLevel;
+    private List<String> imageUriList;
     private List<User> likedUsers;
 
     public User(String userId, String name) {
         this.userId = userId;
         this.name = name;
+        this.imageUriList = new ArrayList<>();
     }
 
     public User(String userId, String name, int age, String gender, String from, String bio, String adventureLevel) {
@@ -86,6 +92,14 @@ public class User implements Serializable {
 
     public void setAdventureLevel(String adventureLevel) {
         this.adventureLevel = adventureLevel;
+    }
+
+    public List<String> getImageUriList() {
+        return imageUriList;
+    }
+
+    public void setImageUriList(List<String> imageUriList) {
+        this.imageUriList = imageUriList;
     }
 
     public List<User> getLikedUsers() {
