@@ -36,9 +36,7 @@ public class EditProfileFragment extends Fragment {
     private DatabaseReference mDatabase;
     private FirebaseUser firebaseUser;
     private User currentUser;
-    FirebaseStorage storage;
-    StorageReference storageRef;
-    StorageReference currentUserStorageRef;
+
 
     public EditProfileFragment() {
         // Required empty public constructor
@@ -61,11 +59,9 @@ public class EditProfileFragment extends Fragment {
 
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         mDatabase = FirebaseDatabase.getInstance().getReference();
-        storage = FirebaseStorage.getInstance();
-        storageRef = storage.getReference();
-        currentUserStorageRef = storageRef.child(currentUser.getUserId());
 
         populateEditTextViews();
+        populateImageViews();
 
        binding.btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -82,7 +78,35 @@ public class EditProfileFragment extends Fragment {
                getActivity().getSupportFragmentManager().popBackStack();
            }
        });
+
+       binding.ivImage1.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View v) {
+               goTakePhotoFragment("image1");
+           }
+       });
+
+        binding.ivImage2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goTakePhotoFragment("image2");
+            }
+        });
+
+        binding.ivImage3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goTakePhotoFragment("image3");
+            }
+        });
     }
+
+    private void populateImageViews() {
+        binding.ivImage1.setImageResource(R.drawable.add_image);
+        binding.ivImage2.setImageResource(R.drawable.add_image);
+        binding.ivImage3.setImageResource(R.drawable.add_image);
+    }
+
 
     private void populateEditTextViews() {
         binding.etName.setText(currentUser.getName());
@@ -106,6 +130,18 @@ public class EditProfileFragment extends Fragment {
         String adventureLevel = binding.etAdventureLevel.getText().toString();
         User user = new User(firebaseUser.getUid(), name , age, gender, from, bio, adventureLevel);
         mDatabase.child("users").child(firebaseUser.getUid()).setValue(user);
+    }
+
+    private void goTakePhotoFragment(String imageNumber){
+        Fragment fragment = new TakePhotoFragment();
+        Bundle args = new Bundle();
+        args.putString("current user id", currentUser.getUserId());
+        args.putString("image number", imageNumber);
+        fragment.setArguments(args);
+        getActivity().getSupportFragmentManager().beginTransaction()
+                .replace(R.id.flContainer, fragment)
+                .addToBackStack(null)
+                .commit();
     }
 
     public void goLoginActivity () {
