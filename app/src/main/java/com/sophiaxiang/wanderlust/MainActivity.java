@@ -24,6 +24,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.sophiaxiang.wanderlust.databinding.ActivityMainBinding;
 import com.sophiaxiang.wanderlust.fragments.ChatFragment;
+import com.sophiaxiang.wanderlust.fragments.EditProfileFragment;
 import com.sophiaxiang.wanderlust.fragments.FeedFragment;
 import com.sophiaxiang.wanderlust.fragments.MyVacationFragment;
 import com.sophiaxiang.wanderlust.fragments.ProfileFragment;
@@ -35,7 +36,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
 
     public static final String TAG = "MainActivity";
-    public User theCurrentUser;
+    private User currentUser;
     public Vacation currentUserVacation;
     public String currentUserId;
     public DatabaseReference mDatabase;
@@ -51,12 +52,14 @@ public class MainActivity extends AppCompatActivity {
         currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         mDatabase = FirebaseDatabase.getInstance().getReference();
         mStorage = FirebaseStorage.getInstance().getReference();
+
         getCurrentUser();
         getCurrentUserVacation();
 
         binding.bottomNavigation.setOnItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull  MenuItem menuItem) {
+                Fragment fragment;
                 switch (menuItem.getItemId()) {
                     case R.id.action_home:
                         fragmentManager.beginTransaction().replace(R.id.flContainer, new FeedFragment()).commit();
@@ -65,7 +68,16 @@ public class MainActivity extends AppCompatActivity {
                         fragmentManager.beginTransaction().replace(R.id.flContainer, new ChatFragment()).commit();
                         break;
                     case R.id.action_profile:
-                        fragmentManager.beginTransaction().replace(R.id.flContainer, new ProfileFragment()).commit();
+//                        fragmentManager.beginTransaction().replace(R.id.flContainer, new ProfileFragment()).commit();
+                        fragment = new ProfileFragment();
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable("current user", currentUser);
+                        bundle.putSerializable("vacation", currentUserVacation);
+                        fragment.setArguments(bundle);
+                        fragmentManager.beginTransaction()
+                                .replace(R.id.flContainer, fragment)
+                                .addToBackStack(null)
+                                .commit();
                         break;
                 }
                 return true;
@@ -98,9 +110,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // Get Post object and use the values to update the UI
-                theCurrentUser = dataSnapshot.getValue(User.class);
-                theCurrentUser.setImageUriList(new ArrayList<>());
-                getImageUris();
+                currentUser = dataSnapshot.getValue(User.class);
             }
 
             @Override
@@ -110,53 +120,5 @@ public class MainActivity extends AppCompatActivity {
             }
         };
         currentUserReference.addValueEventListener(userListener);
-    }
-
-
-    private void getImageUris() {
-        StorageReference imageReference1 = mStorage.child(currentUserId).child("image1.jpg");
-        imageReference1.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-            @Override
-            public void onSuccess(Uri uri) {
-                if (uri != null) {
-                    theCurrentUser.getImageUriList().add(uri.toString());
-                }
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-                Log.e(TAG, "failed to get image 1: ", exception);
-            }
-        });
-
-        StorageReference imageReference2 = mStorage.child(currentUserId).child("image2.jpg");
-        imageReference2.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-            @Override
-            public void onSuccess(Uri uri) {
-                if (uri != null) {
-                    theCurrentUser.getImageUriList().add(uri.toString());
-                }
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-                Log.e(TAG, "failed to get image 2: ", exception);
-            }
-        });
-
-        StorageReference imageReference3 = mStorage.child(currentUserId).child("image3.jpg");
-        imageReference3.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-            @Override
-            public void onSuccess(Uri uri) {
-                if (uri != null) {
-                    theCurrentUser.getImageUriList().add(uri.toString());
-                }
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-                Log.e(TAG, "failed to get image 3: ", exception);
-            }
-        });
     }
 }

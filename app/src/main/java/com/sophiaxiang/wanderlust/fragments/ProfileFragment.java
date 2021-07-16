@@ -70,8 +70,13 @@ public class ProfileFragment extends Fragment {
         currentUserNodeReference = mDatabase.child("users").child(currentUserId);
         vacationDetailsReference = mDatabase.child("vacations").child(currentUserId);
 
-        updateProfileInfo();
-        updateVacationInfo();
+        Bundle bundle = getArguments();
+        user = (User) bundle.getSerializable("current user");
+        vacation = (Vacation) bundle.getSerializable("vacation");
+
+        populateViews();
+        setProfileInfoListener();
+        setVacationInfoListener();
 
         binding.btnEditProfile.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -87,68 +92,8 @@ public class ProfileFragment extends Fragment {
             }
         });
     }
-//
-//    private void populateImageViews() {
-//        getDatabaseImageUris();
-//    }
-//
-//    private void loadImagesIntoImageViews() {
-//        Glide.with(binding.ivPhotos.getContext())
-//                .load(Uri.parse(user.getImageUriList().get(0)))
-//                .centerCrop()
-//                .into(binding.ivPhotos);
-//    }
-//
-//    private void getDatabaseImageUris() {
-//        StorageReference imageReference1 = storageReference.child(currentUserId).child("image1.jpg");
-//        imageReference1.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-//            @Override
-//            public void onSuccess(Uri uri) {
-//                if (uri != null) {
-//                    user.getImageUriList().add(0, uri.toString());
-//                }
-//            }
-//        }).addOnFailureListener(new OnFailureListener() {
-//            @Override
-//            public void onFailure(@NonNull Exception exception) {
-//                Log.e(TAG, "failed to get image 1: ", exception);
-//            }
-//        });
-//
-//        StorageReference imageReference2 = storageReference.child(currentUserId).child("image2.jpg");
-//        imageReference2.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-//            @Override
-//            public void onSuccess(Uri uri) {
-//                if (uri != null) {
-//                    user.getImageUriList().add(uri.toString());
-//                }
-//            }
-//        }).addOnFailureListener(new OnFailureListener() {
-//            @Override
-//            public void onFailure(@NonNull Exception exception) {
-//                Log.e(TAG, "failed to get image 2: ", exception);
-//            }
-//        });
-//
-//        StorageReference imageReference3 = storageReference.child(currentUserId).child("image3.jpg");
-//        imageReference3.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-//            @Override
-//            public void onSuccess(Uri uri) {
-//                if (uri != null) {
-//                    user.getImageUriList().add(uri.toString());
-//                    loadImagesIntoImageViews();
-//                }
-//            }
-//        }).addOnFailureListener(new OnFailureListener() {
-//            @Override
-//            public void onFailure(@NonNull Exception exception) {
-//                Log.e(TAG, "failed to get image 3: ", exception);
-//                if (user.getImageUriList().size() == 0) binding.ivPhotos.setImageResource(R.drawable.add_image);
-//            }
-//        });
-//    }
 
-    private void updateVacationInfo() {
+    private void setVacationInfoListener() {
         ValueEventListener vacationListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -168,15 +113,13 @@ public class ProfileFragment extends Fragment {
     }
 
 
-    private void updateProfileInfo() {
+    private void setProfileInfoListener() {
         ValueEventListener userListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // Get Post object and use the values to update the UI
                 user = dataSnapshot.getValue(User.class);
-                user.setImageUriList(new ArrayList<>());
                 populateViews();
-//                populateImageViews();
             }
 
             @Override
@@ -189,10 +132,37 @@ public class ProfileFragment extends Fragment {
     }
 
     private void populateViews() {
-        binding.tvNameAge.setText(user.getName());
+        binding.tvNameAge.setText(user.getName() + ", " + user.getAge());
         binding.tvBio.setText(user.getBio());
         binding.tvFrom.setText(user.getFrom());
         binding.tvAdventureLevel.setText(user.getAdventureLevel());
+        binding.tvLocationDate.setText(vacation.getDestination() + "   |   " + vacation.getStartDate() + " - " + vacation.getEndDate());
+        binding.tvVacationNotes.setText(vacation.getNotes());
+        populateImageView();
+    }
+
+    private void populateImageView() {
+        if (user.getImage1() == null && user.getImage2() == null && user.getImage3() == null) {
+            binding.ivPhotos.setImageResource(R.drawable.add_image);
+        }
+        else if (user.getImage1() != null) {
+            Glide.with(binding.ivPhotos.getContext())
+                    .load(Uri.parse(user.getImage1()))
+                    .centerCrop()
+                    .into(binding.ivPhotos);
+        }
+        else if (user.getImage2() != null) {
+            Glide.with(binding.ivPhotos.getContext())
+                    .load(Uri.parse(user.getImage2()))
+                    .centerCrop()
+                    .into(binding.ivPhotos);
+        }
+        else {
+            Glide.with(binding.ivPhotos.getContext())
+                    .load(Uri.parse(user.getImage3()))
+                    .centerCrop()
+                    .into(binding.ivPhotos);
+        }
     }
 
     private void goEditProfileFrag() {

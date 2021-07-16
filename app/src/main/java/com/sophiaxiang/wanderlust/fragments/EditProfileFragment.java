@@ -115,24 +115,33 @@ public class EditProfileFragment extends Fragment {
     }
 
     private void populateImageViews() {
-        // TODO: loop through to populate all 3 imageviews
-        StorageReference imageReference = storageReference.child(currentUser.getUserId()).child("image1.jpg");
-        imageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-            @Override
-            public void onSuccess(Uri uri) {
-                // Got the download URL for 'users/me/profile.png'
-                Glide
-                        .with(binding.ivImage1.getContext())
-                        .load(uri)
-                        .centerCrop()
-                        .into(binding.ivImage1);
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-                // Handle any errors
-            }
-        });
+        if (currentUser.getImage1() == null) {
+            binding.ivImage1.setImageResource(R.drawable.add_image);
+        }
+        else {
+            Glide.with(binding.ivImage1.getContext())
+                    .load(Uri.parse(currentUser.getImage1()))
+                    .placeholder(R.drawable.add_image)
+                    .into(binding.ivImage1);
+        }
+        if (currentUser.getImage2() == null) {
+            binding.ivImage2.setImageResource(R.drawable.add_image);
+        }
+        else {
+            Glide.with(binding.ivImage2.getContext())
+                    .load(Uri.parse(currentUser.getImage2()))
+                    .placeholder(R.drawable.add_image)
+                    .into(binding.ivImage2);
+        }
+        if (currentUser.getImage3() == null) {
+            binding.ivImage3.setImageResource(R.drawable.add_image);
+        }
+        else {
+            Glide.with(binding.ivImage3.getContext())
+                    .load(Uri.parse(currentUser.getImage3()))
+                    .placeholder(R.drawable.add_image)
+                    .into(binding.ivImage3);
+        }
     }
 
 

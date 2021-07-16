@@ -26,8 +26,13 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -44,9 +49,12 @@ public class TakePhotoFragment extends Fragment {
     private File photoFile;
     public String photoFileName = "photo.jpg";
     private FragmentTakePhotoBinding binding;
-    FirebaseStorage storage;
-    StorageReference storageRef;
-    StorageReference photoLocationRef;
+    private FirebaseStorage storage;
+    private StorageReference storageRef;
+    private StorageReference photoLocationRef;
+    private DatabaseReference mDatabase;
+    private String currentUserId;
+    private String imageNumber;
 
     public TakePhotoFragment() {
         // Required empty public constructor
@@ -64,12 +72,14 @@ public class TakePhotoFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        String currentUserId = getArguments().getString("current user id");
-        String imageNumber = getArguments().getString("image number");
+        currentUserId = getArguments().getString("current user id");
+        imageNumber = getArguments().getString("image number");
 
+        mDatabase = FirebaseDatabase.getInstance().getReference();
         storage = FirebaseStorage.getInstance();
         storageRef = storage.getReference();
         photoLocationRef = storageRef.child(currentUserId).child(imageNumber + ".jpg");
+
 
         binding.btnCaptureImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -171,6 +181,23 @@ public class TakePhotoFragment extends Fragment {
                 // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
                 // ...
                 Toast.makeText(getContext(), "Success saving image!", Toast.LENGTH_SHORT).show();
+                downloadImageUri();
+            }
+        });
+    }
+    private void downloadImageUri() {
+        photoLocationRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                // Got the download URL for 'users/me/profile.png'
+                mDatabase.child("users").child(currentUserId).child(imageNumber).setValue(uri.toString());
+                Log.i(TAG, "successfully downloaded image Uri");
+                getActivity().getSupportFragmentManager().popBackStack();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                Log.e(TAG, "failure to download image Uri: ", exception);
             }
         });
     }
