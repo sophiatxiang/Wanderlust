@@ -18,6 +18,7 @@ public class User implements Serializable {
     private String image1;
     private String image2;
     private String image3;
+    private List<String> imageList;
     private List<User> likedUsers;
 
     public User(String userId, String name) {
@@ -25,7 +26,7 @@ public class User implements Serializable {
         this.name = name;
     }
 
-    public User(String userId, String name, int age, String gender, String from, String bio, String adventureLevel) {
+    public User(String userId, String name, int age, String gender, String from, String bio, String adventureLevel, String image1, String image2, String image3) {
         this.userId = userId;
         this.name = name;
         this.age = age;
@@ -33,6 +34,9 @@ public class User implements Serializable {
         this.from = from;
         this.bio = bio;
         this.adventureLevel = adventureLevel;
+        this.image1 = image1;
+        this.image2 = image2;
+        this.image3 = image3;
     }
 
     public User() {
@@ -117,6 +121,14 @@ public class User implements Serializable {
 
     public void setImage3(String image3) {
         this.image3 = image3;
+    }
+
+    public List<String> getImageList() {
+        return imageList;
+    }
+
+    public void setImageList(List<String> imageList) {
+        this.imageList = imageList;
     }
 
     public List<User> getLikedUsers() {

@@ -17,6 +17,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
+import android.widget.ViewSwitcher;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -29,12 +31,14 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.sophiaxiang.wanderlust.MainActivity;
 import com.sophiaxiang.wanderlust.R;
 import com.sophiaxiang.wanderlust.databinding.FragmentProfileBinding;
 import com.sophiaxiang.wanderlust.models.User;
 import com.sophiaxiang.wanderlust.models.Vacation;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ProfileFragment extends Fragment {
 
@@ -43,10 +47,11 @@ public class ProfileFragment extends Fragment {
     private DatabaseReference mDatabase;
     private DatabaseReference currentUserNodeReference;
     private DatabaseReference vacationDetailsReference;
-    private StorageReference storageReference;
     private String currentUserId;
     private User user;
     private Vacation vacation;
+    private List<String> currentUserImages;
+    private int position = 0;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -66,7 +71,6 @@ public class ProfileFragment extends Fragment {
 
         currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         mDatabase = FirebaseDatabase.getInstance().getReference();
-        storageReference = FirebaseStorage.getInstance().getReference();
         currentUserNodeReference = mDatabase.child("users").child(currentUserId);
         vacationDetailsReference = mDatabase.child("vacations").child(currentUserId);
 
@@ -74,7 +78,12 @@ public class ProfileFragment extends Fragment {
         user = (User) bundle.getSerializable("current user");
         vacation = (Vacation) bundle.getSerializable("vacation");
 
-        populateViews();
+        currentUserImages = new ArrayList<>();
+        populateImageList();
+
+        setUpImageBtns();
+        populateProfileViews();
+        populateVacationViews();
         setProfileInfoListener();
         setVacationInfoListener();
 
@@ -93,14 +102,39 @@ public class ProfileFragment extends Fragment {
         });
     }
 
+    private void setUpImageBtns() {
+        binding.btnPrevious.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(position>0)
+                    position--;
+                Glide.with(binding.ivPhoto.getContext())
+                        .load(Uri.parse(currentUserImages.get(position)))
+                        .into(binding.ivPhoto);
+            }
+        });
+
+        binding.btnNext.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getContext(), "next clicked", Toast.LENGTH_SHORT).show();
+                if(position<currentUserImages.size()-1)
+                    position++;
+                Glide.with(binding.ivPhoto.getContext())
+                        .load(Uri.parse(currentUserImages.get(position)))
+                        .into(binding.ivPhoto);
+            }
+        });
+    }
+
+
     private void setVacationInfoListener() {
         ValueEventListener vacationListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // Get Post object and use the values to update the UI
                 vacation = dataSnapshot.getValue(Vacation.class);
-                // TODO: populate vacation views
-//                populateVacationViews();
+                populateVacationViews();
             }
 
             @Override
@@ -119,7 +153,7 @@ public class ProfileFragment extends Fragment {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // Get Post object and use the values to update the UI
                 user = dataSnapshot.getValue(User.class);
-                populateViews();
+                populateProfileViews();
             }
 
             @Override
@@ -131,37 +165,39 @@ public class ProfileFragment extends Fragment {
         currentUserNodeReference.addValueEventListener(userListener);
     }
 
-    private void populateViews() {
+    private void populateProfileViews() {
         binding.tvNameAge.setText(user.getName() + ", " + user.getAge());
         binding.tvBio.setText(user.getBio());
         binding.tvFrom.setText(user.getFrom());
         binding.tvAdventureLevel.setText(user.getAdventureLevel());
-        binding.tvLocationDate.setText(vacation.getDestination() + "   |   " + vacation.getStartDate() + " - " + vacation.getEndDate());
+        populateImageList();
+    }
+
+
+    private void populateVacationViews() {
+        if (!vacation.getDestination().equals("")) {
+            binding.tvLocationDate.setText(vacation.getDestination() + "   |   " + vacation.getStartDate() + " - " + vacation.getEndDate());
+        }
         binding.tvVacationNotes.setText(vacation.getNotes());
+    }
+
+    private void populateImageList() {
+        currentUserImages.clear();
+        currentUserImages.add(user.getImage1());
+        currentUserImages.add(user.getImage2());
+        currentUserImages.add(user.getImage3());
         populateImageView();
     }
 
     private void populateImageView() {
-        if (user.getImage1() == null && user.getImage2() == null && user.getImage3() == null) {
-            binding.ivPhotos.setImageResource(R.drawable.add_image);
-        }
-        else if (user.getImage1() != null) {
-            Glide.with(binding.ivPhotos.getContext())
-                    .load(Uri.parse(user.getImage1()))
-                    .centerCrop()
-                    .into(binding.ivPhotos);
-        }
-        else if (user.getImage2() != null) {
-            Glide.with(binding.ivPhotos.getContext())
-                    .load(Uri.parse(user.getImage2()))
-                    .centerCrop()
-                    .into(binding.ivPhotos);
+        if (user.getImage1() == null){
+            binding.ivPhoto.setImageResource(R.drawable.add_image);
         }
         else {
-            Glide.with(binding.ivPhotos.getContext())
-                    .load(Uri.parse(user.getImage3()))
-                    .centerCrop()
-                    .into(binding.ivPhotos);
+            position = 0;
+            Glide.with(binding.ivPhoto.getContext())
+                    .load(Uri.parse(currentUserImages.get(position)))
+                    .into(binding.ivPhoto);
         }
     }
 

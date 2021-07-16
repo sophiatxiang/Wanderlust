@@ -191,7 +191,7 @@ public class TakePhotoFragment extends Fragment {
             public void onSuccess(Uri uri) {
                 // Got the download URL for 'users/me/profile.png'
                 mDatabase.child("users").child(currentUserId).child(imageNumber).setValue(uri.toString());
-                Log.i(TAG, "successfully downloaded image Uri");
+                Log.i(TAG, "successfully downloaded image Uri: " + uri.toString());
                 getActivity().getSupportFragmentManager().popBackStack();
             }
         }).addOnFailureListener(new OnFailureListener() {

@@ -28,8 +28,11 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.sophiaxiang.wanderlust.LoginActivity;
@@ -47,7 +50,7 @@ public class EditProfileFragment extends Fragment {
     private DatabaseReference mDatabase;
     private FirebaseUser firebaseUser;
     private User currentUser;
-    private StorageReference storageReference;
+    private DatabaseReference currentUserNodeReference;
 
 
     public EditProfileFragment() {
@@ -71,10 +74,11 @@ public class EditProfileFragment extends Fragment {
 
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         mDatabase = FirebaseDatabase.getInstance().getReference();
-        storageReference = FirebaseStorage.getInstance().getReference();
+        currentUserNodeReference = mDatabase.child("users").child(currentUser.getUserId());
 
         populateEditTextViews();
         populateImageViews();
+        updateImageViews();
 
        binding.btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -87,8 +91,11 @@ public class EditProfileFragment extends Fragment {
        binding.btnSave.setOnClickListener(new View.OnClickListener() {
            @Override
            public void onClick(View v) {
+               if (currentUser.getImage1() == null || currentUser.getImage2() == null || currentUser.getImage3() == null) {
+                   Toast.makeText(getContext(), "Please provide 3 images!", Toast.LENGTH_SHORT).show();
+                   return;
+               }
                updateDatabaseUserProfile();
-               getActivity().getSupportFragmentManager().popBackStack();
            }
        });
 
@@ -113,6 +120,8 @@ public class EditProfileFragment extends Fragment {
             }
         });
     }
+
+
 
     private void populateImageViews() {
         if (currentUser.getImage1() == null) {
@@ -154,6 +163,25 @@ public class EditProfileFragment extends Fragment {
         binding.etAdventureLevel.setText(currentUser.getAdventureLevel());
     }
 
+
+    private void updateImageViews() {
+        ValueEventListener userListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // Get Post object and use the values to update the UI
+                currentUser = dataSnapshot.getValue(User.class);
+                populateImageViews();
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // Getting Post failed, log a message
+                Log.w(TAG, "load User profile:onCancelled", databaseError.toException());
+            }
+        };
+        currentUserNodeReference.addValueEventListener(userListener);
+    }
+
+
     private void updateDatabaseUserProfile() {
         if (TextUtils.isEmpty(binding.etAge.toString())){
             Toast.makeText(getContext(), "Please enter an age!", Toast.LENGTH_SHORT).show();
@@ -165,9 +193,26 @@ public class EditProfileFragment extends Fragment {
         String from = binding.etFrom.getText().toString();
         String bio = binding.etBio.getText().toString();
         String adventureLevel = binding.etAdventureLevel.getText().toString();
-        User user = new User(firebaseUser.getUid(), name , age, gender, from, bio, adventureLevel);
-        mDatabase.child("users").child(firebaseUser.getUid()).setValue(user);
+        String image1 = currentUser.getImage1();
+        String image2 = currentUser.getImage2();
+        String image3 = currentUser.getImage3();
+        User user = new User(firebaseUser.getUid(), name , age, gender, from, bio, adventureLevel, image1, image2, image3);
+        mDatabase.child("users").child(firebaseUser.getUid()).setValue(user)
+            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    Toast.makeText(getContext(), "save successful!", Toast.LENGTH_SHORT).show();
+                    getActivity().getSupportFragmentManager().popBackStack();
+                }
+            })
+            .addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Log.e(TAG, "failure to update profile: ", e);
+                }
+            });
     }
+
 
     private void goTakePhotoFragment(String imageNumber){
         Fragment fragment = new TakePhotoFragment();
@@ -180,6 +225,7 @@ public class EditProfileFragment extends Fragment {
                 .addToBackStack(null)
                 .commit();
     }
+
 
     public void goLoginActivity () {
         Intent intent = new Intent(getActivity(), LoginActivity.class);
