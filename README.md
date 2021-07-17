@@ -105,6 +105,6 @@ Find a travel buddy for your next adventure with Wanderlust! Filter by location,
 * Edit Vacation Screen
     * (Update/PUT) Update vacation location, activities/attractions, dates, etc.
 * Chat Screen
-    * (Read/GET) Query messages for the specified chat
-    * (Create/POST) Create new messages
+    * (Read/GET) Query chatMessages for the specified chat
+    * (Create/POST) Create new chatMessages
 

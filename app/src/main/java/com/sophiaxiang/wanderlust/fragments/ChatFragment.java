@@ -12,11 +12,19 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.sophiaxiang.wanderlust.R;
+import com.sophiaxiang.wanderlust.adapters.ChatAdapter;
 import com.sophiaxiang.wanderlust.databinding.FragmentChatBinding;
+import com.sophiaxiang.wanderlust.models.Chat;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ChatFragment extends Fragment {
 
+    public static final String TAG = "ChatFragment";
     private FragmentChatBinding binding;
+    private ChatAdapter adapter;
+    private List<Chat> allChats;
 
     public ChatFragment() {
         // Required empty public constructor
@@ -33,5 +41,8 @@ public class ChatFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        allChats = new ArrayList<>();
+        adapter = new ChatAdapter(getContext(), allChats);
     }
 }

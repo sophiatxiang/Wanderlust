@@ -1,5 +1,6 @@
 package com.sophiaxiang.wanderlust.fragments;
 
+import android.content.Intent;
 import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
@@ -31,6 +32,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.sophiaxiang.wanderlust.ChatDetailsActivity;
 import com.sophiaxiang.wanderlust.MainActivity;
 import com.sophiaxiang.wanderlust.R;
 import com.sophiaxiang.wanderlust.databinding.FragmentProfileBinding;
@@ -100,7 +102,15 @@ public class ProfileFragment extends Fragment {
                 goEditVacationFrag();
             }
         });
+
+        binding.btnSampleChat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goChatDetails();
+            }
+        });
     }
+
 
     private void setUpImageBtns() {
         binding.btnPrevious.setOnClickListener(new View.OnClickListener() {
@@ -224,5 +234,12 @@ public class ProfileFragment extends Fragment {
                 .replace(R.id.flContainer, fragment)
                 .addToBackStack(null)
                 .commit();
+    }
+
+    private void goChatDetails() {
+        Intent intent = new Intent(getActivity(), ChatDetailsActivity.class);
+        intent.putExtra("current user id", currentUserId);
+        intent.putExtra("other user id", "3crMBHedMZcCBW4V7S9fWgrbpQh2");
+        getActivity().startActivity(intent);
     }
 }
