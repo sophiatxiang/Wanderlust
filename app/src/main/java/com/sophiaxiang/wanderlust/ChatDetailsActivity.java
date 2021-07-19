@@ -39,8 +39,6 @@ public class ChatDetailsActivity extends AppCompatActivity {
     private DatabaseReference mDatabase;
     private ChatMessageAdapter mAdapter;
     private List<ChatMessage> mMessages;
-    private boolean mFirstLoad;
-    private ValueEventListener listener;
 
 
     @Override
@@ -53,11 +51,11 @@ public class ChatDetailsActivity extends AppCompatActivity {
         getChatId();
         setUpMessagePosting();
         setUpNewMessageListener();
-        //queryInitialMessages();
     }
 
     private void setUpNewMessageListener() {
-        mDatabase.child("chats").child(chatId).addChildEventListener(new ChildEventListener() {
+        Query recentMessagesQuery = mDatabase.child("chats").child(chatId).limitToFirst(40);
+        recentMessagesQuery.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                 ChatMessage message = snapshot.getValue(ChatMessage.class);
@@ -93,31 +91,6 @@ public class ChatDetailsActivity extends AppCompatActivity {
         });
     }
 
-    void queryInitialMessages() {
-        Query recentMessagesQuery = mDatabase.child("chats").child(chatId)
-                .limitToFirst(30);
-        listener = recentMessagesQuery.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot messageSnapshot: dataSnapshot.getChildren()) {
-                    // TODO: handle the post
-                    ChatMessage message = messageSnapshot.getValue(ChatMessage.class);
-                    mMessages.add(message);
-                }
-                mAdapter.notifyDataSetChanged();
-                if (mFirstLoad) {
-                    binding.rvChat.scrollToPosition(0);
-                    mFirstLoad = false;
-                }
-                recentMessagesQuery.removeEventListener(this);
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                // Getting Post failed, log a message
-                Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
-            }
-        });
-    }
 
 
     private void getChatId() {
@@ -132,26 +105,30 @@ public class ChatDetailsActivity extends AppCompatActivity {
     // Set up button event handler which posts the entered message to Parse
     void setUpMessagePosting() {
         mMessages = new ArrayList<>();
-        mFirstLoad = true;
         mAdapter = new ChatMessageAdapter(ChatDetailsActivity.this, currentUserId, mMessages);
         binding.rvChat.setAdapter(mAdapter);
 
-        // associate the LayoutManager with the RecylcerView
+        // associate the LayoutManager with the RecyclerView
         final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(ChatDetailsActivity.this);
         linearLayoutManager.setReverseLayout(true);
         binding.rvChat.setLayoutManager(linearLayoutManager);
 
+        setOnClick();
+    }
+
+    private void setOnClick() {
         // When send button is clicked, create message object on Parse
         binding.ibSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // create message in individual chat history
                 String data = binding.etMessage.getText().toString();
                 ChatMessage message = new ChatMessage(currentUserId, data);
                 mDatabase.child("chats").child(chatId).push().setValue(message).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
                         Toast.makeText(ChatDetailsActivity.this, "Successfully created message in Firebase",
-                                    Toast.LENGTH_SHORT).show();
+                                Toast.LENGTH_SHORT).show();
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
@@ -160,6 +137,67 @@ public class ChatDetailsActivity extends AppCompatActivity {
                             Log.e(TAG, "Failed to save message", e);
                         }
                     });
+
+                // update last message in current user's chat lists
+                mDatabase.child("userChatLists").child(currentUserId).child(chatId).child("lastMessage").setValue(message.getMessageText()).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Toast.makeText(ChatDetailsActivity.this, "Successfully updated lastMessage",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.e(TAG, "Failed to save message", e);
+                            }
+                        });
+
+                // update last message time in current user's chat lists
+                mDatabase.child("userChatLists").child(currentUserId).child(chatId).child("lastMessageTime").setValue(message.getMessageTime()).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Toast.makeText(ChatDetailsActivity.this, "Successfully updated lastMessageTime",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.e(TAG, "Failed to save message", e);
+                            }
+                        });
+
+                // update last message in other user's chat lists
+                mDatabase.child("userChatLists").child(otherUserId).child(chatId).child("lastMessage").setValue(message.getMessageText()).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Toast.makeText(ChatDetailsActivity.this, "Successfully updated lastMessage for other user",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.e(TAG, "Failed to save message", e);
+                            }
+                        });
+
+                // update last message time in other user's chat lists
+                mDatabase.child("userChatLists").child(otherUserId).child(chatId).child("lastMessageTime").setValue(message.getMessageTime()).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Toast.makeText(ChatDetailsActivity.this, "Successfully updated lastMessageTime for other user",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.e(TAG, "Failed to save message", e);
+                            }
+                        });
+
                 binding.etMessage.setText(null);
             }
         });

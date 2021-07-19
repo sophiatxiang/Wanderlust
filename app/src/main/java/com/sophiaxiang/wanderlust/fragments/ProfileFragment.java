@@ -127,7 +127,6 @@ public class ProfileFragment extends Fragment {
         binding.btnNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getContext(), "next clicked", Toast.LENGTH_SHORT).show();
                 if(position<currentUserImages.size()-1)
                     position++;
                 Glide.with(binding.ivPhoto.getContext())

@@ -86,7 +86,6 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.
     public class IncomingMessageViewHolder extends MessageViewHolder {
         ImageView imageOther;
         TextView body;
-        TextView name;
 
         public IncomingMessageViewHolder(View itemView) {
             super(itemView);

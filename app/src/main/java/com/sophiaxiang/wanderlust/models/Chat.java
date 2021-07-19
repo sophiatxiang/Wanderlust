@@ -4,19 +4,30 @@ import java.util.List;
 
 public class Chat {
     private String chatId;
-    private User currentUser;
-    private User otherUser;
-    private List<ChatMessage> chatMessages;
+    private String otherUserName;
+    private String lastMessage;
+    private String otherUserId;
+    private String currentUserId;
+    private long lastMessageTime;
 
-    public Chat(String chatId, User currentUser, User otherUser, List<ChatMessage> chatMessages) {
+    public Chat(String chatId, String otherUserName, String otherUserId, String currentUserId, long lastMessageTime) {
         this.chatId = chatId;
-        this.currentUser = currentUser;
-        this.otherUser = otherUser;
-        this.chatMessages = chatMessages;
+        this.otherUserName = otherUserName;
+        this.otherUserId = otherUserId;
+        this.currentUserId = currentUserId;
+        this.lastMessageTime = lastMessageTime;
     }
 
     public Chat() {
 
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this) return true;
+        if (o instanceof Chat) return false;
+        Chat chat = (Chat) o;
+        return this.getChatId().equals(chat.getChatId());
     }
 
     public String getChatId() {
@@ -27,28 +38,43 @@ public class Chat {
         this.chatId = chatId;
     }
 
-    public User getCurrentUser() {
-        return currentUser;
+    public String getOtherUserName() {
+        return otherUserName;
     }
 
-    public void setCurrentUser(User currentUser) {
-        this.currentUser = currentUser;
+    public void setOtherUserName(String otherUserName) {
+        this.otherUserName = otherUserName;
     }
 
-    public User getOtherUser() {
-        return otherUser;
+    public String getLastMessage() {
+        return lastMessage;
     }
 
-    public void setOtherUser(User otherUser) {
-        this.otherUser = otherUser;
+    public void setLastMessage(String lastMessage) {
+        this.lastMessage = lastMessage;
     }
 
-    public List<ChatMessage> getMessages() {
-        return chatMessages;
+    public long getLastMessageTime() {
+        return lastMessageTime;
     }
 
-    public void setMessages(List<ChatMessage> chatMessages) {
-        this.chatMessages = chatMessages;
+    public void setLastMessageTime(long lastMessageTime) {
+        this.lastMessageTime = lastMessageTime;
     }
 
+    public String getOtherUserId() {
+        return otherUserId;
+    }
+
+    public void setOtherUserId(String otherUserId) {
+        this.otherUserId = otherUserId;
+    }
+
+    public String getCurrentUserId() {
+        return currentUserId;
+    }
+
+    public void setCurrentUserId(String currentUserId) {
+        this.currentUserId = currentUserId;
+    }
 }

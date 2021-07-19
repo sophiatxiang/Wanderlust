@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -65,7 +66,11 @@ public class MainActivity extends AppCompatActivity {
                         fragmentManager.beginTransaction().replace(R.id.flContainer, new FeedFragment()).commit();
                         break;
                     case R.id.action_chat:
-                        fragmentManager.beginTransaction().replace(R.id.flContainer, new ChatFragment()).commit();
+                        fragment = new ChatFragment();
+                        Bundle chatBundle = new Bundle();
+                        chatBundle.putSerializable("current user id", currentUserId);
+                        fragment.setArguments(chatBundle);
+                        fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).addToBackStack(null).commit();
                         break;
                     case R.id.action_profile:
 //                        fragmentManager.beginTransaction().replace(R.id.flContainer, new ProfileFragment()).commit();
@@ -74,10 +79,7 @@ public class MainActivity extends AppCompatActivity {
                         bundle.putSerializable("current user", currentUser);
                         bundle.putSerializable("vacation", currentUserVacation);
                         fragment.setArguments(bundle);
-                        fragmentManager.beginTransaction()
-                                .replace(R.id.flContainer, fragment)
-                                .addToBackStack(null)
-                                .commit();
+                        fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).addToBackStack(null).commit();
                         break;
                 }
                 return true;
@@ -85,6 +87,9 @@ public class MainActivity extends AppCompatActivity {
         });
 
         binding.bottomNavigation.setSelectedItemId(R.id.action_home);
+
+        mDatabase.child("userChatLists").child(currentUserId).child("3WWVbfjsWYQ41r51noT6yvwfe7624Fn0b6gnOpXzgvsMDl6jmexXk562").child("");
+
     }
 
     private void getCurrentUserVacation() {

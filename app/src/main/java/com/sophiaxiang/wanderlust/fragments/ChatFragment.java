@@ -6,15 +6,29 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+import com.sophiaxiang.wanderlust.ChatDetailsActivity;
 import com.sophiaxiang.wanderlust.R;
 import com.sophiaxiang.wanderlust.adapters.ChatAdapter;
 import com.sophiaxiang.wanderlust.databinding.FragmentChatBinding;
 import com.sophiaxiang.wanderlust.models.Chat;
+import com.sophiaxiang.wanderlust.models.ChatMessage;
+import com.sophiaxiang.wanderlust.models.User;
+import com.sophiaxiang.wanderlust.models.Vacation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,8 +37,10 @@ public class ChatFragment extends Fragment {
 
     public static final String TAG = "ChatFragment";
     private FragmentChatBinding binding;
-    private ChatAdapter adapter;
+    private ChatAdapter mAdapter;
+    private DatabaseReference mDatabase;
     private List<Chat> allChats;
+    private String currentUserId;
 
     public ChatFragment() {
         // Required empty public constructor
@@ -42,7 +58,75 @@ public class ChatFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+        Bundle bundle = getArguments();
+        currentUserId = (String) bundle.getSerializable("current user id");
+
         allChats = new ArrayList<>();
-        adapter = new ChatAdapter(getContext(), allChats);
+        mAdapter = new ChatAdapter(getContext(), allChats);
+        binding.rvChats.setAdapter(mAdapter);
+
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        binding.rvChats.setLayoutManager(linearLayoutManager);
+
+        queryChats();
+    }
+
+    private void queryChats() {
+        Query recentChatsQuery = mDatabase.child("userChatLists").child(currentUserId).limitToFirst(40).orderByChild("lastMessageTime");;
+//        recentChatsQuery.addChildEventListener(new ChildEventListener() {
+//            @Override
+//            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+//                Chat chat = snapshot.getValue(Chat.class);
+//                allChats.add(0, chat);
+////                runOnUiThread(new Runnable() {
+////                    @Override
+////                    public void run() {
+////                        mAdapter.notifyItemInserted(0);
+////                        binding.rvChats.scrollToPosition(0);
+////                    }
+////                });
+//                mAdapter.notifyItemInserted(0);
+//            }
+//
+//            @Override
+//            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+//                Chat chat = snapshot.getValue(Chat.class);
+//
+//            }
+//
+//            @Override
+//            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+//
+//            }
+//
+//            @Override
+//            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//
+//            }
+//        });
+
+        // My top posts by number of stars
+        recentChatsQuery.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                allChats.clear();
+                for (DataSnapshot chatSnapshot: dataSnapshot.getChildren()) {
+                    Chat chat = chatSnapshot.getValue(Chat.class);
+                    allChats.add(0, chat);
+                }
+                mAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.w(TAG, "loadChats:onCancelled", databaseError.toException());
+            }
+        });
     }
 }
