@@ -80,7 +80,9 @@ public class ChatFragment extends Fragment {
                 allChats.clear();
                 for (DataSnapshot chatSnapshot: dataSnapshot.getChildren()) {
                     Chat chat = chatSnapshot.getValue(Chat.class);
-                    allChats.add(0, chat);
+                    if (chat.getLastMessageTime() != 0) {
+                        allChats.add(0, chat);
+                    }
                 }
                 mAdapter.notifyDataSetChanged();
             }

@@ -41,6 +41,7 @@ public class FeedFragment extends Fragment {
     private DatabaseReference userNodeReference;
     private DatabaseReference vacationDetailsReference;
     private String currentUserId;
+    private String currentUserName;
     private UserAdapter mAdapter;
     private List<User> users;
 
@@ -75,6 +76,7 @@ public class FeedFragment extends Fragment {
 
         queryUsers();
     }
+
 
     private void queryUsers() {
         Query usersQuery = mDatabase.child("users").limitToFirst(40);

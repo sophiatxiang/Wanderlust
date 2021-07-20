@@ -17,8 +17,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -47,6 +49,7 @@ public class UserDetailsFragment extends Fragment {
     private Vacation vacation;
     private List<String> userImages;
     private String currentUserId;
+    private String currentUserName;
     private int position = 0;
     private String chatId;
 
@@ -78,11 +81,26 @@ public class UserDetailsFragment extends Fragment {
         userImages = new ArrayList<>();
         populateImageList();
 
+        getCurrentUserName();
         setUpButtons();
         populateProfileViews();
         populateVacationViews();
         setProfileInfoListener();
         setVacationInfoListener();
+    }
+
+    private void getCurrentUserName() {
+        mDatabase.child("users").child(currentUserId).child("name").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                if (!task.isSuccessful()) {
+                    Log.e("firebase", "Error getting data", task.getException());
+                }
+                else {
+                   currentUserName = String.valueOf(task.getResult().getValue());
+                }
+            }
+        });
     }
 
     private void setUpButtons() {
@@ -198,9 +216,16 @@ public class UserDetailsFragment extends Fragment {
             chatId = currentUserId + user.getUserId();
         else chatId =  user.getUserId() + currentUserId;
 
-        Chat chat = new Chat(chatId, user.getName(), user.getUserId(), currentUserId, Long.MAX_VALUE);
-        mDatabase.child("userChatLists").child(currentUserId).child(chatId).setValue(chat);
-        mDatabase.child("userChatLists").child(user.getUserId()).child(chatId).setValue(chat).addOnSuccessListener(new OnSuccessListener<Void>() {
+        Chat chat = new Chat(chatId, user.getName(), user.getUserId(), currentUserId);
+        mDatabase.child("userChatLists").child(currentUserId).child(chatId).child("chatId").setValue(chatId);
+        mDatabase.child("userChatLists").child(currentUserId).child(chatId).child("currentUserId").setValue(currentUserId);
+        mDatabase.child("userChatLists").child(currentUserId).child(chatId).child("otherUserId").setValue(user.getUserId());
+        mDatabase.child("userChatLists").child(currentUserId).child(chatId).child("otherUserName").setValue(user.getName());
+        mDatabase.child("userChatLists").child(user.getUserId()).child(chatId).child("chatId").setValue(chatId);
+        mDatabase.child("userChatLists").child(user.getUserId()).child(chatId).child("currentUserId").setValue(user.getUserId());
+        mDatabase.child("userChatLists").child(user.getUserId()).child(chatId).child("otherUserId").setValue(currentUserId);
+        mDatabase.child("userChatLists").child(user.getUserId()).child(chatId).child("otherUserName").setValue(currentUserName)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
                 goChatDetails();
@@ -220,6 +245,6 @@ public class UserDetailsFragment extends Fragment {
             intent.putExtra("current user id", currentUserId);
             intent.putExtra("other user id", user.getUserId());
             intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            getActivity().startActivity(intent); 
+            getActivity().startActivity(intent);
     }
 }

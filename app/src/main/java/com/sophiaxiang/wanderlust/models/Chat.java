@@ -10,12 +10,11 @@ public class Chat {
     private String currentUserId;
     private long lastMessageTime;
 
-    public Chat(String chatId, String otherUserName, String otherUserId, String currentUserId, long lastMessageTime) {
+    public Chat(String chatId, String otherUserName, String otherUserId, String currentUserId) {
         this.chatId = chatId;
         this.otherUserName = otherUserName;
         this.otherUserId = otherUserId;
         this.currentUserId = currentUserId;
-        this.lastMessageTime = lastMessageTime;
     }
 
     public Chat() {
