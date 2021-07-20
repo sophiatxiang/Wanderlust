@@ -1,7 +1,9 @@
 package com.sophiaxiang.wanderlust.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,10 +12,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.sophiaxiang.wanderlust.ChatDetailsActivity;
 import com.sophiaxiang.wanderlust.R;
+import com.sophiaxiang.wanderlust.fragments.EditProfileFragment;
+import com.sophiaxiang.wanderlust.fragments.UserDetailsFragment;
 import com.sophiaxiang.wanderlust.models.User;
 
 import java.util.List;
@@ -69,11 +76,18 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
 
         @Override
         public void onClick(View v) {
-            //TODO: launch profile details fragment
-            Toast.makeText(context, "view holder clicked", Toast.LENGTH_SHORT).show();
-
-
-
+            int position = getAdapterPosition();
+            if (position != RecyclerView.NO_POSITION) {
+                AppCompatActivity activity = (AppCompatActivity) context;
+                Fragment fragment = new UserDetailsFragment();
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("user", users.get(position));
+                fragment.setArguments(bundle);
+                activity.getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.flContainer, fragment)
+                        .addToBackStack(null)
+                        .commit();
+            }
         }
     }
 }

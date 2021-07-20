@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+    </data>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:context=".fragments.UserDetailsFragment">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingBottom="30dp">
+
+                <Button
+                    android:id="@+id/btnChat"
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tvBio"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginEnd="25dp"
+                    android:backgroundTint="@color/periwinkle"
+                    android:text="Chat" />
+
+                <Button
+                    android:id="@+id/btnPrevious"
+                    android:layout_width="170dp"
+                    android:layout_height="400dp"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentStart="true"
+                    android:background="@android:color/transparent" />
+
+                <Button
+                    android:id="@+id/btnNext"
+                    android:layout_width="170dp"
+                    android:layout_height="400dp"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentEnd="true"
+                    android:background="@android:color/transparent" />
+
+
+                <ImageView
+                    android:id="@+id/ivPhoto"
+                    android:layout_width="match_parent"
+                    android:layout_height="400dp"
+                    android:layout_alignParentTop="true"
+                    tools:srcCompat="@tools:sample/avatars" >
+                </ImageView>
+
+                <TextView
+                    android:id="@+id/tvNameAge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/ivPhoto"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="15dp"
+                    android:text="Sophia"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                    android:textSize="36sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvLocationDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tvNameAge"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="10dp"
+                    android:text="Reykjavic, Iceland  |  7/12/21-7/28/21"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvBio"
+                    android:layout_width="360dp"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tvLocationDate"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="15dp"
+                    android:text="Here is a sample bio!!! Test test test test test test test test test test test test test" />
+
+                <TextView
+                    android:id="@+id/textView13"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tvBio"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginTop="15dp"
+                    android:text="From:"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvFrom"
+                    android:layout_width="140dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBaseline="@id/textView13"
+                    android:layout_marginStart="5dp"
+                    android:layout_toEndOf="@+id/textView13"
+                    android:text="Orange County, CA" />
+
+                <TextView
+                    android:id="@+id/textView14"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/textView13"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginTop="10dp"
+                    android:text="Adventure Level:"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvAdventureLevel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBaseline="@id/textView14"
+                    android:layout_marginStart="5dp"
+                    android:layout_toEndOf="@+id/textView14"
+                    android:text="4/5" />
+
+                <TextView
+                    android:id="@+id/textView15"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/textView14"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginTop="10dp"
+                    android:text="Vacation Notes: "
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvVacationNotes"
+                    android:layout_width="181dp"
+                    android:layout_height="33dp"
+                    android:layout_below="@id/textView15"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginTop="8dp"
+                    android:text="put your vacation notes here! test test test test test " />
+
+            </RelativeLayout>
+        </ScrollView>
+</layout>

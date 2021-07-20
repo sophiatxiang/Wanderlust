@@ -158,14 +158,14 @@ public class ChatDetailsActivity extends AppCompatActivity {
                     public void onSuccess(Void aVoid) {
                         Toast.makeText(ChatDetailsActivity.this, "Successfully updated lastMessageTime",
                                 Toast.LENGTH_SHORT).show();
-                    }
-                })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Log.e(TAG, "Failed to save message", e);
-                            }
-                        });
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.e(TAG, "Failed to save message", e);
+                        }
+                    });
 
                 // update last message in other user's chat lists
                 mDatabase.child("userChatLists").child(otherUserId).child(chatId).child("lastMessage").setValue(message.getMessageText()).addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -173,14 +173,14 @@ public class ChatDetailsActivity extends AppCompatActivity {
                     public void onSuccess(Void aVoid) {
                         Toast.makeText(ChatDetailsActivity.this, "Successfully updated lastMessage for other user",
                                 Toast.LENGTH_SHORT).show();
-                    }
-                })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Log.e(TAG, "Failed to save message", e);
-                            }
-                        });
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.e(TAG, "Failed to save message", e);
+                        }
+                    });
 
                 // update last message time in other user's chat lists
                 mDatabase.child("userChatLists").child(otherUserId).child(chatId).child("lastMessageTime").setValue(message.getMessageTime()).addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -188,14 +188,14 @@ public class ChatDetailsActivity extends AppCompatActivity {
                     public void onSuccess(Void aVoid) {
                         Toast.makeText(ChatDetailsActivity.this, "Successfully updated lastMessageTime for other user",
                                 Toast.LENGTH_SHORT).show();
-                    }
-                })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Log.e(TAG, "Failed to save message", e);
-                            }
-                        });
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.e(TAG, "Failed to save message", e);
+                        }
+                    });
 
                 binding.etMessage.setText(null);
             }
