@@ -54,7 +54,6 @@ public class CreateAccActivity extends AppCompatActivity {
         });
     }
 
-
     public void createAccount(String name, String email, String password) {
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -77,25 +76,6 @@ public class CreateAccActivity extends AppCompatActivity {
                 });
     }
 
-    private void createDatabaseUserVacation(FirebaseUser firebaseUser) {
-        Vacation vacation = new Vacation(firebaseUser.getUid());
-        mDatabase.child("vacations").child(firebaseUser.getUid()).setValue(vacation)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Toast.makeText(CreateAccActivity.this, "vacation write successful", Toast.LENGTH_SHORT).show();
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.e(TAG, "vacation write failure", e);
-                    }
-                });
-    }
-
-
-    //create user profile RealTime Database
     private void createDatabaseUserProfile(FirebaseUser firebaseUser, String name) {
         User user = new User(firebaseUser.getUid(), name);
         mDatabase.child("users").child(user.getUserId()).setValue(user)
@@ -113,6 +93,22 @@ public class CreateAccActivity extends AppCompatActivity {
                 });
     }
 
+    private void createDatabaseUserVacation(FirebaseUser firebaseUser) {
+        Vacation vacation = new Vacation(firebaseUser.getUid());
+        mDatabase.child("users").child(firebaseUser.getUid()).child("vacation").setValue(vacation)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Toast.makeText(CreateAccActivity.this, "vacation write successful", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e(TAG, "vacation write failure", e);
+                    }
+                });
+    }
 
     // go to main activity and close/finish login activity
     private void goMainActivity() {

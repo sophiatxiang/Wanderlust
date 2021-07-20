@@ -27,7 +27,7 @@ import com.sophiaxiang.wanderlust.models.Chat;
 
 import java.util.List;
 
-public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
+public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder> {
     public static final String TAG = "ChatAdapter";
     private List<Chat> chats;
     private Context context;
@@ -40,13 +40,13 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ChatViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.item_chat, parent, false);
-        return new ViewHolder(view);
+        return new ChatViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ChatAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ChatAdapter.ChatViewHolder holder, int position) {
         Chat chat = chats.get(position);
         holder.bind(chat);
     }
@@ -56,12 +56,12 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
         return chats.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class ChatViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private ImageView ivChatImage;
         private TextView tvChatName;
         private TextView tvLastMessage;
 
-        public ViewHolder(@NonNull View itemView) {
+        public ChatViewHolder(@NonNull View itemView) {
             super(itemView);
             ivChatImage = itemView.findViewById(R.id.ivChatImage);
             tvChatName = itemView.findViewById(R.id.tvChatName);
@@ -70,26 +70,26 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
         }
 
         public void bind(Chat chat) {
-            //TODO: change image1 to profile picture
-//            DatabaseReference mUserProfilePicReference = mDatabase.child("users").child(chat.getOtherUserId()).child("profileImage");
-//            ValueEventListener postListener = new ValueEventListener() {
-//                @Override
-//                public void onDataChange(DataSnapshot dataSnapshot) {
-//                    String uri = dataSnapshot.getValue(String.class);
-//
-//                    Glide.with(context).load(Uri.parse(uri)).into(ivChatImage);
-//                    tvChatName.setText(chat.getOtherUserName());
-//                }
-//
-//                @Override
-//                public void onCancelled(DatabaseError databaseError) {
-//                    // Getting Post failed, log a message
-//                    Log.w(TAG, "load user image:onCancelled", databaseError.toException());
-//                }
-//            };
-//            mUserProfilePicReference.addValueEventListener(postListener);
-
-            Glide.with(context).load(R.drawable.no_profile_pic).circleCrop().into(ivChatImage);
+            DatabaseReference mUserProfilePicReference = mDatabase.child("users").child(chat.getOtherUserId()).child("profilePhoto");
+            ValueEventListener listener = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    String uri = dataSnapshot.getValue(String.class);
+                    if (uri != null) {
+                        Glide.with(context)
+                                .load(Uri.parse(uri))
+                                .circleCrop()
+                                .into(ivChatImage);
+                    }
+                    else Glide.with(context).load(R.drawable.no_profile_pic).circleCrop().into(ivChatImage);
+                }
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    // Getting Post failed, log a message
+                    Log.w(TAG, "load user image:onCancelled", databaseError.toException());
+                }
+            };
+            mUserProfilePicReference.addValueEventListener(listener);
 
             tvChatName.setText(chat.getOtherUserName());
             tvLastMessage.setText(chat.getLastMessage());

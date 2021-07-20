@@ -74,7 +74,7 @@ public class ProfileFragment extends Fragment {
         currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         mDatabase = FirebaseDatabase.getInstance().getReference();
         currentUserNodeReference = mDatabase.child("users").child(currentUserId);
-        vacationDetailsReference = mDatabase.child("vacations").child(currentUserId);
+        vacationDetailsReference = mDatabase.child("users").child(currentUserId).child("vacation");
 
         Bundle bundle = getArguments();
         user = (User) bundle.getSerializable("current user");
@@ -83,12 +83,14 @@ public class ProfileFragment extends Fragment {
         currentUserImages = new ArrayList<>();
         populateImageList();
 
-        setUpImageBtns();
+        setUpButtons();
         populateProfileViews();
         populateVacationViews();
         setProfileInfoListener();
         setVacationInfoListener();
+    }
 
+    private void setUpButtons() {
         binding.btnEditProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -102,17 +104,6 @@ public class ProfileFragment extends Fragment {
                 goEditVacationFrag();
             }
         });
-
-        binding.btnSampleChat.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                goChatDetails();
-            }
-        });
-    }
-
-
-    private void setUpImageBtns() {
         binding.btnPrevious.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -190,6 +181,7 @@ public class ProfileFragment extends Fragment {
         binding.tvVacationNotes.setText(vacation.getNotes());
     }
 
+
     private void populateImageList() {
         currentUserImages.clear();
         currentUserImages.add(user.getImage1());
@@ -197,6 +189,7 @@ public class ProfileFragment extends Fragment {
         currentUserImages.add(user.getImage3());
         populateImageView();
     }
+
 
     private void populateImageView() {
         if (user.getImage1() == null){
@@ -210,6 +203,7 @@ public class ProfileFragment extends Fragment {
         }
     }
 
+    // launch edit Profile Fragment
     private void goEditProfileFrag() {
         AppCompatActivity activity = (AppCompatActivity) getContext();
         Fragment fragment = new EditProfileFragment();
@@ -223,6 +217,7 @@ public class ProfileFragment extends Fragment {
 
     }
 
+    // launch Edit Vacation Fragment
     private void goEditVacationFrag() {
         AppCompatActivity activity = (AppCompatActivity) getContext();
         Fragment fragment = new MyVacationFragment();
@@ -233,12 +228,5 @@ public class ProfileFragment extends Fragment {
                 .replace(R.id.flContainer, fragment)
                 .addToBackStack(null)
                 .commit();
-    }
-
-    private void goChatDetails() {
-        Intent intent = new Intent(getActivity(), ChatDetailsActivity.class);
-        intent.putExtra("current user id", currentUserId);
-        intent.putExtra("other user id", "3crMBHedMZcCBW4V7S9fWgrbpQh2");
-        getActivity().startActivity(intent);
     }
 }

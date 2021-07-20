@@ -185,6 +185,8 @@ public class TakePhotoFragment extends Fragment {
             }
         });
     }
+
+    // after saving image to Firebase Storage, download image Uri and save to Realtime Database
     private void downloadImageUri() {
         photoLocationRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override

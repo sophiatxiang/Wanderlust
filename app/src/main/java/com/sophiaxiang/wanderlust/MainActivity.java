@@ -50,9 +50,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
 
+
         currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         mDatabase = FirebaseDatabase.getInstance().getReference();
         mStorage = FirebaseStorage.getInstance().getReference();
+
 
         getCurrentUser();
         getCurrentUserVacation();
@@ -63,7 +65,11 @@ public class MainActivity extends AppCompatActivity {
                 Fragment fragment;
                 switch (menuItem.getItemId()) {
                     case R.id.action_home:
-                        fragmentManager.beginTransaction().replace(R.id.flContainer, new FeedFragment()).commit();
+                        fragment = new FeedFragment();
+                        Bundle feedBundle = new Bundle();
+                        feedBundle.putSerializable("current user id", currentUserId);
+                        fragment.setArguments(feedBundle);
+                        fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).addToBackStack(null).commit();
                         break;
                     case R.id.action_chat:
                         fragment = new ChatFragment();
@@ -75,10 +81,10 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.action_profile:
 //                        fragmentManager.beginTransaction().replace(R.id.flContainer, new ProfileFragment()).commit();
                         fragment = new ProfileFragment();
-                        Bundle bundle = new Bundle();
-                        bundle.putSerializable("current user", currentUser);
-                        bundle.putSerializable("vacation", currentUserVacation);
-                        fragment.setArguments(bundle);
+                        Bundle profileBundle = new Bundle();
+                        profileBundle.putSerializable("current user", currentUser);
+                        profileBundle.putSerializable("vacation", currentUserVacation);
+                        fragment.setArguments(profileBundle);
                         fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).addToBackStack(null).commit();
                         break;
                 }
@@ -93,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void getCurrentUserVacation() {
-        DatabaseReference vacationDetailsReference = mDatabase.child("vacations").child(currentUserId);
+        DatabaseReference vacationDetailsReference = mDatabase.child("users").child(currentUserId).child("vacation");
         ValueEventListener vacationListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

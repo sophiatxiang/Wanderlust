@@ -79,7 +79,7 @@ public class MyVacationFragment extends Fragment {
         String endDate = binding.etEndDate.getText().toString();
         String notes = binding.etNotes.getText().toString();
         Vacation vacation = new Vacation(firebaseUser.getUid(), destination, startDate, endDate, notes);
-        mDatabase.child("vacations").child(firebaseUser.getUid()).setValue(vacation);
+        mDatabase.child("users").child(firebaseUser.getUid()).child("vacation").setValue(vacation);
         Toast.makeText(getContext(), "Vacation details saved!", Toast.LENGTH_SHORT).show();
     }
 }

@@ -92,7 +92,6 @@ public class ChatDetailsActivity extends AppCompatActivity {
     }
 
 
-
     private void getChatId() {
         Intent intent = getIntent();
         currentUserId = intent.getStringExtra("current user id");

@@ -74,44 +74,6 @@ public class ChatFragment extends Fragment {
 
     private void queryChats() {
         Query recentChatsQuery = mDatabase.child("userChatLists").child(currentUserId).limitToFirst(40).orderByChild("lastMessageTime");;
-//        recentChatsQuery.addChildEventListener(new ChildEventListener() {
-//            @Override
-//            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-//                Chat chat = snapshot.getValue(Chat.class);
-//                allChats.add(0, chat);
-////                runOnUiThread(new Runnable() {
-////                    @Override
-////                    public void run() {
-////                        mAdapter.notifyItemInserted(0);
-////                        binding.rvChats.scrollToPosition(0);
-////                    }
-////                });
-//                mAdapter.notifyItemInserted(0);
-//            }
-//
-//            @Override
-//            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-//                Chat chat = snapshot.getValue(Chat.class);
-//
-//            }
-//
-//            @Override
-//            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-//
-//            }
-//
-//            @Override
-//            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//
-//            }
-//        });
-
-        // My top posts by number of stars
         recentChatsQuery.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

@@ -1,6 +1,8 @@
 package com.sophiaxiang.wanderlust.adapters;
 
 import android.content.Context;
+import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +13,11 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.sophiaxiang.wanderlust.R;
 import com.sophiaxiang.wanderlust.models.ChatMessage;
 
@@ -20,10 +27,12 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.
 
     private static final int MESSAGE_OUTGOING = 123;
     private static final int MESSAGE_INCOMING = 321;
+    public static final String TAG = "ChatMessageAdapter";
 
     private List<ChatMessage> mMessages;
     private Context mContext;
     private String mUserId;
+    private DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
 
     public ChatMessageAdapter(Context context, String userId, List<ChatMessage> messages) {
         mMessages = messages;
@@ -84,44 +93,73 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.
     }
 
     public class IncomingMessageViewHolder extends MessageViewHolder {
-        ImageView imageOther;
-        TextView body;
+        ImageView ivProfileOther;
+        TextView tvBody;
 
         public IncomingMessageViewHolder(View itemView) {
             super(itemView);
-            imageOther = (ImageView) itemView.findViewById(R.id.ivProfileOther);
-            body = (TextView) itemView.findViewById(R.id.tvBody);
+            ivProfileOther = (ImageView) itemView.findViewById(R.id.ivProfileOther);
+            tvBody = (TextView) itemView.findViewById(R.id.tvBody);
         }
 
         @Override
         public void bindMessage(ChatMessage message) {
-            //TODO: ADD PROFILE PICTURE
-            Glide.with(mContext)
-                    .load(R.drawable.no_profile_pic)
-                    .circleCrop() // create an effect of a round profile picture
-                    .into(imageOther);
-            body.setText(message.getMessageText());
+            DatabaseReference mUserProfilePicReference = mDatabase.child("users").child(message.getMessageSender()).child("profilePhoto");
+            ValueEventListener listener = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    String uri = dataSnapshot.getValue(String.class);
+                    if (uri != null) {
+                        Glide.with(mContext)
+                                .load(Uri.parse(uri))
+                                .circleCrop()
+                                .into(ivProfileOther);
+                    }
+                    else Glide.with(mContext).load(R.drawable.no_profile_pic).circleCrop().into(ivProfileOther);
+                }
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    Log.w(TAG, "load incoming message profile image:onCancelled", databaseError.toException());
+                }
+            };
+            mUserProfilePicReference.addValueEventListener(listener);
+            tvBody.setText(message.getMessageText());
         }
     }
 
     public class OutgoingMessageViewHolder extends MessageViewHolder {
-        ImageView imageMe;
-        TextView body;
+        ImageView ivProfileMe;
+        TextView tvBody;
 
         public OutgoingMessageViewHolder(View itemView) {
             super(itemView);
-            imageMe = (ImageView) itemView.findViewById(R.id.ivProfileMe);
-            body = (TextView) itemView.findViewById(R.id.tvBody);
+            ivProfileMe = (ImageView) itemView.findViewById(R.id.ivProfileMe);
+            tvBody = (TextView) itemView.findViewById(R.id.tvBody);
         }
 
         @Override
         public void bindMessage(ChatMessage message) {
-            // TODO: ADD PROFILE PICTURE
-            Glide.with(mContext)
-                    .load(R.drawable.no_profile_pic)
-                    .circleCrop() // create an effect of a round profile picture
-                    .into(imageMe);
-            body.setText(message.getMessageText());
+            DatabaseReference mUserProfilePicReference = mDatabase.child("users").child(message.getMessageSender()).child("profilePhoto");
+            ValueEventListener listener = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    String uri = dataSnapshot.getValue(String.class);
+                    if (uri != null) {
+                        Glide.with(mContext)
+                                .load(Uri.parse(uri))
+                                .circleCrop()
+                                .into(ivProfileMe);
+                    }
+                    else Glide.with(mContext).load(R.drawable.no_profile_pic).circleCrop().into(ivProfileMe);
+                }
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    Log.w(TAG, "load outgoing message profile image:onCancelled", databaseError.toException());
+                }
+            };
+            mUserProfilePicReference.addValueEventListener(listener);
+
+            tvBody.setText(message.getMessageText());
         }
     }
 }

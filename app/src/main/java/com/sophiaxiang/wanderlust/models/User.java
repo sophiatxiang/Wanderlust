@@ -18,15 +18,19 @@ public class User implements Serializable {
     private String image1;
     private String image2;
     private String image3;
+    private String profilePhoto;
     private List<String> imageList;
     private List<User> likedUsers;
+    private Vacation vacation;
 
     public User(String userId, String name) {
         this.userId = userId;
         this.name = name;
     }
 
-    public User(String userId, String name, int age, String gender, String from, String bio, String adventureLevel, String image1, String image2, String image3) {
+    public User(String userId, String name, int age, String gender,
+                String from, String bio, String adventureLevel, String image1,
+                String image2, String image3, String profilePhoto, Vacation vacation) {
         this.userId = userId;
         this.name = name;
         this.age = age;
@@ -37,6 +41,8 @@ public class User implements Serializable {
         this.image1 = image1;
         this.image2 = image2;
         this.image3 = image3;
+        this.profilePhoto = profilePhoto;
+        this.vacation = vacation;
     }
 
     public User() {
@@ -121,6 +127,22 @@ public class User implements Serializable {
 
     public void setImage3(String image3) {
         this.image3 = image3;
+    }
+
+    public String getProfilePhoto() {
+        return profilePhoto;
+    }
+
+    public void setProfilePhoto(String profilePhoto) {
+        this.profilePhoto = profilePhoto;
+    }
+
+    public Vacation getVacation() {
+        return vacation;
+    }
+
+    public void setVacation(Vacation vacation) {
+        this.vacation = vacation;
     }
 
     public List<String> getImageList() {

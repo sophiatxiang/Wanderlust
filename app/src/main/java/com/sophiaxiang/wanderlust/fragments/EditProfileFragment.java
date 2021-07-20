@@ -76,11 +76,14 @@ public class EditProfileFragment extends Fragment {
         mDatabase = FirebaseDatabase.getInstance().getReference();
         currentUserNodeReference = mDatabase.child("users").child(currentUser.getUserId());
 
+        setUpButtons();
         populateEditTextViews();
-        populateImageViews();
         updateImageViews();
+        populateImageViews();
+    }
 
-       binding.btnLogout.setOnClickListener(new View.OnClickListener() {
+    private void setUpButtons() {
+        binding.btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 FirebaseAuth.getInstance().signOut();
@@ -88,23 +91,23 @@ public class EditProfileFragment extends Fragment {
             }
         });
 
-       binding.btnSave.setOnClickListener(new View.OnClickListener() {
-           @Override
-           public void onClick(View v) {
-               if (currentUser.getImage1() == null || currentUser.getImage2() == null || currentUser.getImage3() == null) {
-                   Toast.makeText(getContext(), "Please provide 3 images!", Toast.LENGTH_SHORT).show();
-                   return;
-               }
-               updateDatabaseUserProfile();
-           }
-       });
+        binding.btnSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (currentUser.getImage1() == null || currentUser.getImage2() == null || currentUser.getImage3() == null) {
+                    Toast.makeText(getContext(), "Please provide 3 images!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                updateDatabaseUserProfile();
+            }
+        });
 
-       binding.ivImage1.setOnClickListener(new View.OnClickListener() {
-           @Override
-           public void onClick(View v) {
-               goTakePhotoFragment("image1");
-           }
-       });
+        binding.ivImage1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goTakePhotoFragment("image1");
+            }
+        });
 
         binding.ivImage2.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -119,38 +122,13 @@ public class EditProfileFragment extends Fragment {
                 goTakePhotoFragment("image3");
             }
         });
-    }
 
-
-
-    private void populateImageViews() {
-        if (currentUser.getImage1() == null) {
-            binding.ivImage1.setImageResource(R.drawable.add_image);
-        }
-        else {
-            Glide.with(binding.ivImage1.getContext())
-                    .load(Uri.parse(currentUser.getImage1()))
-                    .placeholder(R.drawable.add_image)
-                    .into(binding.ivImage1);
-        }
-        if (currentUser.getImage2() == null) {
-            binding.ivImage2.setImageResource(R.drawable.add_image);
-        }
-        else {
-            Glide.with(binding.ivImage2.getContext())
-                    .load(Uri.parse(currentUser.getImage2()))
-                    .placeholder(R.drawable.add_image)
-                    .into(binding.ivImage2);
-        }
-        if (currentUser.getImage3() == null) {
-            binding.ivImage3.setImageResource(R.drawable.add_image);
-        }
-        else {
-            Glide.with(binding.ivImage3.getContext())
-                    .load(Uri.parse(currentUser.getImage3()))
-                    .placeholder(R.drawable.add_image)
-                    .into(binding.ivImage3);
-        }
+        binding.tvChngProfilePhoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goTakePhotoFragment("profilePhoto");
+            }
+        });
     }
 
 
@@ -162,7 +140,6 @@ public class EditProfileFragment extends Fragment {
         binding.etBio.setText(currentUser.getBio());
         binding.etAdventureLevel.setText(currentUser.getAdventureLevel());
     }
-
 
     private void updateImageViews() {
         ValueEventListener userListener = new ValueEventListener() {
@@ -181,6 +158,52 @@ public class EditProfileFragment extends Fragment {
         currentUserNodeReference.addValueEventListener(userListener);
     }
 
+    private void populateImageViews() {
+        // populate user photos
+        if (currentUser.getImage1() == null) {
+            binding.ivImage1.setImageResource(R.drawable.add_image);
+        }
+        else {
+            Glide.with(binding.ivImage1.getContext())
+                    .load(Uri.parse(currentUser.getImage1()))
+                    .placeholder(R.drawable.add_image)
+                    .into(binding.ivImage1);
+        }
+
+        if (currentUser.getImage2() == null) {
+            binding.ivImage2.setImageResource(R.drawable.add_image);
+        }
+        else {
+            Glide.with(binding.ivImage2.getContext())
+                    .load(Uri.parse(currentUser.getImage2()))
+                    .placeholder(R.drawable.add_image)
+                    .into(binding.ivImage2);
+        }
+        if (currentUser.getImage3() == null) {
+            binding.ivImage3.setImageResource(R.drawable.add_image);
+        }
+        else {
+            Glide.with(binding.ivImage3.getContext())
+                    .load(Uri.parse(currentUser.getImage3()))
+                    .placeholder(R.drawable.add_image)
+                    .into(binding.ivImage3);
+        }
+
+        // populate profile pic
+        if (currentUser.getProfilePhoto() == null){
+            Glide.with(binding.ivProfilePhoto.getContext())
+                    .load(R.drawable.no_profile_pic)
+                    .circleCrop()
+                    .into(binding.ivProfilePhoto);
+        }
+        else {
+            Glide.with(binding.ivProfilePhoto.getContext())
+                    .load(Uri.parse(currentUser.getProfilePhoto()))
+                    .circleCrop()
+                    .into(binding.ivProfilePhoto);
+        }
+    }
+
 
     private void updateDatabaseUserProfile() {
         if (TextUtils.isEmpty(binding.etAge.toString())){
@@ -196,7 +219,8 @@ public class EditProfileFragment extends Fragment {
         String image1 = currentUser.getImage1();
         String image2 = currentUser.getImage2();
         String image3 = currentUser.getImage3();
-        User user = new User(firebaseUser.getUid(), name , age, gender, from, bio, adventureLevel, image1, image2, image3);
+        String profilePhoto = currentUser.getProfilePhoto();
+        User user = new User(firebaseUser.getUid(), name , age, gender, from, bio, adventureLevel, image1, image2, image3, profilePhoto, currentUser.getVacation());
         mDatabase.child("users").child(firebaseUser.getUid()).setValue(user)
             .addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
