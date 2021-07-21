@@ -57,13 +57,16 @@ public class FeedFragment extends Fragment {
     private UserAdapter mAdapter;
     private List<User> users;
     private User currentUser;
+
     private int filterRadius;
+    private boolean filterFemale;
+    private boolean filterMale;
+    private boolean filterGenderOther;
 
 
     public FeedFragment() {
         // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -116,10 +119,14 @@ public class FeedFragment extends Fragment {
         });
     }
 
-
     private void goFilterActivity() {
         Intent intent = new Intent(getActivity(), FilterActivity.class);
         intent.putExtra("filter radius", filterRadius);
+        if (filterFemale || filterMale || filterGenderOther) {
+            intent.putExtra("filter female", filterFemale);
+            intent.putExtra("filter male", filterMale);
+            intent.putExtra("filter gender other", filterGenderOther);
+        }
         startActivityForResult(intent, FILTER_REQUEST_CODE);
     }
 
@@ -129,7 +136,9 @@ public class FeedFragment extends Fragment {
         if (requestCode == FILTER_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
                 filterRadius = data.getIntExtra("filter radius", 100);
-
+                filterFemale = data.getBooleanExtra("filter female", false);
+                filterMale = data.getBooleanExtra("filter male", false);
+                filterGenderOther = data.getBooleanExtra("filter gender other", false);
                 queryFilteredUsers(filterRadius);
             }
         }
@@ -145,8 +154,13 @@ public class FeedFragment extends Fragment {
                 binding.tvNumResults.setText(users.size() + " RESULTS");
                 for (DataSnapshot userSnapshot: snapshot.getChildren()) {
                     User user = userSnapshot.getValue(User.class);
+                    // check if queried user is current user
                     if (!user.getUserId().equals(currentUserId)) {
-                        getFilteredVacation(user, radius);
+                        // check gender filter
+                        boolean filteredGender = checkGender(user);
+                        if (filteredGender) {
+                            getFilteredVacation(user, radius);
+                        }
                     }
                 }
             }
@@ -155,6 +169,22 @@ public class FeedFragment extends Fragment {
                 Log.w(TAG, "loadChats:onCancelled", error.toException());
             }
         });
+    }
+
+    private boolean checkGender(User user) {
+        if ((filterFemale && filterMale && filterGenderOther) || (!filterFemale && !filterMale && !filterGenderOther)) {
+            return true;
+        }
+        else if (filterFemale && user.getGender().equals("female")) {
+            return true;
+        }
+        else if (filterMale && user.getGender().equals("male")) {
+            return true;
+        }
+        else if (filterGenderOther && user.getGender().equals("other")) {
+            return true;
+        }
+        else return false;
     }
 
     private void getFilteredVacation(User user, int radius) {
