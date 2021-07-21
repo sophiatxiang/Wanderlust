@@ -5,17 +5,21 @@ import java.util.Date;
 
 public class Vacation implements Serializable {
     String userId;
+    String destination;
     String startDate;
     String endDate;
-    String destination;
     String notes;
+    Double latitude;
+    Double longitude;
 
-    public Vacation(String userId, String destination, String startDate, String endDate, String notes) {
+    public Vacation(String userId, String destination, String startDate, String endDate, String notes, Double latitude, Double longitude) {
         this.userId = userId;
+        this.destination = destination;
         this.startDate = startDate;
         this.endDate = endDate;
-        this.destination = destination;
         this.notes = notes;
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 
     public Vacation(String userId) {
@@ -24,6 +28,8 @@ public class Vacation implements Serializable {
         this.endDate = "";
         this.destination = "";
         this.notes = "";
+        this.latitude = 0.0;
+        this.longitude = 0.0;
     }
 
     public Vacation() {
@@ -76,5 +82,21 @@ public class Vacation implements Serializable {
 
     public void setNotes(String notes) {
         this.notes = notes;
+    }
+
+    public Double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
+    }
+
+    public Double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
     }
 }

@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.AutocompleteSessionToken;
 import com.google.android.libraries.places.api.model.Place;
@@ -51,6 +52,7 @@ public class MyVacationFragment extends Fragment {
     private Vacation vacation;
     private PlacesClient placesClient;
     private static int AUTOCOMPLETE_REQUEST_CODE = 1;
+    private LatLng latLng;
 
 
     public MyVacationFragment() {
@@ -96,7 +98,7 @@ public class MyVacationFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 AutocompleteSessionToken.newInstance();
-                List<Place.Field> fields = Arrays.asList(Place.Field.NAME, Place.Field.ADDRESS);
+                List<Place.Field> fields = Arrays.asList(Place.Field.NAME, Place.Field.ADDRESS, Place.Field.LAT_LNG);
 
                 // Start the autocomplete intent.
                 Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, fields)
@@ -150,14 +152,19 @@ public class MyVacationFragment extends Fragment {
     }
 
     private void updateDatabaseVacation() {
+        if (binding.tvDestination.getText().toString().equals("")) {
+            Toast.makeText(getContext(), "Please enter a destination!", Toast.LENGTH_SHORT).show();
+            return;
+        }
         String destination = binding.tvDestination.getText().toString();
         String startDate = binding.tvStartDate.getText().toString();
         String endDate = binding.tvEndDate.getText().toString();
         String notes = binding.etNotes.getText().toString();
-        Vacation vacation = new Vacation(firebaseUser.getUid(), destination, startDate, endDate, notes);
+        Vacation vacation = new Vacation(firebaseUser.getUid(), destination, startDate, endDate, notes, latLng.latitude, latLng.longitude);
         mDatabase.child("users").child(firebaseUser.getUid()).child("vacation").setValue(vacation);
         Toast.makeText(getContext(), "Vacation details saved!", Toast.LENGTH_SHORT).show();
     }
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -166,6 +173,7 @@ public class MyVacationFragment extends Fragment {
                 Place place = Autocomplete.getPlaceFromIntent(data);
                 Log.i(TAG, "Place: " + place.getName());
                 binding.tvDestination.setText(place.getAddress());
+                latLng = place.getLatLng();
             } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
                 // TODO: Handle the error.
                 Status status = Autocomplete.getStatusFromIntent(data);
@@ -177,5 +185,4 @@ public class MyVacationFragment extends Fragment {
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
-
 }
