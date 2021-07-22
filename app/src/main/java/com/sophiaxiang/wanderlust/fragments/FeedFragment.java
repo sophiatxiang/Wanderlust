@@ -79,7 +79,6 @@ public class FeedFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_feed, container, false);
         return binding.getRoot();
     }
@@ -161,7 +160,8 @@ public class FeedFragment extends Fragment {
     }
 
     private void queryFilteredUsers(int radius) {
-        Query usersQuery = mDatabase.child("users").limitToFirst(40);
+        // age filter is built into the database query
+        Query usersQuery = mDatabase.child("users").limitToFirst(40).orderByChild("age").startAt(filterAgeMin).endAt(filterAgeMax);
         usersQuery.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -172,7 +172,7 @@ public class FeedFragment extends Fragment {
                     User user = userSnapshot.getValue(User.class);
                     // check if queried user is current user
                     if (!user.getUserId().equals(currentUserId)) {
-                        if (withinAgeGenderFilters(user))
+                        if (withinGenderFilter(user))
                             getFilteredVacation(user, radius);
                     }
                 }
@@ -184,33 +184,13 @@ public class FeedFragment extends Fragment {
         });
     }
 
-    private boolean withinAgeGenderFilters(User user) {
-        if (!checkGender(user)) return false;
-        if (!checkAge(user)) return false;
-        return true;
-    }
-
-    private boolean checkGender(User user) {
+    private boolean withinGenderFilter(User user) {
         if ((filterFemale && filterMale && filterGenderOther) || (!filterFemale && !filterMale && !filterGenderOther)) {
             return true;
         }
-        else if (filterFemale && user.getGender().equals("female")) {
-            return true;
-        }
-        else if (filterMale && user.getGender().equals("male")) {
-            return true;
-        }
-        else if (filterGenderOther && user.getGender().equals("other")) {
-            return true;
-        }
-        else return false;
-    }
-
-    private boolean checkAge(User user) {
-        if ((user.getAge() >= filterAgeMin) && (user.getAge() <= filterAgeMax))
-            return true;
-        else
-            return false;
+        return (filterFemale && user.getGender().equals("female")) ||
+                (filterMale && user.getGender().equals("male")) ||
+                (filterGenderOther && user.getGender().equals("other"));
     }
 
     private void getFilteredVacation(User user, int radius) {
@@ -219,15 +199,11 @@ public class FeedFragment extends Fragment {
             public void onComplete(@NonNull Task<DataSnapshot> task) {
                 if (task.isSuccessful()) {
                     Vacation vacation = task.getResult().getValue(Vacation.class);
-                    try {
-                        if (withinVacationFilter(vacation, radius)) {
-                            user.setVacation(vacation);
-                            users.add(0, user);
-                            mAdapter.notifyItemInserted(0);
-                            binding.tvNumResults.setText(users.size() + " RESULTS");
-                        }
-                    } catch (ParseException e) {
-                        e.printStackTrace();
+                    if (withinVacationFilters(vacation, radius)) {
+                        user.setVacation(vacation);
+                        users.add(0, user);
+                        mAdapter.notifyItemInserted(0);
+                        binding.tvNumResults.setText(users.size() + " RESULTS");
                     }
                 }
                 else {
@@ -237,9 +213,13 @@ public class FeedFragment extends Fragment {
         });
     }
 
-    private boolean withinVacationFilter(Vacation vacation, int radius) throws ParseException {
+    private boolean withinVacationFilters(Vacation vacation, int radius){
         if (!checkDestinationRadius(vacation, radius)) return false;
-        if (!checkVacationOverlap(vacation)) return false;
+        try {
+            if (!checkVacationOverlap(vacation)) return false;
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         return true;
     }
 
@@ -260,18 +240,18 @@ public class FeedFragment extends Fragment {
             Toast.makeText(getContext(), "You have not entered your own vacation dates!", Toast.LENGTH_SHORT).show();
             return false;
         }
-        if (vacation.getStartDate().equals(""))
-            return false;
+        if (vacation.getStartDate().equals("")) return false;
         LocalDate myStartDate = LocalDate.parse(currentUser.getVacation().getStartDate(), format);
         LocalDate myEndDate = LocalDate.parse(currentUser.getVacation().getEndDate(), format);
         LocalDate otherStartDate = LocalDate.parse(vacation.getStartDate(), format);
         LocalDate otherEndDate = LocalDate.parse(vacation.getEndDate(), format);
-        if (DAYS.between(otherStartDate, otherEndDate) + 1 < filterVacationOverlap)
-            return false;
-        if (otherStartDate.compareTo(myStartDate) <= 0 && otherEndDate.compareTo(myStartDate.plusDays(filterVacationOverlap - 1)) >= 0)
+        if (DAYS.between(otherStartDate, otherEndDate) + 1 < filterVacationOverlap) return false;
+        if ((otherStartDate.compareTo(myStartDate) <= 0) && (otherEndDate.compareTo(myStartDate.plusDays(filterVacationOverlap - 1)) >= 0)) {
             return true;
-        if (otherStartDate.compareTo(myStartDate) > 0 && otherStartDate.compareTo(myEndDate.minusDays(filterVacationOverlap - 1)) <= 0)
+        }
+        if (otherStartDate.compareTo(myStartDate) > 0 && otherStartDate.compareTo(myEndDate.minusDays(filterVacationOverlap - 1)) <= 0) {
             return true;
+        }
         return false;
     }
 }

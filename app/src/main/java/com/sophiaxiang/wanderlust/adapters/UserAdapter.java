@@ -26,30 +26,30 @@ import com.sophiaxiang.wanderlust.models.User;
 import java.util.List;
 
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder> {
-    List<User> users;
-    Context context;
+    List<User> mUsers;
+    Context mContext;
 
     public UserAdapter(Context context, List<User> users) {
-        this.context = context;
-        this.users = users;
+        this.mContext = context;
+        this.mUsers = users;
     }
 
     @NonNull
     @Override
     public UserViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.item_user, parent, false);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.item_user, parent, false);
         return new UserViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull UserAdapter.UserViewHolder holder, int position) {
-        User user = users.get(position);
+        User user = mUsers.get(position);
         holder.bind(user);
     }
 
     @Override
     public int getItemCount() {
-        return users.size();
+        return mUsers.size();
     }
 
     public class UserViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -68,7 +68,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         }
 
         public void bind(User user) {
-            Glide.with(context).load(Uri.parse(user.getImage1())).into(ivUserPhoto);
+            Glide.with(mContext).load(Uri.parse(user.getImage1())).into(ivUserPhoto);
             tvUserNameAge.setText(user.getName() + ", " + user.getAge());
             tvUserDestination.setText(user.getVacation().getDestination());
             tvUserVacationDate.setText(user.getVacation().getStartDate() + " - " + user.getVacation().getEndDate());
@@ -78,10 +78,10 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         public void onClick(View v) {
             int position = getAdapterPosition();
             if (position != RecyclerView.NO_POSITION) {
-                AppCompatActivity activity = (AppCompatActivity) context;
+                AppCompatActivity activity = (AppCompatActivity) mContext;
                 Fragment fragment = new UserDetailsFragment();
                 Bundle bundle = new Bundle();
-                bundle.putSerializable("user", users.get(position));
+                bundle.putSerializable("user", mUsers.get(position));
                 fragment.setArguments(bundle);
                 activity.getSupportFragmentManager().beginTransaction()
                         .replace(R.id.flContainer, fragment)

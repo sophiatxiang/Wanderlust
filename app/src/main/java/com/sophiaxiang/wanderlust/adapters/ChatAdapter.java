@@ -29,31 +29,31 @@ import java.util.List;
 
 public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder> {
     public static final String TAG = "ChatAdapter";
-    private List<Chat> chats;
-    private Context context;
+    private List<Chat> mChats;
+    private Context mContext;
     private DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
 
     public ChatAdapter(Context context, List<Chat> chats) {
-        this.context = context;
-        this.chats = chats;
+        this.mContext = context;
+        this.mChats = chats;
     }
 
     @NonNull
     @Override
     public ChatViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.item_chat, parent, false);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.item_chat, parent, false);
         return new ChatViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ChatAdapter.ChatViewHolder holder, int position) {
-        Chat chat = chats.get(position);
+        Chat chat = mChats.get(position);
         holder.bind(chat);
     }
 
     @Override
     public int getItemCount() {
-        return chats.size();
+        return mChats.size();
     }
 
     public class ChatViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -76,12 +76,12 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     String uri = dataSnapshot.getValue(String.class);
                     if (uri != null) {
-                        Glide.with(context)
+                        Glide.with(mContext)
                                 .load(Uri.parse(uri))
                                 .circleCrop()
                                 .into(ivChatImage);
                     }
-                    else Glide.with(context).load(R.drawable.no_profile_pic).circleCrop().into(ivChatImage);
+                    else Glide.with(mContext).load(R.drawable.no_profile_pic).circleCrop().into(ivChatImage);
                 }
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
@@ -99,10 +99,10 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder
         public void onClick(View v) {
             int position = getAdapterPosition();
             if (position != RecyclerView.NO_POSITION) {
-                Intent intent = new Intent(context, ChatDetailsActivity.class);
-                intent.putExtra("current user id", chats.get(position).getCurrentUserId());
-                intent.putExtra("other user id", chats.get(position).getOtherUserId());
-                context.startActivity(intent);
+                Intent intent = new Intent(mContext, ChatDetailsActivity.class);
+                intent.putExtra("current user id", mChats.get(position).getCurrentUserId());
+                intent.putExtra("other user id", mChats.get(position).getOtherUserId());
+                mContext.startActivity(intent);
             }
         }
     }
