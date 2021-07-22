@@ -52,7 +52,8 @@ public class MyVacationFragment extends Fragment {
     private Vacation vacation;
     private PlacesClient placesClient;
     private static int AUTOCOMPLETE_REQUEST_CODE = 1;
-    private LatLng latLng;
+    private Double latitude;
+    private Double longitude;
 
 
     public MyVacationFragment() {
@@ -78,6 +79,8 @@ public class MyVacationFragment extends Fragment {
 
         Bundle bundle = getArguments();
         vacation = (Vacation) bundle.getSerializable("vacation");
+        latitude = vacation.getLatitude();
+        longitude = vacation.getLongitude();
 
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         mDatabase = FirebaseDatabase.getInstance().getReference();
@@ -106,6 +109,28 @@ public class MyVacationFragment extends Fragment {
                 startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE);
             }
         });
+    }
+
+    // result from Google Places autocomplete destination selection
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                Place place = Autocomplete.getPlaceFromIntent(data);
+                Log.i(TAG, "Place: " + place.getName());
+                binding.tvDestination.setText(place.getAddress());
+                latitude = place.getLatLng().latitude;
+                longitude = place.getLatLng().longitude;
+            } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
+                // TODO: Handle the error.
+                Status status = Autocomplete.getStatusFromIntent(data);
+                Log.i(TAG, status.getStatusMessage());
+            } else if (resultCode == RESULT_CANCELED) {
+                // The user canceled the operation.
+            }
+            return;
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     private void setUpDatePicker() {
@@ -160,29 +185,8 @@ public class MyVacationFragment extends Fragment {
         String startDate = binding.tvStartDate.getText().toString();
         String endDate = binding.tvEndDate.getText().toString();
         String notes = binding.etNotes.getText().toString();
-        Vacation vacation = new Vacation(firebaseUser.getUid(), destination, startDate, endDate, notes, latLng.latitude, latLng.longitude);
+        Vacation vacation = new Vacation(firebaseUser.getUid(), destination, startDate, endDate, notes, latitude, longitude);
         mDatabase.child("users").child(firebaseUser.getUid()).child("vacation").setValue(vacation);
         Toast.makeText(getContext(), "Vacation details saved!", Toast.LENGTH_SHORT).show();
-    }
-
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
-            if (resultCode == RESULT_OK) {
-                Place place = Autocomplete.getPlaceFromIntent(data);
-                Log.i(TAG, "Place: " + place.getName());
-                binding.tvDestination.setText(place.getAddress());
-                latLng = place.getLatLng();
-            } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
-                // TODO: Handle the error.
-                Status status = Autocomplete.getStatusFromIntent(data);
-                Log.i(TAG, status.getStatusMessage());
-            } else if (resultCode == RESULT_CANCELED) {
-                // The user canceled the operation.
-            }
-            return;
-        }
-        super.onActivityResult(requestCode, resultCode, data);
     }
 }

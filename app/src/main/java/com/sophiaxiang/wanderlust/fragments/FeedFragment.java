@@ -41,11 +41,16 @@ import com.sophiaxiang.wanderlust.models.Chat;
 import com.sophiaxiang.wanderlust.models.User;
 import com.sophiaxiang.wanderlust.models.Vacation;
 
+import java.text.ParseException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
 import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
+import static java.time.temporal.ChronoUnit.DAYS;
 
 public class FeedFragment extends Fragment {
 
@@ -64,6 +69,7 @@ public class FeedFragment extends Fragment {
     private boolean filterGenderOther;
     private int filterAgeMin;
     private int filterAgeMax;
+    private int filterVacationOverlap;
 
 
     public FeedFragment() {
@@ -88,6 +94,7 @@ public class FeedFragment extends Fragment {
         filterRadius = 100;
         filterAgeMin = 18;
         filterAgeMax = 120;
+        filterVacationOverlap = 1;
 
         users = new ArrayList<>();
         mAdapter = new UserAdapter(getContext(), users);
@@ -97,7 +104,6 @@ public class FeedFragment extends Fragment {
         binding.rvUsers.setLayoutManager(linearLayoutManager);
 
         getCurrentUser();
-        //queryUsers();
 
         binding.tvFilter.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -133,6 +139,7 @@ public class FeedFragment extends Fragment {
         }
         intent.putExtra("filter age min", filterAgeMin);
         intent.putExtra("filter age max", filterAgeMax);
+        intent.putExtra("filter vacation overlap", filterVacationOverlap);
         startActivityForResult(intent, FILTER_REQUEST_CODE);
     }
 
@@ -147,6 +154,7 @@ public class FeedFragment extends Fragment {
                 filterGenderOther = data.getBooleanExtra("filter gender other", false);
                 filterAgeMin = data.getIntExtra("filter age min", 18);
                 filterAgeMax = data.getIntExtra("filter age max", 120);
+                filterVacationOverlap = data.getIntExtra("filter vacation overlap", 1);
                 queryFilteredUsers(filterRadius);
             }
         }
@@ -164,11 +172,8 @@ public class FeedFragment extends Fragment {
                     User user = userSnapshot.getValue(User.class);
                     // check if queried user is current user
                     if (!user.getUserId().equals(currentUserId)) {
-                        boolean filteredGender = checkGender(user);
-                        boolean filteredAge = checkAge(user);
-                        if (filteredGender && filteredAge) {
+                        if (withinAgeGenderFilters(user))
                             getFilteredVacation(user, radius);
-                        }
                     }
                 }
             }
@@ -177,6 +182,12 @@ public class FeedFragment extends Fragment {
                 Log.w(TAG, "loadChats:onCancelled", error.toException());
             }
         });
+    }
+
+    private boolean withinAgeGenderFilters(User user) {
+        if (!checkGender(user)) return false;
+        if (!checkAge(user)) return false;
+        return true;
     }
 
     private boolean checkGender(User user) {
@@ -208,13 +219,15 @@ public class FeedFragment extends Fragment {
             public void onComplete(@NonNull Task<DataSnapshot> task) {
                 if (task.isSuccessful()) {
                     Vacation vacation = task.getResult().getValue(Vacation.class);
-
-                    boolean withinRadius = checkDistance(vacation, radius);
-                    if (withinRadius) {
-                        user.setVacation(vacation);
-                        users.add(0, user);
-                        mAdapter.notifyItemInserted(0);
-                        binding.tvNumResults.setText(users.size() + " RESULTS");
+                    try {
+                        if (withinVacationFilter(vacation, radius)) {
+                            user.setVacation(vacation);
+                            users.add(0, user);
+                            mAdapter.notifyItemInserted(0);
+                            binding.tvNumResults.setText(users.size() + " RESULTS");
+                        }
+                    } catch (ParseException e) {
+                        e.printStackTrace();
                     }
                 }
                 else {
@@ -224,12 +237,41 @@ public class FeedFragment extends Fragment {
         });
     }
 
-    private boolean checkDistance(Vacation vacation, int radius) {
+    private boolean withinVacationFilter(Vacation vacation, int radius) throws ParseException {
+        if (!checkDestinationRadius(vacation, radius)) return false;
+        if (!checkVacationOverlap(vacation)) return false;
+        return true;
+    }
+
+
+    private boolean checkDestinationRadius(Vacation vacation, int radius) {
         LatLng latLng1 = new LatLng(vacation.getLatitude(), vacation.getLongitude());
         LatLng latLng2 = new LatLng(currentUser.getVacation().getLatitude(), currentUser.getVacation().getLongitude());
         double distanceMiles = SphericalUtil.computeDistanceBetween(latLng1, latLng2) * 0.000621371192;
         if ((int) distanceMiles <= radius)
             return true;
         else return false;
+    }
+
+
+    private boolean checkVacationOverlap(Vacation vacation) throws ParseException {
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+        if (currentUser.getVacation().getStartDate().equals("")) {
+            Toast.makeText(getContext(), "You have not entered your own vacation dates!", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (vacation.getStartDate().equals(""))
+            return false;
+        LocalDate myStartDate = LocalDate.parse(currentUser.getVacation().getStartDate(), format);
+        LocalDate myEndDate = LocalDate.parse(currentUser.getVacation().getEndDate(), format);
+        LocalDate otherStartDate = LocalDate.parse(vacation.getStartDate(), format);
+        LocalDate otherEndDate = LocalDate.parse(vacation.getEndDate(), format);
+        if (DAYS.between(otherStartDate, otherEndDate) + 1 < filterVacationOverlap)
+            return false;
+        if (otherStartDate.compareTo(myStartDate) <= 0 && otherEndDate.compareTo(myStartDate.plusDays(filterVacationOverlap - 1)) >= 0)
+            return true;
+        if (otherStartDate.compareTo(myStartDate) > 0 && otherStartDate.compareTo(myEndDate.minusDays(filterVacationOverlap - 1)) <= 0)
+            return true;
+        return false;
     }
 }

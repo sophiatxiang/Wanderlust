@@ -12,6 +12,7 @@ import android.widget.CheckBox;
 import android.widget.SeekBar;
 
 import com.google.android.material.slider.RangeSlider;
+import com.google.android.material.slider.Slider;
 import com.sophiaxiang.wanderlust.databinding.ActivityFilterBinding;
 
 public class FilterActivity extends AppCompatActivity {
@@ -22,6 +23,7 @@ public class FilterActivity extends AppCompatActivity {
     private boolean filterGenderOther;
     private int filterAgeMin;
     private int filterAgeMax;
+    private int filterVacationOverlap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,36 +31,44 @@ public class FilterActivity extends AppCompatActivity {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_filter);
 
         filterRadius = getIntent().getIntExtra("filter radius", 100);
-        filterRadius = getIntent().getIntExtra("filter radius", 100);
         filterFemale = getIntent().getBooleanExtra("filter female", false);
         filterMale = getIntent().getBooleanExtra("filter male", false);
         filterGenderOther = getIntent().getBooleanExtra("filter gender other", false);
         filterAgeMin = getIntent().getIntExtra("filter age min", 18);
         filterAgeMax = getIntent().getIntExtra("filter age max", 120);
+        filterVacationOverlap = getIntent().getIntExtra("filter vacation overlap", 1);
 
-        setUpRadiusSeekBar();
+        setUpRadiusSlider();
+        setUpOverlapSlider();
         setUpAgeRangeSlider();
         setUpGenderCheckBoxes();
         setUpButtons();
     }
 
-    private void setUpRadiusSeekBar() {
+    private void setUpRadiusSlider() {
         binding.tvDestinationDistance.setText(filterRadius + " mi");
-        binding.seekBarRadius.setProgress(filterRadius / 5);
-        binding.seekBarRadius.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        binding.sliderRadius.setValue(filterRadius);
+        binding.sliderRadius.addOnChangeListener(new Slider.OnChangeListener() {
             @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                filterRadius = progress * 5;
+            public void onValueChange(@NonNull Slider slider, float value, boolean fromUser) {
+                filterRadius = (int) value;
                 binding.tvDestinationDistance.setText(filterRadius + " mi");
-            }
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-            }
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
             }
         });
     }
+
+    private void setUpOverlapSlider() {
+        binding.tvVacationOverlap.setText(filterVacationOverlap + " days");
+        binding.sliderOverlap.setValue(filterVacationOverlap);
+        binding.sliderOverlap.addOnChangeListener(new Slider.OnChangeListener() {
+            @Override
+            public void onValueChange(@NonNull Slider slider, float value, boolean fromUser) {
+                filterVacationOverlap = (int) value;
+                binding.tvVacationOverlap.setText(filterVacationOverlap + " days");
+            }
+        });
+    }
+
 
     private void setUpAgeRangeSlider() {
         binding.tvAgeRange.setText(filterAgeMin + " - " + filterAgeMax);
@@ -69,15 +79,6 @@ public class FilterActivity extends AppCompatActivity {
                 filterAgeMin = slider.getValues().get(0).intValue();
                 filterAgeMax = slider.getValues().get(1).intValue();
                 binding.tvAgeRange.setText(filterAgeMin + " - " + filterAgeMax);
-            }
-        });
-        binding.rangeSliderAge.addOnSliderTouchListener(new RangeSlider.OnSliderTouchListener() {
-            @Override
-            public void onStartTrackingTouch(@NonNull RangeSlider slider) {
-            }
-
-            @Override
-            public void onStopTrackingTouch(@NonNull RangeSlider slider) {
             }
         });
     }
@@ -108,7 +109,7 @@ public class FilterActivity extends AppCompatActivity {
                 }
                 output.putExtra("filter age min", filterAgeMin);
                 output.putExtra("filter age max", filterAgeMax);
-
+                output.putExtra("filter vacation overlap", filterVacationOverlap);
                 setResult(RESULT_OK, output);
                 finish();
             }
