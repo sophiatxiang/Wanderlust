@@ -62,6 +62,8 @@ public class FeedFragment extends Fragment {
     private boolean filterFemale;
     private boolean filterMale;
     private boolean filterGenderOther;
+    private int filterAgeMin;
+    private int filterAgeMax;
 
 
     public FeedFragment() {
@@ -84,6 +86,8 @@ public class FeedFragment extends Fragment {
         Bundle bundle = getArguments();
         currentUserId = (String) bundle.getSerializable("current user id");
         filterRadius = 100;
+        filterAgeMin = 18;
+        filterAgeMax = 120;
 
         users = new ArrayList<>();
         mAdapter = new UserAdapter(getContext(), users);
@@ -127,6 +131,8 @@ public class FeedFragment extends Fragment {
             intent.putExtra("filter male", filterMale);
             intent.putExtra("filter gender other", filterGenderOther);
         }
+        intent.putExtra("filter age min", filterAgeMin);
+        intent.putExtra("filter age max", filterAgeMax);
         startActivityForResult(intent, FILTER_REQUEST_CODE);
     }
 
@@ -139,6 +145,8 @@ public class FeedFragment extends Fragment {
                 filterFemale = data.getBooleanExtra("filter female", false);
                 filterMale = data.getBooleanExtra("filter male", false);
                 filterGenderOther = data.getBooleanExtra("filter gender other", false);
+                filterAgeMin = data.getIntExtra("filter age min", 18);
+                filterAgeMax = data.getIntExtra("filter age max", 120);
                 queryFilteredUsers(filterRadius);
             }
         }
@@ -156,9 +164,9 @@ public class FeedFragment extends Fragment {
                     User user = userSnapshot.getValue(User.class);
                     // check if queried user is current user
                     if (!user.getUserId().equals(currentUserId)) {
-                        // check gender filter
                         boolean filteredGender = checkGender(user);
-                        if (filteredGender) {
+                        boolean filteredAge = checkAge(user);
+                        if (filteredGender && filteredAge) {
                             getFilteredVacation(user, radius);
                         }
                     }
@@ -185,6 +193,13 @@ public class FeedFragment extends Fragment {
             return true;
         }
         else return false;
+    }
+
+    private boolean checkAge(User user) {
+        if ((user.getAge() >= filterAgeMin) && (user.getAge() <= filterAgeMax))
+            return true;
+        else
+            return false;
     }
 
     private void getFilteredVacation(User user, int radius) {
