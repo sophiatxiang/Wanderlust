@@ -27,6 +27,7 @@ import com.sophiaxiang.wanderlust.databinding.ActivityMainBinding;
 import com.sophiaxiang.wanderlust.fragments.ChatFragment;
 import com.sophiaxiang.wanderlust.fragments.EditProfileFragment;
 import com.sophiaxiang.wanderlust.fragments.FeedFragment;
+import com.sophiaxiang.wanderlust.fragments.LikesFragment;
 import com.sophiaxiang.wanderlust.fragments.MyVacationFragment;
 import com.sophiaxiang.wanderlust.fragments.ProfileFragment;
 import com.sophiaxiang.wanderlust.models.User;
@@ -50,11 +51,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
 
-
         currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         mDatabase = FirebaseDatabase.getInstance().getReference();
         mStorage = FirebaseStorage.getInstance().getReference();
-
 
         getCurrentUser();
         getCurrentUserVacation();
@@ -69,6 +68,13 @@ public class MainActivity extends AppCompatActivity {
                         Bundle feedBundle = new Bundle();
                         feedBundle.putSerializable("current user id", currentUserId);
                         fragment.setArguments(feedBundle);
+                        fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).addToBackStack(null).commit();
+                        break;
+                    case R.id.action_likes:
+                        fragment = new LikesFragment();
+                        Bundle likesBundle = new Bundle();
+                        likesBundle.putSerializable("current user id", currentUserId);
+                        fragment.setArguments(likesBundle);
                         fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).addToBackStack(null).commit();
                         break;
                     case R.id.action_chat:

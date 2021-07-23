@@ -11,4 +11,5 @@
     <color name="dark_periwinkle">#7070FF</color>
     <color name="light_grey">#d3d3d3</color>
     <color name="grey">#6A6C6E</color>
+    <color name="dark_grey">#303030</color>
 </resources>

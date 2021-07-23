@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
@@ -38,7 +39,7 @@
                 <Button
                     android:id="@+id/btnNext"
                     android:layout_width="170dp"
-                    android:layout_height="400dp"
+                    android:layout_height="370dp"
                     android:layout_alignParentTop="true"
                     android:layout_alignParentEnd="true"
                     android:background="@android:color/transparent" />
@@ -49,8 +50,28 @@
                     android:layout_width="match_parent"
                     android:layout_height="400dp"
                     android:layout_alignParentTop="true"
-                    tools:srcCompat="@tools:sample/avatars" >
+                    tools:srcCompat="@tools:sample/avatars"
+                    android:scaleType="centerCrop">
                 </ImageView>
+
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_below="@+id/ivPhoto"
+                    android:layout_marginTop="-50dp">
+
+                    <com.google.android.material.floatingactionbutton.FloatingActionButton
+                        android:id="@+id/fab"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="20dp"
+                        android:backgroundTint="@color/white"
+                        android:src="@drawable/like_icon_selector"
+                        app:borderWidth="0dp"
+                        app:fabSize="auto" />
+                </FrameLayout>
+
 
                 <TextView
                     android:id="@+id/tvNameAge"

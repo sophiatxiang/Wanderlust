@@ -3,6 +3,7 @@ package com.sophiaxiang.wanderlust.adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,10 +12,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -23,7 +28,9 @@ import com.google.firebase.database.ValueEventListener;
 import com.sophiaxiang.wanderlust.ChatDetailsActivity;
 import com.sophiaxiang.wanderlust.R;
 import com.sophiaxiang.wanderlust.databinding.FragmentChatBinding;
+import com.sophiaxiang.wanderlust.fragments.UserDetailsFragment;
 import com.sophiaxiang.wanderlust.models.Chat;
+import com.sophiaxiang.wanderlust.models.User;
 
 import java.util.List;
 
@@ -66,7 +73,35 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder
             ivChatImage = itemView.findViewById(R.id.ivChatImage);
             tvChatName = itemView.findViewById(R.id.tvChatName);
             tvLastMessage = itemView.findViewById(R.id.tvLastMessage);
+
             itemView.setOnClickListener(this);
+            ivChatImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    goUserDetailsFrag();
+                }
+            });
+        }
+
+        private void goUserDetailsFrag() {
+            int position = getAdapterPosition();
+            if (position != RecyclerView.NO_POSITION) {
+                mDatabase.child("users").child(mChats.get(position).getOtherUserId()).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DataSnapshot> task) {
+                        User user = task.getResult().getValue(User.class);
+                        AppCompatActivity activity = (AppCompatActivity) mContext;
+                        Fragment fragment = new UserDetailsFragment();
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable("user", user);
+                        fragment.setArguments(bundle);
+                        activity.getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.flContainer, fragment)
+                                .addToBackStack(null)
+                                .commit();
+                    }
+                });
+            }
         }
 
         public void bind(Chat chat) {

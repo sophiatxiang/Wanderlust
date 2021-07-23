@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -26,6 +27,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.sophiaxiang.wanderlust.ChatDetailsActivity;
 import com.sophiaxiang.wanderlust.R;
@@ -82,6 +84,7 @@ public class UserDetailsFragment extends Fragment {
         populateImageList();
 
         getCurrentUserName();
+        checkIfUserLiked();
         setUpButtons();
         populateProfileViews();
         populateVacationViews();
@@ -102,6 +105,27 @@ public class UserDetailsFragment extends Fragment {
             }
         });
     }
+
+
+    private void checkIfUserLiked() {
+       mDatabase.child("users").child(currentUserId).child("likedUsers").child(user.getUserId()).addValueEventListener(new ValueEventListener() {
+           @Override
+           public void onDataChange(@NonNull DataSnapshot snapshot) {
+               if (snapshot.exists()) {
+                   binding.fab.setSelected(true);
+               } else {
+                   binding.fab.setSelected(false);
+               }
+           }
+
+           @Override
+           public void onCancelled(@NonNull DatabaseError error) {
+
+           }
+       });
+
+    }
+
 
     private void setUpButtons() {
         binding.btnChat.setOnClickListener(new View.OnClickListener() {
@@ -133,8 +157,22 @@ public class UserDetailsFragment extends Fragment {
                         .into(binding.ivPhoto);
             }
         });
-    }
 
+        binding.fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!binding.fab.isSelected()) {
+                    mDatabase.child("users").child(currentUserId).child("likedUsers").child(user.getUserId()).setValue(user.getUserId());
+                    mDatabase.child("users").child(currentUserId).child("likedUsers").child(user.getUserId()).child("likedAt").setValue(System.currentTimeMillis());
+                    binding.fab.setSelected(true);
+                }
+                else {
+                    mDatabase.child("users").child(currentUserId).child("likedUsers").child(user.getUserId()).removeValue();
+                    binding.fab.setSelected(false);
+                }
+            }
+        });
+    }
 
     private void setVacationInfoListener() {
         ValueEventListener vacationListener = new ValueEventListener() {

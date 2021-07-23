@@ -13,6 +13,12 @@
         android:title="Chat"
         app:showAsAction="always" />
     <item
+        android:id="@+id/action_likes"
+        android:icon="@drawable/like_icon"
+        android:iconTint="@color/grey"
+        android:title="Likes"
+        app:showAsAction="always" />
+    <item
         android:id="@+id/action_profile"
         android:icon="@drawable/profile_icon"
         android:title="Profile"

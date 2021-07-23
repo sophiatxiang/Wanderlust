@@ -108,7 +108,6 @@ public class FeedFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 goFilterActivity();
-                //TODO: add animation slide up from bottom
             }
         });
     }
@@ -118,12 +117,7 @@ public class FeedFragment extends Fragment {
             @Override
             public void onSuccess(DataSnapshot dataSnapshot) {
                 currentUser = dataSnapshot.getValue(User.class);
-                if (currentUser.getVacation().getDestination().equals("")) {
-                    queryFilteredUsers(Integer.MAX_VALUE);
-                }
-                else {
-                    queryFilteredUsers(filterRadius);
-                }
+                queryFilteredUsers(filterRadius);
             }
         });
     }
@@ -140,6 +134,8 @@ public class FeedFragment extends Fragment {
         intent.putExtra("filter age max", filterAgeMax);
         intent.putExtra("filter vacation overlap", filterVacationOverlap);
         startActivityForResult(intent, FILTER_REQUEST_CODE);
+        // TODO: ADD ANIMATION
+//        getActivity().overridePendingTransition(R.anim.slide_up, 0);
     }
 
     @Override
@@ -160,6 +156,10 @@ public class FeedFragment extends Fragment {
     }
 
     private void queryFilteredUsers(int radius) {
+        if (currentUser.getVacation().getDestination().equals("") || currentUser.getVacation().getStartDate().equals("")) {
+            binding.tvNoVacationDetails.setVisibility(View.VISIBLE);
+            return;
+        }
         // age filter is built into the database query
         Query usersQuery = mDatabase.child("users").limitToFirst(40).orderByChild("age").startAt(filterAgeMin).endAt(filterAgeMax);
         usersQuery.addValueEventListener(new ValueEventListener() {
@@ -223,23 +223,17 @@ public class FeedFragment extends Fragment {
         return true;
     }
 
-
     private boolean checkDestinationRadius(Vacation vacation, int radius) {
+        if (vacation.getDestination().equals("")) return false;
         LatLng latLng1 = new LatLng(vacation.getLatitude(), vacation.getLongitude());
         LatLng latLng2 = new LatLng(currentUser.getVacation().getLatitude(), currentUser.getVacation().getLongitude());
         double distanceMiles = SphericalUtil.computeDistanceBetween(latLng1, latLng2) * 0.000621371192;
-        if ((int) distanceMiles <= radius)
-            return true;
-        else return false;
+        if ((int) distanceMiles <= radius) return true;
+        return false;
     }
-
 
     private boolean checkVacationOverlap(Vacation vacation) throws ParseException {
         DateTimeFormatter format = DateTimeFormatter.ofPattern("MM/dd/yyyy");
-        if (currentUser.getVacation().getStartDate().equals("")) {
-            Toast.makeText(getContext(), "You have not entered your own vacation dates!", Toast.LENGTH_SHORT).show();
-            return false;
-        }
         if (vacation.getStartDate().equals("")) return false;
         LocalDate myStartDate = LocalDate.parse(currentUser.getVacation().getStartDate(), format);
         LocalDate myEndDate = LocalDate.parse(currentUser.getVacation().getEndDate(), format);

@@ -9,23 +9,24 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".fragments.ChatFragment">
+        tools:context=".fragments.LikesFragment">
 
         <TextView
-            android:id="@+id/tvNoChats"
+            android:id="@+id/tvNoLikes"
             android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="40dp"
             android:textSize="18sp"
             android:gravity="center"
-            android:visibility="visible"
-            android:text="When you send other users a message they'll appear here"/>
+            android:visibility="gone"
+            android:text="When you like other users they'll appear here"/>
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvChats"
-            android:layout_below="@+id/tvNoChats"
+            android:id="@+id/rvLikes"
+            android:layout_below="@id/tvNoLikes"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
+
     </RelativeLayout>
 </layout>

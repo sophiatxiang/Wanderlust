@@ -30,6 +30,15 @@ public class FilterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_filter);
 
+        getIntentValues();
+        setUpRadiusSlider();
+        setUpOverlapSlider();
+        setUpAgeRangeSlider();
+        setUpGenderCheckBoxes();
+        setUpButtons();
+    }
+
+    private void getIntentValues() {
         filterRadius = getIntent().getIntExtra("filter radius", 100);
         filterFemale = getIntent().getBooleanExtra("filter female", false);
         filterMale = getIntent().getBooleanExtra("filter male", false);
@@ -37,12 +46,6 @@ public class FilterActivity extends AppCompatActivity {
         filterAgeMin = getIntent().getIntExtra("filter age min", 18);
         filterAgeMax = getIntent().getIntExtra("filter age max", 120);
         filterVacationOverlap = getIntent().getIntExtra("filter vacation overlap", 1);
-
-        setUpRadiusSlider();
-        setUpOverlapSlider();
-        setUpAgeRangeSlider();
-        setUpGenderCheckBoxes();
-        setUpButtons();
     }
 
     private void setUpRadiusSlider() {
@@ -69,7 +72,6 @@ public class FilterActivity extends AppCompatActivity {
         });
     }
 
-
     private void setUpAgeRangeSlider() {
         binding.tvAgeRange.setText(filterAgeMin + " - " + filterAgeMax);
         binding.rangeSliderAge.setValues((float) filterAgeMin, (float) filterAgeMax);
@@ -87,6 +89,27 @@ public class FilterActivity extends AppCompatActivity {
         binding.cbFemale.setChecked(filterFemale);
         binding.cbMale.setChecked(filterMale);
         binding.cbGenderOther.setChecked(filterGenderOther);
+    }
+
+
+    public void onGenderCheckboxClicked(View view) {
+        // Is the view now checked?
+        boolean checked = ((CheckBox) view).isChecked();
+        // Check which checkbox was clicked
+        switch(view.getId()) {
+            case R.id.cbFemale:
+                if (checked) filterFemale = true;
+                else filterFemale = false;
+                break;
+            case R.id.cbMale:
+                if (checked) filterMale = true;
+                else filterMale = false;
+                break;
+            case R.id.cbGenderOther:
+                if (checked) filterGenderOther = true;
+                else filterGenderOther = false;
+                break;
+        }
     }
 
     private void setUpButtons() {
@@ -114,32 +137,5 @@ public class FilterActivity extends AppCompatActivity {
                 finish();
             }
         });
-    }
-
-    public void onGenderCheckboxClicked(View view) {
-        // Is the view now checked?
-        boolean checked = ((CheckBox) view).isChecked();
-
-        // Check which checkbox was clicked
-        switch(view.getId()) {
-            case R.id.cbFemale:
-                if (checked) filterFemale = true;
-
-            else
-                filterFemale = false;
-                break;
-            case R.id.cbMale:
-                if (checked)
-                    filterMale = true;
-            else
-                filterMale = false;
-                break;
-            case R.id.cbGenderOther:
-                if (checked)
-                    filterGenderOther = true;
-                else
-                    filterGenderOther = false;
-                break;
-        }
     }
 }

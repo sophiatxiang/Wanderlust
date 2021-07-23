@@ -47,6 +47,17 @@
                 android:textColor="@color/black"
                 android:textStyle="bold" />
 
+            <TextView
+                android:id="@+id/tvNoVacationDetails"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="50dp"
+                android:gravity="center"
+                android:text="Provide your vacation destination and dates in order to find other users."
+                android:visibility="gone" />
+
         </RelativeLayout>
 
         <androidx.recyclerview.widget.RecyclerView

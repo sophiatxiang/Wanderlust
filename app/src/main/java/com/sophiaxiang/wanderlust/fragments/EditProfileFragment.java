@@ -1,29 +1,26 @@
 package com.sophiaxiang.wanderlust.fragments;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageView;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -33,24 +30,20 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 import com.sophiaxiang.wanderlust.LoginActivity;
-import com.sophiaxiang.wanderlust.MainActivity;
 import com.sophiaxiang.wanderlust.R;
 import com.sophiaxiang.wanderlust.databinding.FragmentEditProfileBinding;
 import com.sophiaxiang.wanderlust.models.User;
 
-import java.util.List;
-
 public class EditProfileFragment extends Fragment {
 
     public static final String TAG = "EditProfileFragment";
-    private FragmentEditProfileBinding binding;
+    private static final String[] GENDER_CHOICES = {"select a gender...", "female", "male", "other"};
+    private FragmentEditProfileBinding mBinding;
     private DatabaseReference mDatabase;
-    private FirebaseUser firebaseUser;
-    private User currentUser;
-    private DatabaseReference currentUserNodeReference;
+    private DatabaseReference mCurrentUserNodeReference;
+    private FirebaseUser mFirebaseUser;
+    private User mCurrentUser;
 
 
     public EditProfileFragment() {
@@ -61,8 +54,8 @@ public class EditProfileFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_edit_profile, container, false);
-        return binding.getRoot();
+        mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_edit_profile, container, false);
+        return mBinding.getRoot();
     }
 
     @Override
@@ -70,20 +63,21 @@ public class EditProfileFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         Bundle bundle = getArguments();
-        currentUser = (User) bundle.getSerializable("current user");
+        mCurrentUser = (User) bundle.getSerializable("current user");
 
-        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        mFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         mDatabase = FirebaseDatabase.getInstance().getReference();
-        currentUserNodeReference = mDatabase.child("users").child(currentUser.getUserId());
+        mCurrentUserNodeReference = mDatabase.child("users").child(mCurrentUser.getUserId());
 
         setUpButtons();
         populateEditTextViews();
         updateImageViews();
         populateImageViews();
+        setUpSpinner();
     }
 
     private void setUpButtons() {
-        binding.btnLogout.setOnClickListener(new View.OnClickListener() {
+        mBinding.btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 FirebaseAuth.getInstance().signOut();
@@ -91,10 +85,10 @@ public class EditProfileFragment extends Fragment {
             }
         });
 
-        binding.btnSave.setOnClickListener(new View.OnClickListener() {
+        mBinding.btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (currentUser.getImage1() == null || currentUser.getImage2() == null || currentUser.getImage3() == null) {
+                if (mCurrentUser.getImage1() == null || mCurrentUser.getImage2() == null || mCurrentUser.getImage3() == null) {
                     Toast.makeText(getContext(), "Please provide 3 images!", Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -102,28 +96,28 @@ public class EditProfileFragment extends Fragment {
             }
         });
 
-        binding.ivImage1.setOnClickListener(new View.OnClickListener() {
+        mBinding.ivImage1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 goTakePhotoFragment("image1");
             }
         });
 
-        binding.ivImage2.setOnClickListener(new View.OnClickListener() {
+        mBinding.ivImage2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 goTakePhotoFragment("image2");
             }
         });
 
-        binding.ivImage3.setOnClickListener(new View.OnClickListener() {
+        mBinding.ivImage3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 goTakePhotoFragment("image3");
             }
         });
 
-        binding.tvChngProfilePhoto.setOnClickListener(new View.OnClickListener() {
+        mBinding.tvChngProfilePhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 goTakePhotoFragment("profilePhoto");
@@ -133,12 +127,11 @@ public class EditProfileFragment extends Fragment {
 
 
     private void populateEditTextViews() {
-        binding.etName.setText(currentUser.getName());
-        binding.etAge.setText("" + currentUser.getAge());
-        binding.etGender.setText(currentUser.getGender());
-        binding.etFrom.setText(currentUser.getFrom());
-        binding.etBio.setText(currentUser.getBio());
-        binding.etAdventureLevel.setText(currentUser.getAdventureLevel());
+        mBinding.etName.setText(mCurrentUser.getName());
+        mBinding.etAge.setText("" + mCurrentUser.getAge());
+        mBinding.etFrom.setText(mCurrentUser.getFrom());
+        mBinding.etBio.setText(mCurrentUser.getBio());
+        mBinding.etAdventureLevel.setText(mCurrentUser.getAdventureLevel());
     }
 
     private void updateImageViews() {
@@ -146,7 +139,7 @@ public class EditProfileFragment extends Fragment {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // Get Post object and use the values to update the UI
-                currentUser = dataSnapshot.getValue(User.class);
+                mCurrentUser = dataSnapshot.getValue(User.class);
                 populateImageViews();
             }
             @Override
@@ -155,73 +148,73 @@ public class EditProfileFragment extends Fragment {
                 Log.w(TAG, "load User profile:onCancelled", databaseError.toException());
             }
         };
-        currentUserNodeReference.addValueEventListener(userListener);
+        mCurrentUserNodeReference.addValueEventListener(userListener);
     }
 
     private void populateImageViews() {
         // populate user photos
-        if (currentUser.getImage1() == null) {
-            binding.ivImage1.setImageResource(R.drawable.add_image);
+        if (mCurrentUser.getImage1() == null) {
+            mBinding.ivImage1.setImageResource(R.drawable.add_image);
         }
         else {
-            Glide.with(binding.ivImage1.getContext())
-                    .load(Uri.parse(currentUser.getImage1()))
+            Glide.with(mBinding.ivImage1.getContext())
+                    .load(Uri.parse(mCurrentUser.getImage1()))
                     .placeholder(R.drawable.add_image)
-                    .into(binding.ivImage1);
+                    .into(mBinding.ivImage1);
         }
 
-        if (currentUser.getImage2() == null) {
-            binding.ivImage2.setImageResource(R.drawable.add_image);
+        if (mCurrentUser.getImage2() == null) {
+            mBinding.ivImage2.setImageResource(R.drawable.add_image);
         }
         else {
-            Glide.with(binding.ivImage2.getContext())
-                    .load(Uri.parse(currentUser.getImage2()))
+            Glide.with(mBinding.ivImage2.getContext())
+                    .load(Uri.parse(mCurrentUser.getImage2()))
                     .placeholder(R.drawable.add_image)
-                    .into(binding.ivImage2);
+                    .into(mBinding.ivImage2);
         }
-        if (currentUser.getImage3() == null) {
-            binding.ivImage3.setImageResource(R.drawable.add_image);
+        if (mCurrentUser.getImage3() == null) {
+            mBinding.ivImage3.setImageResource(R.drawable.add_image);
         }
         else {
-            Glide.with(binding.ivImage3.getContext())
-                    .load(Uri.parse(currentUser.getImage3()))
+            Glide.with(mBinding.ivImage3.getContext())
+                    .load(Uri.parse(mCurrentUser.getImage3()))
                     .placeholder(R.drawable.add_image)
-                    .into(binding.ivImage3);
+                    .into(mBinding.ivImage3);
         }
 
         // populate profile pic
-        if (currentUser.getProfilePhoto() == null){
-            Glide.with(binding.ivProfilePhoto.getContext())
+        if (mCurrentUser.getProfilePhoto() == null){
+            Glide.with(mBinding.ivProfilePhoto.getContext())
                     .load(R.drawable.no_profile_pic)
                     .circleCrop()
-                    .into(binding.ivProfilePhoto);
+                    .into(mBinding.ivProfilePhoto);
         }
         else {
-            Glide.with(binding.ivProfilePhoto.getContext())
-                    .load(Uri.parse(currentUser.getProfilePhoto()))
+            Glide.with(mBinding.ivProfilePhoto.getContext())
+                    .load(Uri.parse(mCurrentUser.getProfilePhoto()))
                     .circleCrop()
-                    .into(binding.ivProfilePhoto);
+                    .into(mBinding.ivProfilePhoto);
         }
     }
 
 
     private void updateDatabaseUserProfile() {
-        if (TextUtils.isEmpty(binding.etAge.toString())){
+        if (TextUtils.isEmpty(mBinding.etAge.toString())){
             Toast.makeText(getContext(), "Please enter an age!", Toast.LENGTH_SHORT).show();
             return;
         }
-        String name = binding.etName.getText().toString();
-        Integer age = Integer.parseInt(binding.etAge.getText().toString());
-        String gender = binding.etGender.getText().toString();
-        String from = binding.etFrom.getText().toString();
-        String bio = binding.etBio.getText().toString();
-        String adventureLevel = binding.etAdventureLevel.getText().toString();
-        String image1 = currentUser.getImage1();
-        String image2 = currentUser.getImage2();
-        String image3 = currentUser.getImage3();
-        String profilePhoto = currentUser.getProfilePhoto();
-        User user = new User(firebaseUser.getUid(), name , age, gender, from, bio, adventureLevel, image1, image2, image3, profilePhoto, currentUser.getVacation());
-        mDatabase.child("users").child(firebaseUser.getUid()).setValue(user)
+        String name = mBinding.etName.getText().toString();
+        Integer age = Integer.parseInt(mBinding.etAge.getText().toString());
+        String gender = mCurrentUser.getGender();
+        String from = mBinding.etFrom.getText().toString();
+        String bio = mBinding.etBio.getText().toString();
+        String adventureLevel = mBinding.etAdventureLevel.getText().toString();
+        String image1 = mCurrentUser.getImage1();
+        String image2 = mCurrentUser.getImage2();
+        String image3 = mCurrentUser.getImage3();
+        String profilePhoto = mCurrentUser.getProfilePhoto();
+        User user = new User(mFirebaseUser.getUid(), name , age, gender, from, bio, adventureLevel, image1, image2, image3, profilePhoto, mCurrentUser.getVacation());
+        mDatabase.child("users").child(mFirebaseUser.getUid()).setValue(user)
             .addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
@@ -241,7 +234,7 @@ public class EditProfileFragment extends Fragment {
     private void goTakePhotoFragment(String imageNumber){
         Fragment fragment = new TakePhotoFragment();
         Bundle args = new Bundle();
-        args.putString("current user id", currentUser.getUserId());
+        args.putString("current user id", mCurrentUser.getUserId());
         args.putString("image number", imageNumber);
         fragment.setArguments(args);
         getActivity().getSupportFragmentManager().beginTransaction()
@@ -255,5 +248,54 @@ public class EditProfileFragment extends Fragment {
         Intent intent = new Intent(getActivity(), LoginActivity.class);
         startActivity(intent);
         getActivity().finish();
+    }
+
+    private void setUpSpinner() {
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
+                R.layout.item_spinner, GENDER_CHOICES) {
+            @Override
+            public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+                View view = super.getDropDownView(position, convertView, parent);
+                TextView tv = (TextView) view;
+                if(position == 0){
+                    // Set the hint text color gray
+                    tv.setTextColor(Color.GRAY);
+                }
+                else {
+                    tv.setTextColor(Color.BLACK);
+                }
+                return view;
+            }
+        };
+
+        adapter.setDropDownViewResource(R.layout.item_spinner);
+        mBinding.spinnerGender.setAdapter(adapter);
+
+        if (!mCurrentUser.getGender().equals("")){
+            int spinnerPosition = adapter.getPosition(mCurrentUser.getGender());
+            mBinding.spinnerGender.setSelection(spinnerPosition);
+        }
+        mBinding.spinnerGender.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String selectedItemText;
+                switch (position) {
+                    case 0:
+                        mCurrentUser.setGender("");
+                        break;
+                    case 1:
+                    case 2:
+                    case 3:
+                        selectedItemText = (String) parent.getItemAtPosition(position);
+                        mCurrentUser.setGender(selectedItemText);
+                        break;
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                mCurrentUser.setGender("");
+            }
+        });
     }
 }

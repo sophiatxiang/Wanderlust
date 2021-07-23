@@ -20,12 +20,13 @@ public class User implements Serializable {
     private String image3;
     private String profilePhoto;
     private List<String> imageList;
-    private List<User> likedUsers;
+    private List<String> likedUserIds;
     private Vacation vacation;
 
     public User(String userId, String name) {
         this.userId = userId;
         this.name = name;
+        this.gender = "";
     }
 
     public User(String userId, String name, int age, String gender,
@@ -153,12 +154,11 @@ public class User implements Serializable {
         this.imageList = imageList;
     }
 
-    public List<User> getLikedUsers() {
-        return likedUsers;
+    public List<String> getLikedUserIds() {
+        return likedUserIds;
     }
 
-    public void setLikedUsers(List<User> likedUsers) {
-        this.likedUsers = likedUsers;
+    public void setLikedUserIds(List<String> likedUserIds) {
+        this.likedUserIds = likedUserIds;
     }
-
 }
