@@ -49,8 +49,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="400dp"
                 android:layout_alignParentTop="true"
-                tools:srcCompat="@tools:sample/avatars" >
-            </ImageView>
+                android:scaleType="centerCrop"
+                tools:srcCompat="@tools:sample/avatars" />
 
             <TextView
                 android:id="@+id/tvNameAge"

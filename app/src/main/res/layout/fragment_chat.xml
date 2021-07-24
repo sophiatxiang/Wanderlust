@@ -19,7 +19,7 @@
             android:layout_marginTop="40dp"
             android:textSize="18sp"
             android:gravity="center"
-            android:visibility="visible"
+            android:visibility="gone"
             android:text="When you send other users a message they'll appear here"/>
 
         <androidx.recyclerview.widget.RecyclerView

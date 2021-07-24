@@ -4,9 +4,11 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.ImageDecoder;
 import android.graphics.drawable.BitmapDrawable;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -41,10 +43,12 @@ import com.sophiaxiang.wanderlust.databinding.FragmentTakePhotoBinding;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 
 public class TakePhotoFragment extends Fragment {
     public static final String TAG = "ComposeProfilePicFragment";
     public static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 42;
+    public final static int PICK_PHOTO_CODE = 1046;
     public static final String KEY_CAMERA_PHOTO = "cameraPhoto";
     private File photoFile;
     public String photoFileName = "photo.jpg";
@@ -88,12 +92,18 @@ public class TakePhotoFragment extends Fragment {
             }
         });
 
+        binding.btnImportPhoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                launchGallery();
+            }
+        });
 
         // if button is clicked, attempt to save image
         binding.btnSubmitPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (photoFile == null || binding.ivCameraPhoto.getDrawable() == null) {
+                if (binding.ivCameraPhoto.getDrawable() == null) {
                     Toast.makeText(getContext(), "There is no image!", Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -101,7 +111,6 @@ public class TakePhotoFragment extends Fragment {
             }
         });
     }
-
 
     // launch camera application with implicit intent
     private void launchCamera() {
@@ -116,29 +125,68 @@ public class TakePhotoFragment extends Fragment {
         Uri fileProvider = FileProvider.getUriForFile(getContext(), "com.codepath.fileprovider", photoFile);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, fileProvider);
 
-        // If you call startActivityForResult() using an intent that no app can handle, your app will crash.
-        // So as long as the result is not null, it's safe to use the intent.
         if (intent.resolveActivity(getContext().getPackageManager()) != null) {
             // Start the image capture intent to take photo
             startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
         }
     }
 
+    private void launchGallery() {
+        // Create intent for picking a photo from the gallery
+        Intent intent = new Intent(Intent.ACTION_PICK,
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
+            // Bring up gallery to select a photo
+            startActivityForResult(intent, PICK_PHOTO_CODE);
+        }
+    }
 
-    // after image is taken, load Bitmap into the image view in Main Activity
+
+    // after image is taken/selected, load Bitmap into the image view in Main Activity
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        // take photo activity result
         if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
                 // by this point we have the camera photo on disk
                 Bitmap takenImage = BitmapFactory.decodeFile(photoFile.getAbsolutePath());
                 // Load the taken image into a preview
                 binding.ivCameraPhoto.setImageBitmap(getSquareCropBitmap(takenImage));
+                binding.btnSubmitPhoto.setVisibility(View.VISIBLE);
             } else { // Result was a failure
                 Toast.makeText(getContext(), "Picture wasn't taken!", Toast.LENGTH_SHORT).show();
             }
         }
+
+        // import photo from gallery activity result
+        if ((data != null) && requestCode == PICK_PHOTO_CODE) {
+            Uri photoUri = data.getData();
+            // Load the image located at photoUri into selectedImage
+            Bitmap selectedImage = loadFromUri(photoUri);
+            // Load the selected image into a preview
+            binding.ivCameraPhoto.setImageBitmap(getSquareCropBitmap(selectedImage));
+            binding.btnSubmitPhoto.setVisibility(View.VISIBLE);
+        }
+    }
+
+    // for photo from camera roll
+    public Bitmap loadFromUri(Uri photoUri) {
+        Bitmap image = null;
+        try {
+            // check version of Android on device
+            if(Build.VERSION.SDK_INT > 27){
+                // on newer versions of Android, use the new decodeBitmap method
+                ImageDecoder.Source source = ImageDecoder.createSource(getActivity().getContentResolver(), photoUri);
+                image = ImageDecoder.decodeBitmap(source);
+            } else {
+                // support older versions of Android by using getBitmap
+                image = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), photoUri);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return image;
     }
 
 
@@ -161,8 +209,6 @@ public class TakePhotoFragment extends Fragment {
     // save image to Firebase Storage
     private void saveImage(){
         // Get the data from an ImageView as bytes
-        binding.ivCameraPhoto.setDrawingCacheEnabled(true);
-        binding.ivCameraPhoto.buildDrawingCache();
         Bitmap bitmap = ((BitmapDrawable) binding.ivCameraPhoto.getDrawable()).getBitmap();
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
