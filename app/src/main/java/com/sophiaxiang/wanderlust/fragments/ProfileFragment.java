@@ -178,6 +178,7 @@ public class ProfileFragment extends Fragment {
         if (!vacation.getDestination().equals("")) {
             binding.tvLocationDate.setText(vacation.getDestination() + "   |   " + vacation.getStartDate() + " - " + vacation.getEndDate());
         }
+        else binding.tvLocationDate.setText("No vacation details yet");
         binding.tvVacationNotes.setText(vacation.getNotes());
     }
 

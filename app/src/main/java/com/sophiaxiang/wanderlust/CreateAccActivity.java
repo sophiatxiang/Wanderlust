@@ -5,13 +5,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -33,6 +29,7 @@ public class CreateAccActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private ActivityCreateAccBinding binding;
     private DatabaseReference mDatabase;
+    private FirebaseUser firebaseUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,15 +43,14 @@ public class CreateAccActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Log.i(TAG, "onClick login button");
-                String name = binding.etName.getText().toString();
                 String email = binding.etEmail.getText().toString();
                 String password = binding.etPassword.getText().toString();
-                createAccount(name, email, password);
+                createAccount(email, password);
             }
         });
     }
 
-    public void createAccount(String name, String email, String password) {
+    public void createAccount(String email, String password) {
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -62,10 +58,10 @@ public class CreateAccActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "createUserWithEmail:success");
-                            FirebaseUser firebaseUser = mAuth.getCurrentUser();
-                            createDatabaseUserProfile(firebaseUser, name);
-                            createDatabaseUserVacation(firebaseUser);
-                            goMainActivity();
+                            firebaseUser = mAuth.getCurrentUser();
+                            createDatabaseUserProfile(firebaseUser.getUid());
+                            createDatabaseUserVacation(firebaseUser.getUid());
+                            goNameSetUpActivity();
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
@@ -76,13 +72,13 @@ public class CreateAccActivity extends AppCompatActivity {
                 });
     }
 
-    private void createDatabaseUserProfile(FirebaseUser firebaseUser, String name) {
-        User user = new User(firebaseUser.getUid(), name);
-        mDatabase.child("users").child(user.getUserId()).setValue(user)
+    private void createDatabaseUserProfile(String userId) {
+        User user = new User(userId);
+        mDatabase.child("users").child(userId).setValue(user)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        Toast.makeText(CreateAccActivity.this, "user write successful", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(CreateAccActivity.this, "successfully created user", Toast.LENGTH_SHORT).show();
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -93,9 +89,9 @@ public class CreateAccActivity extends AppCompatActivity {
                 });
     }
 
-    private void createDatabaseUserVacation(FirebaseUser firebaseUser) {
-        Vacation vacation = new Vacation(firebaseUser.getUid());
-        mDatabase.child("users").child(firebaseUser.getUid()).child("vacation").setValue(vacation)
+    private void createDatabaseUserVacation(String userId) {
+        Vacation vacation = new Vacation(userId);
+        mDatabase.child("users").child(userId).child("vacation").setValue(vacation)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
@@ -110,9 +106,10 @@ public class CreateAccActivity extends AppCompatActivity {
                 });
     }
 
-    // go to main activity and close/finish login activity
-    private void goMainActivity() {
-        Intent intent = new Intent(CreateAccActivity.this, MainActivity.class);
+
+    private void goNameSetUpActivity() {
+        Intent intent = new Intent(CreateAccActivity.this, NameSetUpActivity.class);
+        intent.putExtra("user id", firebaseUser.getUid());
         startActivity(intent);
         finish();
     }

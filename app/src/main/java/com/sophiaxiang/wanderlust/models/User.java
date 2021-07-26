@@ -23,9 +23,8 @@ public class User implements Serializable {
     private List<String> likedUserIds;
     private Vacation vacation;
 
-    public User(String userId, String name) {
+    public User(String userId) {
         this.userId = userId;
-        this.name = name;
         this.gender = "";
     }
 
