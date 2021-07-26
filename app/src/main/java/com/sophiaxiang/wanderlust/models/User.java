@@ -14,7 +14,7 @@ public class User implements Serializable {
     private String gender;
     private String from;
     private String bio;
-    private String adventureLevel;
+    private int adventureLevel;
     private String image1;
     private String image2;
     private String image3;
@@ -29,7 +29,7 @@ public class User implements Serializable {
     }
 
     public User(String userId, String name, int age, String gender,
-                String from, String bio, String adventureLevel, String image1,
+                String from, String bio, int adventureLevel, String image1,
                 String image2, String image3, String profilePhoto, Vacation vacation) {
         this.userId = userId;
         this.name = name;
@@ -97,11 +97,11 @@ public class User implements Serializable {
         this.bio = bio;
     }
 
-    public String getAdventureLevel() {
+    public int getAdventureLevel() {
         return adventureLevel;
     }
 
-    public void setAdventureLevel(String adventureLevel) {
+    public void setAdventureLevel(int adventureLevel) {
         this.adventureLevel = adventureLevel;
     }
 

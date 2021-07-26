@@ -169,7 +169,7 @@ public class ProfileFragment extends Fragment {
         binding.tvNameAge.setText(user.getName() + ", " + user.getAge());
         binding.tvBio.setText(user.getBio());
         binding.tvFrom.setText(user.getFrom());
-        binding.tvAdventureLevel.setText(user.getAdventureLevel());
+        binding.tvAdventureLevel.setText(user.getAdventureLevel() + "/5");
         populateImageList();
     }
 

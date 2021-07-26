@@ -203,6 +203,7 @@
                 android:layout_below="@+id/etBio"
                 android:layout_alignParentStart="true"
                 android:layout_marginStart="20dp"
+                android:layout_marginTop="20dp"
                 android:text="Adventure Level:"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="@color/black" />
@@ -217,7 +218,24 @@
                 android:layout_marginTop="5dp"
                 android:ems="10"
                 android:hint="Adventure Level Out of 5"
-                android:text="4/5"/>
+                android:text="4/5"
+                android:visibility="invisible"/>
+
+
+            <com.google.android.material.slider.Slider
+                android:id="@+id/sliderAdventureLevel"
+                android:layout_width="240dp"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@id/textView9"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="30dp"
+                android:stepSize="1"
+                android:value="1"
+                android:valueFrom="1"
+                android:valueTo="5"
+                app:thumbColor="@color/dark_periwinkle"
+                app:tickVisible="false"
+                app:trackColor="@color/light_grey" />
 
 
             <TextView
@@ -227,7 +245,7 @@
                 android:layout_below="@+id/textView9"
                 android:layout_alignParentStart="true"
                 android:layout_marginStart="20dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="30dp"
                 android:text="Photos:"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="@color/black" />

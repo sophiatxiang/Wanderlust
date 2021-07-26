@@ -23,6 +23,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.slider.Slider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -73,7 +74,8 @@ public class EditProfileFragment extends Fragment {
         populateEditTextViews();
         updateImageViews();
         populateImageViews();
-        setUpSpinner();
+        setUpGenderSpinner();
+        setUpAdventureLevelSlider();
     }
 
     private void setUpButtons() {
@@ -131,7 +133,7 @@ public class EditProfileFragment extends Fragment {
         mBinding.etAge.setText("" + mCurrentUser.getAge());
         mBinding.etFrom.setText(mCurrentUser.getFrom());
         mBinding.etBio.setText(mCurrentUser.getBio());
-        mBinding.etAdventureLevel.setText(mCurrentUser.getAdventureLevel());
+        mBinding.etAdventureLevel.setText(mCurrentUser.getAdventureLevel() + "/5");
     }
 
     private void updateImageViews() {
@@ -208,7 +210,7 @@ public class EditProfileFragment extends Fragment {
         String gender = mCurrentUser.getGender();
         String from = mBinding.etFrom.getText().toString();
         String bio = mBinding.etBio.getText().toString();
-        String adventureLevel = mBinding.etAdventureLevel.getText().toString();
+        int adventureLevel = mCurrentUser.getAdventureLevel();
         String image1 = mCurrentUser.getImage1();
         String image2 = mCurrentUser.getImage2();
         String image3 = mCurrentUser.getImage3();
@@ -250,7 +252,7 @@ public class EditProfileFragment extends Fragment {
         getActivity().finish();
     }
 
-    private void setUpSpinner() {
+    private void setUpGenderSpinner() {
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
                 R.layout.item_spinner, GENDER_CHOICES) {
             @Override
@@ -295,6 +297,16 @@ public class EditProfileFragment extends Fragment {
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
                 mCurrentUser.setGender("");
+            }
+        });
+    }
+
+    private void setUpAdventureLevelSlider() {
+        mBinding.sliderAdventureLevel.setValue(mCurrentUser.getAdventureLevel());
+        mBinding.sliderAdventureLevel.addOnChangeListener(new Slider.OnChangeListener() {
+            @Override
+            public void onValueChange(@NonNull Slider slider, float value, boolean fromUser) {
+                mCurrentUser.setAdventureLevel((int) value);
             }
         });
     }
