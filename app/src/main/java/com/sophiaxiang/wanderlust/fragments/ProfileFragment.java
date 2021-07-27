@@ -83,11 +83,17 @@ public class ProfileFragment extends Fragment {
         currentUserImages = new ArrayList<>();
         populateImageList();
 
+        setUpToolBar(view);
         setUpButtons();
         populateProfileViews();
         populateVacationViews();
         setProfileInfoListener();
         setVacationInfoListener();
+    }
+
+    private void setUpToolBar(View view) {
+        androidx.appcompat.widget.Toolbar toolbar = view.findViewById(R.id.toolbar);
+        ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
     }
 
     private void setUpButtons() {

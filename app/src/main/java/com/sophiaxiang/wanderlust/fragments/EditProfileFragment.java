@@ -7,6 +7,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 
@@ -70,12 +71,19 @@ public class EditProfileFragment extends Fragment {
         mDatabase = FirebaseDatabase.getInstance().getReference();
         mCurrentUserNodeReference = mDatabase.child("users").child(mCurrentUser.getUserId());
 
+        setUpToolBar(view);
         setUpButtons();
         populateEditTextViews();
         updateImageViews();
         populateImageViews();
         setUpGenderSpinner();
         setUpAdventureLevelSlider();
+    }
+
+    private void setUpToolBar(View view) {
+        androidx.appcompat.widget.Toolbar toolbar = view.findViewById(R.id.toolbar);
+        toolbar.setTitle("Edit Profile");
+        ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
     }
 
     private void setUpButtons() {

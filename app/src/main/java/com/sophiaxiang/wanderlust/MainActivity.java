@@ -9,6 +9,7 @@ import androidx.fragment.app.FragmentManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
@@ -58,50 +59,24 @@ public class MainActivity extends AppCompatActivity {
         getCurrentUser();
         getCurrentUserVacation();
 
-        binding.bottomNavigation.setOnItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull  MenuItem menuItem) {
-                Fragment fragment;
-                switch (menuItem.getItemId()) {
-                    case R.id.action_home:
-                        fragment = new FeedFragment();
-                        Bundle feedBundle = new Bundle();
-                        feedBundle.putSerializable("current user id", currentUserId);
-                        fragment.setArguments(feedBundle);
-                        fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).addToBackStack(null).commit();
-                        break;
-                    case R.id.action_likes:
-                        fragment = new LikesFragment();
-                        Bundle likesBundle = new Bundle();
-                        likesBundle.putSerializable("current user id", currentUserId);
-                        fragment.setArguments(likesBundle);
-                        fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).addToBackStack(null).commit();
-                        break;
-                    case R.id.action_chat:
-                        fragment = new ChatFragment();
-                        Bundle chatBundle = new Bundle();
-                        chatBundle.putSerializable("current user id", currentUserId);
-                        fragment.setArguments(chatBundle);
-                        fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).addToBackStack(null).commit();
-                        break;
-                    case R.id.action_profile:
-//                        fragmentManager.beginTransaction().replace(R.id.flContainer, new ProfileFragment()).commit();
-                        fragment = new ProfileFragment();
-                        Bundle profileBundle = new Bundle();
-                        profileBundle.putSerializable("current user", currentUser);
-                        profileBundle.putSerializable("vacation", currentUserVacation);
-                        fragment.setArguments(profileBundle);
-                        fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).addToBackStack(null).commit();
-                        break;
-                }
+        setUpBottomNavigation();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+
+            case R.id.action_logout:
+                // TODO: LOG OUT POP UP
                 return true;
-            }
-        });
-
-        binding.bottomNavigation.setSelectedItemId(R.id.action_home);
-
-        mDatabase.child("userChatLists").child(currentUserId).child("3WWVbfjsWYQ41r51noT6yvwfe7624Fn0b6gnOpXzgvsMDl6jmexXk562").child("");
-
+        }
+        return true;
     }
 
     private void getCurrentUserVacation() {
@@ -137,5 +112,47 @@ public class MainActivity extends AppCompatActivity {
             }
         };
         currentUserReference.addValueEventListener(userListener);
+    }
+
+    private void setUpBottomNavigation() {
+        binding.bottomNavigation.setOnItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull  MenuItem menuItem) {
+                Fragment fragment;
+                switch (menuItem.getItemId()) {
+                    case R.id.action_home:
+                        fragment = new FeedFragment();
+                        Bundle feedBundle = new Bundle();
+                        feedBundle.putSerializable("current user id", currentUserId);
+                        fragment.setArguments(feedBundle);
+                        fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).addToBackStack(null).commit();
+                        break;
+                    case R.id.action_likes:
+                        fragment = new LikesFragment();
+                        Bundle likesBundle = new Bundle();
+                        likesBundle.putSerializable("current user id", currentUserId);
+                        fragment.setArguments(likesBundle);
+                        fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).addToBackStack(null).commit();
+                        break;
+                    case R.id.action_chat:
+                        fragment = new ChatFragment();
+                        Bundle chatBundle = new Bundle();
+                        chatBundle.putSerializable("current user id", currentUserId);
+                        fragment.setArguments(chatBundle);
+                        fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).addToBackStack(null).commit();
+                        break;
+                    case R.id.action_profile:
+                        fragment = new ProfileFragment();
+                        Bundle profileBundle = new Bundle();
+                        profileBundle.putSerializable("current user", currentUser);
+                        profileBundle.putSerializable("vacation", currentUserVacation);
+                        fragment.setArguments(profileBundle);
+                        fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).addToBackStack(null).commit();
+                        break;
+                }
+                return true;
+            }
+        });
+        binding.bottomNavigation.setSelectedItemId(R.id.action_home);
     }
 }

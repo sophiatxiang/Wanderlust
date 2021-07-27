@@ -137,6 +137,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder
                 Intent intent = new Intent(mContext, ChatDetailsActivity.class);
                 intent.putExtra("current user id", mChats.get(position).getCurrentUserId());
                 intent.putExtra("other user id", mChats.get(position).getOtherUserId());
+                intent.putExtra("other user name", mChats.get(position).getOtherUserName());
                 mContext.startActivity(intent);
             }
         }

@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Message;
 import android.util.Log;
+import android.view.Menu;
 import android.view.View;
 import android.widget.Toast;
 
@@ -35,6 +36,7 @@ public class ChatDetailsActivity extends AppCompatActivity {
     private ActivityChatDetailsBinding binding;
     private String currentUserId;
     private String otherUserId;
+    private String otherUserName;
     private String chatId;
     private DatabaseReference mDatabase;
     private ChatMessageAdapter mAdapter;
@@ -48,9 +50,30 @@ public class ChatDetailsActivity extends AppCompatActivity {
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
+        getIntentExtras();
+        setUpToolBar();
         getChatId();
         setUpMessagePosting();
         setUpNewMessageListener();
+    }
+
+    private void getIntentExtras() {
+        Intent intent = getIntent();
+        currentUserId = intent.getStringExtra("current user id");
+        otherUserId = intent.getStringExtra("other user id");
+        otherUserName = intent.getStringExtra("other user name");
+    }
+
+    private void setUpToolBar() {
+        androidx.appcompat.widget.Toolbar toolbar = findViewById(R.id.toolbar);
+        this.setSupportActionBar(toolbar);
+        toolbar.setTitle(otherUserName);
+    }
+
+    public void getChatId() {
+        if (currentUserId.compareTo(otherUserId) < 0)
+            chatId = currentUserId + otherUserId;
+        else chatId =  otherUserId + currentUserId;
     }
 
     private void setUpNewMessageListener() {
@@ -91,16 +114,6 @@ public class ChatDetailsActivity extends AppCompatActivity {
         });
     }
 
-
-    private void getChatId() {
-        Intent intent = getIntent();
-        currentUserId = intent.getStringExtra("current user id");
-        otherUserId = intent.getStringExtra("other user id");
-        if (currentUserId.compareTo(otherUserId) < 0)
-            chatId = currentUserId + otherUserId;
-        else chatId =  otherUserId + currentUserId;
-    }
-
     // Set up button event handler which posts the entered message to Parse
     void setUpMessagePosting() {
         mMessages = new ArrayList<>();
@@ -112,10 +125,10 @@ public class ChatDetailsActivity extends AppCompatActivity {
         linearLayoutManager.setReverseLayout(true);
         binding.rvChat.setLayoutManager(linearLayoutManager);
 
-        setOnClick();
+        setSendOnClick();
     }
 
-    private void setOnClick() {
+    private void setSendOnClick() {
         // When send button is clicked, create message object on Parse
         binding.ibSend.setOnClickListener(new View.OnClickListener() {
             @Override

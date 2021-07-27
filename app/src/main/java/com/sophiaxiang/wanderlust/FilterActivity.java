@@ -117,6 +117,7 @@ public class FilterActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 finish();
+                overridePendingTransition(R.anim.stay, R.anim.slide_down);
             }
         });
 
@@ -135,6 +136,7 @@ public class FilterActivity extends AppCompatActivity {
                 output.putExtra("filter vacation overlap", filterVacationOverlap);
                 setResult(RESULT_OK, output);
                 finish();
+                overridePendingTransition(R.anim.stay, R.anim.slide_down);
             }
         });
     }

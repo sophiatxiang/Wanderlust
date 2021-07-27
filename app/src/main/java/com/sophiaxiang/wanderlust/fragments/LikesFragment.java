@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -65,8 +66,16 @@ public class LikesFragment extends Fragment {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         mBinding.rvLikes.setLayoutManager(linearLayoutManager);
 
+        setUpToolBar(view);
         queryLikes();
     }
+
+    private void setUpToolBar(View view) {
+        androidx.appcompat.widget.Toolbar toolbar = view.findViewById(R.id.toolbar);
+        toolbar.setTitle("Likes");
+        ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
+    }
+
 
     private void queryLikes() {
         Query recentChatsQuery = mDatabase.child("likedUserLists").child(currentUserId).orderByChild("likedAt");;

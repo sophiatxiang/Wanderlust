@@ -16,6 +16,11 @@
             android:layout_height="match_parent"
             android:paddingBottom="30dp">
 
+            <include
+                layout="@layout/toolbar_main"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
             <Button
                 android:id="@+id/btnEditProfile"
                 android:layout_width="150dp"
@@ -48,7 +53,7 @@
                 android:id="@+id/ivPhoto"
                 android:layout_width="match_parent"
                 android:layout_height="400dp"
-                android:layout_alignParentTop="true"
+                android:layout_below="@+id/toolbar"
                 android:scaleType="centerCrop"
                 tools:srcCompat="@tools:sample/avatars" />
 

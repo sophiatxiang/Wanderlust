@@ -94,7 +94,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
                     public boolean onDoubleTap(MotionEvent e) {
                         int position = getAdapterPosition();
                         User thisUser = mUsers.get(position);
-                        Toast.makeText(mContext, "double tap", Toast.LENGTH_SHORT).show();
                         mDatabase.child("likedUserLists").child(mCurrentUserId).child(thisUser.getUserId()).child("likedAt").setValue(System.currentTimeMillis());
 
                         Animation fadeIn = AnimationUtils.loadAnimation(mContext, R.anim.fadein);

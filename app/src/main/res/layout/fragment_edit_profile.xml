@@ -10,10 +10,15 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".fragments.ProfileFragment">
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
+            <include
+                layout="@layout/toolbar_main"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
 
             <Button
                 android:id="@+id/btnLogout"
@@ -42,7 +47,7 @@
                 android:id="@+id/ivProfilePhoto"
                 android:layout_width="90dp"
                 android:layout_height="90dp"
-                android:layout_alignParentTop="true"
+                android:layout_below="@+id/toolbar"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="25dp"
                 tools:srcCompat="@tools:sample/avatars" />

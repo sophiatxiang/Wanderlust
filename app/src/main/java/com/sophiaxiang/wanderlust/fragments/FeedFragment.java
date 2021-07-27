@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -12,10 +13,14 @@ import androidx.recyclerview.widget.SimpleItemAnimator;
 
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.maps.model.LatLng;
@@ -77,6 +82,12 @@ public class FeedFragment extends Fragment {
         // Required empty public constructor
     }
 
+    @Nullable
+    @Override
+    public Animation onCreateAnimation(int transit, boolean enter, int nextAnim) {
+        return super.onCreateAnimation(transit, enter, nextAnim);
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -105,6 +116,7 @@ public class FeedFragment extends Fragment {
         binding.rvUsers.setLayoutManager(linearLayoutManager);
 
         getCurrentUser();
+        setUpToolBar(view);
 
         binding.tvFilter.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -124,6 +136,11 @@ public class FeedFragment extends Fragment {
         });
     }
 
+    private void setUpToolBar(View view) {
+        androidx.appcompat.widget.Toolbar toolbar = view.findViewById(R.id.toolbar);
+        ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
+    }
+
     private void goFilterActivity() {
         Intent intent = new Intent(getActivity(), FilterActivity.class);
         intent.putExtra("filter radius", filterRadius);
@@ -137,7 +154,7 @@ public class FeedFragment extends Fragment {
         intent.putExtra("filter vacation overlap", filterVacationOverlap);
         startActivityForResult(intent, FILTER_REQUEST_CODE);
         // TODO: ADD ANIMATION
-//        getActivity().overridePendingTransition(R.anim.slide_up, 0);
+        getActivity().overridePendingTransition(R.anim.slide_up, R.anim.stay);
     }
 
     @Override
