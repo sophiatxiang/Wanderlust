@@ -1,13 +1,17 @@
 package com.sophiaxiang.wanderlust.adapters;
 
+import android.animation.LayoutTransition;
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,21 +22,25 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.sophiaxiang.wanderlust.ChatDetailsActivity;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.sophiaxiang.wanderlust.R;
-import com.sophiaxiang.wanderlust.fragments.EditProfileFragment;
 import com.sophiaxiang.wanderlust.fragments.UserDetailsFragment;
 import com.sophiaxiang.wanderlust.models.User;
 
 import java.util.List;
 
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder> {
+    final DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
     List<User> mUsers;
     Context mContext;
+    String mCurrentUserId;
 
-    public UserAdapter(Context context, List<User> users) {
+
+    public UserAdapter(Context context, List<User> users, String currentUserId) {
         this.mContext = context;
         this.mUsers = users;
+        this.mCurrentUserId = currentUserId;
     }
 
     @NonNull
@@ -53,12 +61,12 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         return mUsers.size();
     }
 
-    public class UserViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class UserViewHolder extends RecyclerView.ViewHolder {
         ImageView ivUserPhoto;
         TextView tvUserNameAge;
         TextView tvUserDestination;
         TextView tvUserVacationDate;
-        CheckBox cbLike;
+        ImageView ivHeart;
 
         public UserViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -66,8 +74,11 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
             tvUserNameAge = itemView.findViewById(R.id.tvUserNameAge);
             tvUserDestination = itemView.findViewById(R.id.tvUserDestination);
             tvUserVacationDate = itemView.findViewById(R.id.tvUserVacationDate);
-            itemView.setOnClickListener(this);
+            ivHeart = itemView.findViewById(R.id.ivHeart);
+
+            setUpOnTouchListener(itemView);
         }
+
 
         public void bind(User user) {
             Glide.with(mContext).load(Uri.parse(user.getImage1())).into(ivUserPhoto);
@@ -76,20 +87,55 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
             tvUserVacationDate.setText(user.getVacation().getStartDate() + " - " + user.getVacation().getEndDate());
         }
 
-        @Override
-        public void onClick(View v) {
-            int position = getAdapterPosition();
-            if (position != RecyclerView.NO_POSITION) {
-                AppCompatActivity activity = (AppCompatActivity) mContext;
-                Fragment fragment = new UserDetailsFragment();
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("user", mUsers.get(position));
-                fragment.setArguments(bundle);
-                activity.getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.flContainer, fragment)
-                        .addToBackStack(null)
-                        .commit();
-            }
+        private void setUpOnTouchListener(View itemView) {
+            itemView.setOnTouchListener(new View.OnTouchListener() {
+                private GestureDetector gestureDetector = new GestureDetector(mContext, new GestureDetector.SimpleOnGestureListener() {
+                    @Override
+                    public boolean onDoubleTap(MotionEvent e) {
+                        int position = getAdapterPosition();
+                        User thisUser = mUsers.get(position);
+                        Toast.makeText(mContext, "double tap", Toast.LENGTH_SHORT).show();
+                        mDatabase.child("likedUserLists").child(mCurrentUserId).child(thisUser.getUserId()).child("likedAt").setValue(System.currentTimeMillis());
+
+                        Animation fadeIn = AnimationUtils.loadAnimation(mContext, R.anim.fadein);
+                        ivHeart.startAnimation(fadeIn);
+                        ivHeart.setVisibility(View.VISIBLE);
+
+                        ivHeart.postDelayed(new Runnable(){
+                            public void run() {
+                                Animation fadeOut = AnimationUtils.loadAnimation(mContext, R.anim.fadeout);
+                                ivHeart.startAnimation(fadeOut);
+                                ivHeart.setVisibility(View.GONE);
+                            }
+                        },1000);
+                        return super.onDoubleTap(e);
+                    }
+
+                    @Override
+                    public boolean onSingleTapConfirmed(MotionEvent e) {
+                        int position = getAdapterPosition();
+                        if (position != RecyclerView.NO_POSITION) {
+                            AppCompatActivity activity = (AppCompatActivity) mContext;
+                            Fragment fragment = new UserDetailsFragment();
+                            Bundle bundle = new Bundle();
+                            bundle.putSerializable("user", mUsers.get(position));
+                            fragment.setArguments(bundle);
+                            activity.getSupportFragmentManager().beginTransaction()
+                                    .replace(R.id.flContainer, fragment)
+                                    .addToBackStack(null)
+                                    .commit();
+                        }
+                        return super.onSingleTapConfirmed(e);
+                    }
+                });
+
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    Log.d("TEST", "Raw event: " + event.getAction() + ", (" + event.getRawX() + ", " + event.getRawY() + ")");
+                    gestureDetector.onTouchEvent(event);
+                    return true;
+                }
+            });
         }
     }
 }

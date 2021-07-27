@@ -69,7 +69,7 @@ public class LikesFragment extends Fragment {
     }
 
     private void queryLikes() {
-        Query recentChatsQuery = mDatabase.child("users").child(currentUserId).child("likedUsers").orderByChild("likedAt");;
+        Query recentChatsQuery = mDatabase.child("likedUserLists").child(currentUserId).orderByChild("likedAt");;
         recentChatsQuery.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

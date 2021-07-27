@@ -17,12 +17,32 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <ImageView
-            android:id="@+id/ivUserPhoto"
+        <RelativeLayout
+            android:id="@+id/rlPhoto"
             android:layout_width="match_parent"
-            android:layout_height="360dp"
-            android:scaleType="centerCrop"
-            tools:srcCompat="@tools:sample/avatars" />
+            android:layout_height="360dp">
+
+            <ImageView
+                android:id="@+id/ivUserPhoto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                tools:srcCompat="@tools:sample/avatars" />
+
+            <FrameLayout
+                android:id="@+id/frameHeart"
+                android:layout_width="75dp"
+                android:layout_height="75dp"
+                android:layout_centerInParent="true">
+
+                <ImageView
+                    android:id="@+id/ivHeart"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="gone"
+                    app:srcCompat="@drawable/white_heart" />
+            </FrameLayout>
+        </RelativeLayout>
 
         <TextView
             android:id="@+id/tvUserNameAge"
@@ -32,7 +52,7 @@
             android:layout_marginStart="15dp"
             android:layout_marginTop="10dp"
             android:text="Sophia, 19"
-            android:layout_below="@id/ivUserPhoto"
+            android:layout_below="@id/rlPhoto"
             android:textColor="@color/black"
             android:textSize="24sp"/>
 

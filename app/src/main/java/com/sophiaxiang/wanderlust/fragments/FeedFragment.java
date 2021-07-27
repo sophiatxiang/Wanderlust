@@ -8,6 +8,7 @@ import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.SimpleItemAnimator;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -96,8 +97,9 @@ public class FeedFragment extends Fragment {
         filterVacationOverlap = 1;
 
         users = new ArrayList<>();
-        mAdapter = new UserAdapter(getContext(), users);
+        mAdapter = new UserAdapter(getContext(), users, currentUserId);
         binding.rvUsers.setAdapter(mAdapter);
+        ((SimpleItemAnimator) binding.rvUsers.getItemAnimator()).setSupportsChangeAnimations(false);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         binding.rvUsers.setLayoutManager(linearLayoutManager);

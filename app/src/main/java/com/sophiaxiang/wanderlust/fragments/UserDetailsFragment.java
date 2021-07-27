@@ -108,7 +108,7 @@ public class UserDetailsFragment extends Fragment {
 
 
     private void checkIfUserLiked() {
-       mDatabase.child("users").child(currentUserId).child("likedUsers").child(user.getUserId()).addValueEventListener(new ValueEventListener() {
+       mDatabase.child("likedUserLists").child(currentUserId).child(user.getUserId()).addValueEventListener(new ValueEventListener() {
            @Override
            public void onDataChange(@NonNull DataSnapshot snapshot) {
                if (snapshot.exists()) {
@@ -162,12 +162,11 @@ public class UserDetailsFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (!binding.fab.isSelected()) {
-                    mDatabase.child("users").child(currentUserId).child("likedUsers").child(user.getUserId()).setValue(user.getUserId());
-                    mDatabase.child("users").child(currentUserId).child("likedUsers").child(user.getUserId()).child("likedAt").setValue(System.currentTimeMillis());
+                    mDatabase.child("likedUserLists").child(currentUserId).child(user.getUserId()).child("likedAt").setValue(System.currentTimeMillis());
                     binding.fab.setSelected(true);
                 }
                 else {
-                    mDatabase.child("users").child(currentUserId).child("likedUsers").child(user.getUserId()).removeValue();
+                    mDatabase.child("likedUserLists").child(currentUserId).child(user.getUserId()).removeValue();
                     binding.fab.setSelected(false);
                 }
             }
