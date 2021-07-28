@@ -69,7 +69,7 @@ public class ChatFragment extends Fragment {
         binding.rvChats.setLayoutManager(linearLayoutManager);
 
         setUpToolBar(view);
-        queryChats("");
+        queryChats();
     }
 
     @Override
@@ -85,13 +85,15 @@ public class ChatFragment extends Fragment {
                 bundle.putSerializable("current user id", currentUserId);
                 fragment.setArguments(bundle);
                 activity.getSupportFragmentManager().beginTransaction()
-//                        .setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right)
                         .replace(R.id.flContainer, fragment)
                         .addToBackStack(null)
                         .commit();
                 return true;
             }
         });
+
+        MenuItem settings = menu.findItem(R.id.action_settings);
+        settings.setVisible(false);
     }
 
     private void setUpToolBar(View view) {
@@ -100,7 +102,7 @@ public class ChatFragment extends Fragment {
         ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
     }
 
-    private void queryChats(String query) {
+    private void queryChats() {
         Query recentChatsQuery = mDatabase.child("userChatLists").child(currentUserId).limitToFirst(40).orderByChild("lastMessageTime");;
         recentChatsQuery.addValueEventListener(new ValueEventListener() {
             @Override
@@ -108,7 +110,7 @@ public class ChatFragment extends Fragment {
                 allChats.clear();
                 for (DataSnapshot chatSnapshot: dataSnapshot.getChildren()) {
                     Chat chat = chatSnapshot.getValue(Chat.class);
-                    if (chat.getLastMessageTime() != 0 && chat.getOtherUserName().contains(query)) {
+                    if (chat.getLastMessageTime() != 0) {
                         allChats.add(0, chat);
                     }
                 }

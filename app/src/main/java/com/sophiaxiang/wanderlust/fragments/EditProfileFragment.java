@@ -87,14 +87,6 @@ public class EditProfileFragment extends Fragment {
     }
 
     private void setUpButtons() {
-        mBinding.btnLogout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FirebaseAuth.getInstance().signOut();
-                goLoginActivity();
-            }
-        });
-
         mBinding.btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -144,6 +136,7 @@ public class EditProfileFragment extends Fragment {
         mBinding.etAdventureLevel.setText(mCurrentUser.getAdventureLevel() + "/5");
     }
 
+
     private void updateImageViews() {
         ValueEventListener userListener = new ValueEventListener() {
             @Override
@@ -160,6 +153,7 @@ public class EditProfileFragment extends Fragment {
         };
         mCurrentUserNodeReference.addValueEventListener(userListener);
     }
+
 
     private void populateImageViews() {
         // populate user photos
@@ -254,12 +248,6 @@ public class EditProfileFragment extends Fragment {
     }
 
 
-    public void goLoginActivity () {
-        Intent intent = new Intent(getActivity(), LoginActivity.class);
-        startActivity(intent);
-        getActivity().finish();
-    }
-
     private void setUpGenderSpinner() {
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
                 R.layout.item_spinner, GENDER_CHOICES) {
@@ -308,6 +296,7 @@ public class EditProfileFragment extends Fragment {
             }
         });
     }
+
 
     private void setUpAdventureLevelSlider() {
         mBinding.sliderAdventureLevel.setValue(mCurrentUser.getAdventureLevel());

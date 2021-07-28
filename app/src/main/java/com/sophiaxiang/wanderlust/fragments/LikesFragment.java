@@ -11,6 +11,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -47,6 +50,7 @@ public class LikesFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_likes, container, false);
+        setHasOptionsMenu(true);
         return mBinding.getRoot();
     }
 
@@ -68,6 +72,30 @@ public class LikesFragment extends Fragment {
 
         setUpToolBar(view);
         queryLikes();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        getActivity().getMenuInflater().inflate(R.menu.menu_go_search, menu);
+        final MenuItem search = menu.findItem(R.id.action_launch_search);
+        search.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                AppCompatActivity activity = (AppCompatActivity) getContext();
+                Fragment fragment = new ChatSearchFragment();
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("current user id", currentUserId);
+                fragment.setArguments(bundle);
+                activity.getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.flContainer, fragment)
+                        .addToBackStack(null)
+                        .commit();
+                return true;
+            }
+        });
+
+        MenuItem settings = menu.findItem(R.id.action_settings);
+        settings.setVisible(false);
     }
 
     private void setUpToolBar(View view) {

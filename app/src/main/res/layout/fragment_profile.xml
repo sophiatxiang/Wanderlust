@@ -36,7 +36,7 @@
                 android:id="@+id/btnPrevious"
                 android:layout_width="170dp"
                 android:layout_height="400dp"
-                android:layout_alignParentTop="true"
+                android:layout_below="@+id/toolbar"
                 android:layout_alignParentStart="true"
                 android:background="@android:color/transparent" />
 
@@ -44,7 +44,7 @@
                 android:id="@+id/btnNext"
                 android:layout_width="170dp"
                 android:layout_height="400dp"
-                android:layout_alignParentTop="true"
+                android:layout_below="@+id/toolbar"
                 android:layout_alignParentEnd="true"
                 android:background="@android:color/transparent" />
 

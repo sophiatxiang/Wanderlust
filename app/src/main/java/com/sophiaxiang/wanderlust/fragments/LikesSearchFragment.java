@@ -19,6 +19,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -26,23 +28,22 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.sophiaxiang.wanderlust.R;
-import com.sophiaxiang.wanderlust.adapters.ChatAdapter;
+import com.sophiaxiang.wanderlust.adapters.LikedUserAdapter;
+import com.sophiaxiang.wanderlust.databinding.FragmentLikesBinding;
 import com.sophiaxiang.wanderlust.databinding.FragmentSearchBinding;
-import com.sophiaxiang.wanderlust.models.Chat;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ChatSearchFragment extends Fragment {
-
-    public static final String TAG = "ChatSearchFragment";
-    private FragmentSearchBinding binding;
-    private ChatAdapter mAdapter;
+public class LikesSearchFragment extends Fragment {
+    public static final String TAG = "LikesSearchFragment";
+    private FragmentSearchBinding mBinding;
+    private LikedUserAdapter mAdapter;
     private DatabaseReference mDatabase;
-    private List<Chat> allChats;
     private String currentUserId;
+    private List<String> mLikedUserIds;
 
-    public ChatSearchFragment() {
+    public LikesSearchFragment() {
         // Required empty public constructor
     }
 
@@ -50,25 +51,25 @@ public class ChatSearchFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_search, container, false);
-        setHasOptionsMenu(true);
-        return binding.getRoot();
+        mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_search, container, false);
+        return mBinding.getRoot();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+
         mDatabase = FirebaseDatabase.getInstance().getReference();
         Bundle bundle = getArguments();
         currentUserId = (String) bundle.getSerializable("current user id");
 
-        allChats = new ArrayList<>();
-        mAdapter = new ChatAdapter(getContext(), allChats);
-        binding.rvSearches.setAdapter(mAdapter);
+        mLikedUserIds = new ArrayList<>();
+        mAdapter = new LikedUserAdapter(getContext(), mLikedUserIds, currentUserId);
+        mBinding.rvSearches.setAdapter(mAdapter);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-        binding.rvSearches.setLayoutManager(linearLayoutManager);
+        mBinding.rvSearches.setLayoutManager(linearLayoutManager);
 
         setUpToolBar(view);
     }
@@ -84,7 +85,7 @@ public class ChatSearchFragment extends Fragment {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 // Fetch the data remotely
-                queryChats(query);
+                queryLikes(query);
                 return true;
             }
             @Override
@@ -108,29 +109,37 @@ public class ChatSearchFragment extends Fragment {
     private void setUpToolBar(View view) {
         androidx.appcompat.widget.Toolbar toolbar = view.findViewById(R.id.toolbar);
         ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-        toolbar.setNavigationIcon(null);
     }
 
-    private void queryChats(String query) {
-        Query recentChatsQuery = mDatabase.child("userChatLists").child(currentUserId).limitToFirst(40).orderByChild("lastMessageTime");;
+
+    private void queryLikes(String query) {
+        Query recentChatsQuery = mDatabase.child("likedUserLists").child(currentUserId).orderByChild("likedAt");;
         recentChatsQuery.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                allChats.clear();
-                for (DataSnapshot chatSnapshot: dataSnapshot.getChildren()) {
-                    Chat chat = chatSnapshot.getValue(Chat.class);
-                    if (chat.getLastMessageTime() != 0 && chat.getOtherUserName().toLowerCase().contains(query.toLowerCase())) {
-                        allChats.add(0, chat);
-                    }
+                mLikedUserIds.clear();
+                for (DataSnapshot snapshot: dataSnapshot.getChildren()) {
+                    String likedUserId = snapshot.getKey().toString();
+                    checkFilter(likedUserId, query);
                 }
                 mAdapter.notifyDataSetChanged();
-                if (allChats.size() == 0) binding.tvNoSearchResults.setVisibility(View.VISIBLE);
+                if (mLikedUserIds.size() == 0) mBinding.tvNoSearchResults.setVisibility(View.VISIBLE);
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 Log.w(TAG, "loadChats:onCancelled", databaseError.toException());
+            }
+        });
+    }
+
+    // if user's name matches query, add user to the list
+    private void checkFilter(String likedUserId, String query) {
+        mDatabase.child("users").child(likedUserId).child("name").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                if (task.getResult().getValue().toString().toLowerCase().equals(query.toLowerCase()))
+                mLikedUserIds.add(0, likedUserId);
             }
         });
     }

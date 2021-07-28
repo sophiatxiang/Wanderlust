@@ -153,7 +153,6 @@ public class FeedFragment extends Fragment {
         intent.putExtra("filter age max", filterAgeMax);
         intent.putExtra("filter vacation overlap", filterVacationOverlap);
         startActivityForResult(intent, FILTER_REQUEST_CODE);
-        // TODO: ADD ANIMATION
         getActivity().overridePendingTransition(R.anim.slide_up, R.anim.stay);
     }
 
