@@ -39,7 +39,6 @@
             android:layout_below="@+id/etPassword"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="45dp"
-            android:backgroundTint="@color/periwinkle"
             android:text="Log in" />
 
         <TextView
@@ -53,7 +52,7 @@
             android:gravity="center"
             android:text="Wanderlust"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
-            android:textColor="@color/periwinkle"
+            android:textColor="@color/dark_turquoise"
             android:textSize="48sp"
             android:textStyle="bold" />
 
@@ -65,7 +64,7 @@
             android:layout_alignEnd="@id/etPassword"
             android:layout_marginTop="5dp"
             android:text="Forgot password?"
-            android:textColor="@color/dark_periwinkle" />
+            android:textColor="@color/dark_turquoise" />
 
         <TextView
             android:id="@+id/textView2"
@@ -88,7 +87,7 @@
             android:contextClickable="false"
             android:linksClickable="false"
             android:text="Sign Up"
-            android:textColor="@color/dark_periwinkle" />
+            android:textColor="@color/dark_turquoise" />
 
     </RelativeLayout>
 </layout>

@@ -12,12 +12,25 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Wanderlust">
-        <activity android:name=".FromSetUpActivity"></activity>
+
+        <activity
+            android:name=".SplashScreenActivity"
+            android:theme="@style/SplashTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity android:name=".FromSetUpActivity" />
         <activity android:name=".GenderSetUpActivity" />
         <activity android:name=".AgeSetUpActivity" />
         <activity android:name=".NameSetUpActivity" />
         <activity android:name=".FilterActivity" />
         <activity android:name=".ChatDetailsActivity" />
+        <activity android:name=".CreateAccActivity" />
+        <activity android:name=".MainActivity" />
+        <activity android:name=".LoginActivity" />
 
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -28,16 +41,6 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/fileprovider" />
         </provider>
-
-        <activity android:name=".CreateAccActivity" />
-        <activity android:name=".MainActivity" />
-        <activity android:name=".LoginActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
     </application>
 
 </manifest>

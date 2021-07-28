@@ -28,7 +28,6 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="30dp"
                 android:layout_marginBottom="30dp"
-                android:backgroundTint="@color/periwinkle"
                 android:text="Save" />
 
             <ImageView
@@ -48,8 +47,8 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="15dp"
                 android:text="Change Profile Photo"
-                android:textColor="@color/dark_periwinkle"
-                android:textStyle="bold"/>
+                android:textColor="@color/dark_turquoise"
+                android:textStyle="bold" />
 
             <View
                 android:id="@+id/line1"
@@ -226,7 +225,7 @@
                 android:value="1"
                 android:valueFrom="1"
                 android:valueTo="5"
-                app:thumbColor="@color/dark_periwinkle"
+                app:thumbColor="@color/dark_turquoise"
                 app:tickVisible="false"
                 app:trackColor="@color/light_grey" />
 

@@ -35,8 +35,7 @@
             android:layout_below="@+id/etPassword"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="45dp"
-            android:backgroundTint="@color/periwinkle"
-            android:text="Create Account" />
+            android:text="next" />
 
         <TextView
             android:id="@+id/tvLogo"
@@ -47,10 +46,10 @@
             android:layout_marginTop="130dp"
             android:fontFamily="sans-serif"
             android:gravity="center"
-            android:text="Wanderlust"
+            android:text="Create Account"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
-            android:textColor="@color/periwinkle"
-            android:textSize="48sp"
+            android:textColor="@color/dark_turquoise"
+            android:textSize="42sp"
             android:textStyle="bold" />
 
     </RelativeLayout>
