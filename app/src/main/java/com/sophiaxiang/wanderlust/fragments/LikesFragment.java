@@ -82,7 +82,7 @@ public class LikesFragment extends Fragment {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 AppCompatActivity activity = (AppCompatActivity) getContext();
-                Fragment fragment = new ChatSearchFragment();
+                Fragment fragment = new LikesSearchFragment();
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("current user id", currentUserId);
                 fragment.setArguments(bundle);
@@ -106,8 +106,8 @@ public class LikesFragment extends Fragment {
 
 
     private void queryLikes() {
-        Query recentChatsQuery = mDatabase.child("likedUserLists").child(currentUserId).orderByChild("likedAt");;
-        recentChatsQuery.addValueEventListener(new ValueEventListener() {
+        Query recentLikesQuery = mDatabase.child("likedUserLists").child(currentUserId).orderByChild("likedAt");;
+        recentLikesQuery.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 mLikedUserIds.clear();

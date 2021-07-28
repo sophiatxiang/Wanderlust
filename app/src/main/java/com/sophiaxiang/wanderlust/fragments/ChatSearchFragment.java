@@ -36,7 +36,7 @@ import java.util.List;
 public class ChatSearchFragment extends Fragment {
 
     public static final String TAG = "ChatSearchFragment";
-    private FragmentSearchBinding binding;
+    private FragmentSearchBinding mBinding;
     private ChatAdapter mAdapter;
     private DatabaseReference mDatabase;
     private List<Chat> allChats;
@@ -50,9 +50,9 @@ public class ChatSearchFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_search, container, false);
+        mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_search, container, false);
         setHasOptionsMenu(true);
-        return binding.getRoot();
+        return mBinding.getRoot();
     }
 
     @Override
@@ -65,10 +65,10 @@ public class ChatSearchFragment extends Fragment {
 
         allChats = new ArrayList<>();
         mAdapter = new ChatAdapter(getContext(), allChats);
-        binding.rvSearches.setAdapter(mAdapter);
+        mBinding.rvSearches.setAdapter(mAdapter);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-        binding.rvSearches.setLayoutManager(linearLayoutManager);
+        mBinding.rvSearches.setLayoutManager(linearLayoutManager);
 
         setUpToolBar(view);
     }
@@ -118,6 +118,7 @@ public class ChatSearchFragment extends Fragment {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 allChats.clear();
+                mBinding.tvNoSearchResults.setVisibility(View.GONE);
                 for (DataSnapshot chatSnapshot: dataSnapshot.getChildren()) {
                     Chat chat = chatSnapshot.getValue(Chat.class);
                     if (chat.getLastMessageTime() != 0 && chat.getOtherUserName().toLowerCase().contains(query.toLowerCase())) {
@@ -125,7 +126,7 @@ public class ChatSearchFragment extends Fragment {
                     }
                 }
                 mAdapter.notifyDataSetChanged();
-                if (allChats.size() == 0) binding.tvNoSearchResults.setVisibility(View.VISIBLE);
+                if (allChats.size() == 0) mBinding.tvNoSearchResults.setVisibility(View.VISIBLE);
             }
 
             @Override

@@ -52,6 +52,7 @@ public class LikesSearchFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_search, container, false);
+        setHasOptionsMenu(true);
         return mBinding.getRoot();
     }
 
@@ -113,17 +114,16 @@ public class LikesSearchFragment extends Fragment {
 
 
     private void queryLikes(String query) {
-        Query recentChatsQuery = mDatabase.child("likedUserLists").child(currentUserId).orderByChild("likedAt");;
-        recentChatsQuery.addValueEventListener(new ValueEventListener() {
+        Query recentLikesQuery = mDatabase.child("likedUserLists").child(currentUserId).orderByChild("likedAt");;
+        recentLikesQuery.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 mLikedUserIds.clear();
+                mAdapter.notifyDataSetChanged();
                 for (DataSnapshot snapshot: dataSnapshot.getChildren()) {
                     String likedUserId = snapshot.getKey().toString();
                     checkFilter(likedUserId, query);
                 }
-                mAdapter.notifyDataSetChanged();
-                if (mLikedUserIds.size() == 0) mBinding.tvNoSearchResults.setVisibility(View.VISIBLE);
             }
 
             @Override
@@ -138,8 +138,12 @@ public class LikesSearchFragment extends Fragment {
         mDatabase.child("users").child(likedUserId).child("name").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DataSnapshot> task) {
-                if (task.getResult().getValue().toString().toLowerCase().equals(query.toLowerCase()))
-                mLikedUserIds.add(0, likedUserId);
+                if (task.getResult().getValue().toString().toLowerCase().contains(query.toLowerCase())) {
+                    mLikedUserIds.add(0, likedUserId);
+                    mAdapter.notifyItemInserted(0);
+                }
+                if (mLikedUserIds.size() == 0) mBinding.tvNoSearchResults.setVisibility(View.VISIBLE);
+                else mBinding.tvNoSearchResults.setVisibility(View.GONE);
             }
         });
     }
