@@ -107,5 +107,6 @@ public class GenderSetUpActivity extends AppCompatActivity {
         Intent intent = new Intent(GenderSetUpActivity.this, FromSetUpActivity.class);
         intent.putExtra("user id", userId);
         startActivity(intent);
+        overridePendingTransition(R.anim.fadein, R.anim.fadeout);
     }
 }

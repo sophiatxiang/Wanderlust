@@ -12,12 +12,21 @@
         android:layout_height="match_parent"
         tools:context=".GenderSetUpActivity">
 
+        <ProgressBar
+            android:id="@+id/pbGender"
+            style="@android:style/Widget.DeviceDefault.Light.ProgressBar.Horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:max="5"
+            android:progress="3"
+            android:indeterminate="false" />
+
         <TextView
             android:id="@+id/textView12"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
+            android:layout_below="@id/pbGender"
             android:layout_marginStart="40dp"
             android:layout_marginTop="40dp"
             android:text="My gender is"

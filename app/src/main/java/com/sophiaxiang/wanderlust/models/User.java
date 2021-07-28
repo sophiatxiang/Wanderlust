@@ -26,6 +26,7 @@ public class User implements Serializable {
     public User(String userId) {
         this.userId = userId;
         this.gender = "";
+        adventureLevel = 1;
     }
 
     public User(String userId, String name, int age, String gender,

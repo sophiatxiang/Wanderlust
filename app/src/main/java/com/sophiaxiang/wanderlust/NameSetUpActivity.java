@@ -52,5 +52,6 @@ public class NameSetUpActivity extends AppCompatActivity {
         Intent intent = new Intent(NameSetUpActivity.this, AgeSetUpActivity.class);
         intent.putExtra("user id", userId);
         startActivity(intent);
+        overridePendingTransition(R.anim.fadein, R.anim.fadeout);
     }
 }

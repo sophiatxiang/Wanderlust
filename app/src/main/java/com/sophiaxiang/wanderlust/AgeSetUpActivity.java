@@ -51,5 +51,6 @@ public class AgeSetUpActivity extends AppCompatActivity {
         Intent intent = new Intent(AgeSetUpActivity.this, GenderSetUpActivity.class);
         intent.putExtra("user id", userId);
         startActivity(intent);
+        overridePendingTransition(R.anim.fadein, R.anim.fadeout);
     }
 }

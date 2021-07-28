@@ -115,9 +115,11 @@ public class ProfileFragment extends Fragment {
             public void onClick(View v) {
                 if(position>0)
                     position--;
-                Glide.with(binding.ivPhoto.getContext())
-                        .load(Uri.parse(currentUserImages.get(position)))
-                        .into(binding.ivPhoto);
+                if (currentUserImages.get(position) != null) {
+                    Glide.with(binding.ivPhoto.getContext())
+                            .load(Uri.parse(currentUserImages.get(position)))
+                            .into(binding.ivPhoto);
+                }
             }
         });
 
@@ -126,9 +128,11 @@ public class ProfileFragment extends Fragment {
             public void onClick(View v) {
                 if(position<currentUserImages.size()-1)
                     position++;
-                Glide.with(binding.ivPhoto.getContext())
-                        .load(Uri.parse(currentUserImages.get(position)))
-                        .into(binding.ivPhoto);
+                if (currentUserImages.get(position) != null) {
+                    Glide.with(binding.ivPhoto.getContext())
+                            .load(Uri.parse(currentUserImages.get(position)))
+                            .into(binding.ivPhoto);
+                }
             }
         });
     }
