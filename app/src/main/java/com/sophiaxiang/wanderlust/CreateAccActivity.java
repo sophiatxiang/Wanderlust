@@ -27,24 +27,24 @@ public class CreateAccActivity extends AppCompatActivity {
 
     public static final String TAG = "CreateAccActivity";
     private FirebaseAuth mAuth;
-    private ActivityCreateAccBinding binding;
+    private ActivityCreateAccBinding mBinding;
     private DatabaseReference mDatabase;
-    private FirebaseUser firebaseUser;
+    private FirebaseUser mFirebaseUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_create_acc);
+        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_create_acc);
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
         mAuth = FirebaseAuth.getInstance();
 
-        binding.btnCreateAcc.setOnClickListener(new View.OnClickListener() {
+        mBinding.btnCreateAcc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.i(TAG, "onClick login button");
-                String email = binding.etEmail.getText().toString();
-                String password = binding.etPassword.getText().toString();
+                String email = mBinding.etEmail.getText().toString();
+                String password = mBinding.etPassword.getText().toString();
                 createAccount(email, password);
             }
         });
@@ -58,9 +58,9 @@ public class CreateAccActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "createUserWithEmail:success");
-                            firebaseUser = mAuth.getCurrentUser();
-                            createDatabaseUserProfile(firebaseUser.getUid());
-                            createDatabaseUserVacation(firebaseUser.getUid());
+                            mFirebaseUser = mAuth.getCurrentUser();
+                            createDatabaseUserProfile(mFirebaseUser.getUid());
+                            createDatabaseUserVacation(mFirebaseUser.getUid());
                             goNameSetUpActivity();
                         } else {
                             // If sign in fails, display a message to the user.
@@ -109,7 +109,7 @@ public class CreateAccActivity extends AppCompatActivity {
 
     private void goNameSetUpActivity() {
         Intent intent = new Intent(CreateAccActivity.this, NameSetUpActivity.class);
-        intent.putExtra("user id", firebaseUser.getUid());
+        intent.putExtra("user id", mFirebaseUser.getUid());
         startActivity(intent);
         finish();
     }
