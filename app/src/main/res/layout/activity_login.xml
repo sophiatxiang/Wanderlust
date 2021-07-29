@@ -48,7 +48,7 @@
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="130dp"
-            android:fontFamily="sans-serif"
+            android:fontFamily="@font/galada"
             android:gravity="center"
             android:text="Wanderlust"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"

@@ -66,8 +66,9 @@ public class ChatDetailsActivity extends AppCompatActivity {
 
     private void setUpToolBar() {
         androidx.appcompat.widget.Toolbar toolbar = findViewById(R.id.toolbar);
-        this.setSupportActionBar(toolbar);
         toolbar.setTitle(otherUserName);
+        toolbar.findViewById(R.id.title).setVisibility(View.GONE);
+        this.setSupportActionBar(toolbar);
     }
 
     public void getChatId() {

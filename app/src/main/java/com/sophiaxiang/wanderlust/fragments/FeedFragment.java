@@ -139,6 +139,7 @@ public class FeedFragment extends Fragment {
     private void setUpToolBar(View view) {
         androidx.appcompat.widget.Toolbar toolbar = view.findViewById(R.id.toolbar);
         ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
     }
 
     private void goFilterActivity() {

@@ -99,6 +99,7 @@ public class ChatFragment extends Fragment {
     private void setUpToolBar(View view) {
         androidx.appcompat.widget.Toolbar toolbar = view.findViewById(R.id.toolbar);
         toolbar.setTitle("Chats");
+        toolbar.findViewById(R.id.title).setVisibility(View.GONE);
         ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
     }
 
