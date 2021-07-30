@@ -34,7 +34,8 @@ import java.util.List;
 
 public class LikedUserAdapter extends RecyclerView.Adapter<LikedUserAdapter.LikedUserViewHolder> {
     public static final String TAG = "LikedUserAdapter";
-    private DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
+    private final DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
+
     private Context mContext;
     private List<String> mLikedUserIds;
     private String mCurrentUserId;
@@ -75,27 +76,23 @@ public class LikedUserAdapter extends RecyclerView.Adapter<LikedUserAdapter.Like
             btnChatInLikesFrag = itemView.findViewById(R.id.btnChatInLikesFrag);
 
             itemView.setOnClickListener(this);
+
             btnChatInLikesFrag.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    int position = getAdapterPosition();
-                    if (position != RecyclerView.NO_POSITION) {
-                        Intent intent = new Intent(mContext, ChatDetailsActivity.class);
-                        intent.putExtra("current user id", mCurrentUserId);
-                        intent.putExtra("other user id", mLikedUserIds.get(position));
-                        mContext.startActivity(intent);
-                    }
+                    goChatDetailsFrag();
                 }
             });
         }
 
         public void bind(String otherUserId) {
             populateUserImage(otherUserId);
-           populateUserName(otherUserId);
+            populateUserName(otherUserId);
         }
 
         @Override
         public void onClick(View v) {
+            // get user at clicked position and launch user details fragment
             int position = getAdapterPosition();
             if (position != RecyclerView.NO_POSITION) {
                 mDatabase.child("users").child(mLikedUserIds.get(position)).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
@@ -105,6 +102,17 @@ public class LikedUserAdapter extends RecyclerView.Adapter<LikedUserAdapter.Like
                         goUserDetailsFrag(user);
                     }
                 });
+            }
+        }
+
+
+        private void goChatDetailsFrag() {
+            int position = getAdapterPosition();
+            if (position != RecyclerView.NO_POSITION) {
+                Intent intent = new Intent(mContext, ChatDetailsActivity.class);
+                intent.putExtra("current user id", mCurrentUserId);
+                intent.putExtra("other user id", mLikedUserIds.get(position));
+                mContext.startActivity(intent);
             }
         }
 

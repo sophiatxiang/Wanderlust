@@ -27,16 +27,16 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.
 
     private static final int MESSAGE_OUTGOING = 123;
     private static final int MESSAGE_INCOMING = 321;
-    public static final String TAG = "ChatMessageAdapter";
+    private static final String TAG = "ChatMessageAdapter";
+    private final DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
 
     private List<ChatMessage> mMessages;
     private Context mContext;
-    private String mUserId;
-    private DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
+    private String mCurrentUserId;
 
     public ChatMessageAdapter(Context context, String userId, List<ChatMessage> messages) {
         mMessages = messages;
-        this.mUserId = userId;
+        this.mCurrentUserId = userId;
         mContext = context;
     }
 
@@ -70,16 +70,16 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.
 
     @Override
     public int getItemViewType(int position) {
-        if (isMe(position)) {
+        if (checkSenderIsCurrentUser(position)) {
             return MESSAGE_OUTGOING;
         } else {
             return MESSAGE_INCOMING;
         }
     }
 
-    private boolean isMe(int position) {
+    private boolean checkSenderIsCurrentUser(int position) {
         ChatMessage message = mMessages.get(position);
-        return message.getMessageSender() != null && message.getMessageSender().equals(mUserId);
+        return message.getMessageSender() != null && message.getMessageSender().equals(mCurrentUserId);
     }
 
 
@@ -108,6 +108,7 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.
             ValueEventListener listener = new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
+                    // if profile pic is available, load into imageview
                     String uri = dataSnapshot.getValue(String.class);
                     if (uri != null) {
                         Glide.with(mContext)
@@ -123,6 +124,7 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.
                 }
             };
             mUserProfilePicReference.addValueEventListener(listener);
+
             tvBody.setText(message.getMessageText());
         }
     }
@@ -139,6 +141,7 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.
 
         @Override
         public void bindMessage(ChatMessage message) {
+            // if profile pic is available, load into image view
             DatabaseReference mUserProfilePicReference = mDatabase.child("users").child(message.getMessageSender()).child("profilePhoto");
             ValueEventListener listener = new ValueEventListener() {
                 @Override

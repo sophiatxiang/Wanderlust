@@ -36,9 +36,10 @@ import java.util.List;
 
 public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder> {
     public static final String TAG = "ChatAdapter";
+    private final DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
+
     private List<Chat> mChats;
     private Context mContext;
-    private DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
 
     public ChatAdapter(Context context, List<Chat> chats) {
         this.mContext = context;
@@ -75,6 +76,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder
             tvLastMessage = itemView.findViewById(R.id.tvLastMessage);
 
             itemView.setOnClickListener(this);
+
             ivChatImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -83,6 +85,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder
             });
         }
 
+        // get selected user's details from Realtime Database and launch User Details fragment
         private void goUserDetailsFrag() {
             int position = getAdapterPosition();
             if (position != RecyclerView.NO_POSITION) {
@@ -105,6 +108,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder
         }
 
         public void bind(Chat chat) {
+            // if profile pic is available, load into image view
             DatabaseReference mUserProfilePicReference = mDatabase.child("users").child(chat.getOtherUserId()).child("profilePhoto");
             ValueEventListener listener = new ValueEventListener() {
                 @Override
@@ -132,6 +136,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder
 
         @Override
         public void onClick(View v) {
+            // launch Chat Details Activity
             int position = getAdapterPosition();
             if (position != RecyclerView.NO_POSITION) {
                 Intent intent = new Intent(mContext, ChatDetailsActivity.class);

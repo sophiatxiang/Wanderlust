@@ -32,13 +32,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ChatFragment extends Fragment {
-
     public static final String TAG = "ChatFragment";
-    private FragmentChatBinding binding;
+    private FragmentChatBinding mBinding;
     private ChatAdapter mAdapter;
     private DatabaseReference mDatabase;
-    private List<Chat> allChats;
-    private String currentUserId;
+    private List<Chat> mChats;
+    private String mCurrentUserId;
 
     public ChatFragment() {
         // Required empty public constructor
@@ -48,25 +47,26 @@ public class ChatFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_chat, container, false);
+        mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_chat, container, false);
         setHasOptionsMenu(true);
-        return binding.getRoot();
+        return mBinding.getRoot();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        mDatabase = FirebaseDatabase.getInstance().getReference();
         Bundle bundle = getArguments();
-        currentUserId = (String) bundle.getSerializable("current user id");
+        mCurrentUserId = (String) bundle.getSerializable("current user id");
 
-        allChats = new ArrayList<>();
-        mAdapter = new ChatAdapter(getContext(), allChats);
-        binding.rvChats.setAdapter(mAdapter);
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+
+        mChats = new ArrayList<>();
+        mAdapter = new ChatAdapter(getContext(), mChats);
+        mBinding.rvChats.setAdapter(mAdapter);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-        binding.rvChats.setLayoutManager(linearLayoutManager);
+        mBinding.rvChats.setLayoutManager(linearLayoutManager);
 
         setUpToolBar(view);
         queryChats();
@@ -75,19 +75,11 @@ public class ChatFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         getActivity().getMenuInflater().inflate( R.menu.menu_go_search, menu);
-        final MenuItem search = menu.findItem(R.id.action_launch_search);
+        MenuItem search = menu.findItem(R.id.action_launch_search);
         search.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                AppCompatActivity activity = (AppCompatActivity) getContext();
-                Fragment fragment = new ChatSearchFragment();
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("current user id", currentUserId);
-                fragment.setArguments(bundle);
-                activity.getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.flContainer, fragment)
-                        .addToBackStack(null)
-                        .commit();
+                goChatSearchFrag();
                 return true;
             }
         });
@@ -96,27 +88,40 @@ public class ChatFragment extends Fragment {
         settings.setVisible(false);
     }
 
+    private void goChatSearchFrag() {
+        AppCompatActivity activity = (AppCompatActivity) getContext();
+        Fragment fragment = new ChatSearchFragment();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("current user id", mCurrentUserId);
+        fragment.setArguments(bundle);
+        activity.getSupportFragmentManager().beginTransaction()
+                .replace(R.id.flContainer, fragment)
+                .addToBackStack(null)
+                .commit();
+    }
+
     private void setUpToolBar(View view) {
         androidx.appcompat.widget.Toolbar toolbar = view.findViewById(R.id.toolbar);
         toolbar.setTitle("Chats");
+        // hide app logo title
         toolbar.findViewById(R.id.title).setVisibility(View.GONE);
         ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
     }
 
     private void queryChats() {
-        Query recentChatsQuery = mDatabase.child("userChatLists").child(currentUserId).limitToFirst(40).orderByChild("lastMessageTime");;
+        Query recentChatsQuery = mDatabase.child("userChatLists").child(mCurrentUserId).limitToFirst(40).orderByChild("lastMessageTime");;
         recentChatsQuery.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                allChats.clear();
+                mChats.clear();
                 for (DataSnapshot chatSnapshot: dataSnapshot.getChildren()) {
                     Chat chat = chatSnapshot.getValue(Chat.class);
                     if (chat.getLastMessageTime() != 0) {
-                        allChats.add(0, chat);
+                        mChats.add(0, chat);
                     }
                 }
                 mAdapter.notifyDataSetChanged();
-                if (allChats.size() == 0) binding.tvNoChats.setVisibility(View.VISIBLE);
+                if (mChats.size() == 0) mBinding.tvNoChats.setVisibility(View.VISIBLE);
             }
 
             @Override

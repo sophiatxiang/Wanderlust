@@ -14,7 +14,6 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -31,10 +30,11 @@ import com.sophiaxiang.wanderlust.models.User;
 import java.util.List;
 
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder> {
-    final DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
-    List<User> mUsers;
-    Context mContext;
-    String mCurrentUserId;
+    private final DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
+
+    private List<User> mUsers;
+    private Context mContext;
+    private String mCurrentUserId;
 
 
     public UserAdapter(Context context, List<User> users, String currentUserId) {
