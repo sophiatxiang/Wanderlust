@@ -111,6 +111,7 @@ public class ProfileFragment extends Fragment {
                 goEditVacationFrag();
             }
         });
+
         binding.btnPrevious.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -133,6 +134,31 @@ public class ProfileFragment extends Fragment {
                     Glide.with(binding.ivPhoto.getContext())
                             .load(Uri.parse(currentUserImages.get(position)))
                             .into(binding.ivPhoto);
+                }
+            }
+        });
+
+        binding.fabInstagram.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (user.getInstagram().equals("")) {
+                    Toast.makeText(getContext(), "Please provide you Instagram username!", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    Uri appUri = Uri.parse("https://instagram.com/_u/" + user.getInstagram());
+                    Uri browserUri = Uri.parse("https://instagram.com/" + user.getInstagram());
+
+                    try{ //first try to open in instagram app
+                        Intent appIntent = getActivity().getPackageManager().getLaunchIntentForPackage("com.instagram.android");
+                        if(appIntent != null){
+                            appIntent.setAction(Intent.ACTION_VIEW);
+                            appIntent.setData(appUri);
+                            startActivity(appIntent);
+                        }
+                    }catch(Exception e){ //or else open in browser
+                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, browserUri);
+                        startActivity(browserIntent);
+                    }
                 }
             }
         });

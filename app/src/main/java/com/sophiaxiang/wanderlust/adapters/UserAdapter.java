@@ -81,7 +81,11 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
 
 
         public void bind(User user) {
-            Glide.with(mContext).load(Uri.parse(user.getImage1())).into(ivUserPhoto);
+            if (user.getImage1() != null) {
+                Glide.with(mContext).load(Uri.parse(user.getImage1())).into(ivUserPhoto);
+            } else {
+                Glide.with(mContext).load(R.drawable.add_image).into(ivUserPhoto);
+            }
             tvUserNameAge.setText(user.getName() + ", " + user.getAge());
             tvUserDestination.setText(user.getVacation().getDestination());
             tvUserVacationDate.setText(user.getVacation().getStartDate() + " - " + user.getVacation().getEndDate());

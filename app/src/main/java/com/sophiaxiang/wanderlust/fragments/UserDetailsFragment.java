@@ -6,16 +6,13 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -27,11 +24,9 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.sophiaxiang.wanderlust.ChatDetailsActivity;
 import com.sophiaxiang.wanderlust.R;
-import com.sophiaxiang.wanderlust.databinding.FragmentProfileBinding;
 import com.sophiaxiang.wanderlust.databinding.FragmentUserDetailsBinding;
 import com.sophiaxiang.wanderlust.models.Chat;
 import com.sophiaxiang.wanderlust.models.User;
@@ -43,17 +38,17 @@ import java.util.List;
 public class UserDetailsFragment extends Fragment {
 
     public static final String TAG = "UserDetailsFragment";
-    private FragmentUserDetailsBinding binding;
+    private FragmentUserDetailsBinding mBinding;
     private DatabaseReference mDatabase;
-    private DatabaseReference currentUserNodeReference;
-    private DatabaseReference vacationDetailsReference;
-    private User user;
-    private Vacation vacation;
-    private List<String> userImages;
-    private String currentUserId;
-    private String currentUserName;
-    private int position = 0;
-    private String chatId;
+    private DatabaseReference mCurrentUserNodeReference;
+    private DatabaseReference mVacationDetailsReference;
+    private User mUser;
+    private Vacation mVacation;
+    private List<String> mUserImages;
+    private String mCurrentUserId;
+    private String mCurrentUserName;
+    private int mPosition = 0;
+    private String mChatId;
 
     public UserDetailsFragment() {
         // Required empty public constructor
@@ -63,8 +58,8 @@ public class UserDetailsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_user_details, container, false);
-        return binding.getRoot();
+        mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_user_details, container, false);
+        return mBinding.getRoot();
     }
 
     @Override
@@ -72,35 +67,38 @@ public class UserDetailsFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         Bundle bundle = getArguments();
-        user = (User) bundle.getSerializable("user");
-        vacation = user.getVacation();
+        mUser = (User) bundle.getSerializable("user");
+        mVacation = mUser.getVacation();
 
-        currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        mCurrentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         mDatabase = FirebaseDatabase.getInstance().getReference();
-        currentUserNodeReference = mDatabase.child("users").child(user.getUserId());
-        vacationDetailsReference = mDatabase.child("users").child(user.getUserId()).child("vacation");
+        mCurrentUserNodeReference = mDatabase.child("users").child(mUser.getUserId());
+        mVacationDetailsReference = mDatabase.child("users").child(mUser.getUserId()).child("vacation");
 
-        userImages = new ArrayList<>();
+        mUserImages = new ArrayList<>();
         populateImageList();
 
         getCurrentUserName();
         checkIfUserLiked();
+        checkIfHasInstagram();
+
         setUpButtons();
         populateProfileViews();
         populateVacationViews();
+
         setProfileInfoListener();
         setVacationInfoListener();
     }
 
     private void getCurrentUserName() {
-        mDatabase.child("users").child(currentUserId).child("name").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+        mDatabase.child("users").child(mCurrentUserId).child("name").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DataSnapshot> task) {
                 if (!task.isSuccessful()) {
                     Log.e("firebase", "Error getting data", task.getException());
                 }
                 else {
-                   currentUserName = String.valueOf(task.getResult().getValue());
+                   mCurrentUserName = String.valueOf(task.getResult().getValue());
                 }
             }
         });
@@ -108,13 +106,13 @@ public class UserDetailsFragment extends Fragment {
 
 
     private void checkIfUserLiked() {
-       mDatabase.child("likedUserLists").child(currentUserId).child(user.getUserId()).addValueEventListener(new ValueEventListener() {
+       mDatabase.child("likedUserLists").child(mCurrentUserId).child(mUser.getUserId()).addValueEventListener(new ValueEventListener() {
            @Override
            public void onDataChange(@NonNull DataSnapshot snapshot) {
                if (snapshot.exists()) {
-                   binding.fab.setSelected(true);
+                   mBinding.fab.setSelected(true);
                } else {
-                   binding.fab.setSelected(false);
+                   mBinding.fab.setSelected(false);
                }
            }
 
@@ -126,9 +124,14 @@ public class UserDetailsFragment extends Fragment {
 
     }
 
+    private void checkIfHasInstagram() {
+        if (mUser.getInstagram().equals("")) {
+            mBinding.fabInstagram.setVisibility(View.GONE);
+        }
+    }
 
     private void setUpButtons() {
-        binding.btnChat.setOnClickListener(new View.OnClickListener() {
+        mBinding.btnChat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 setUpNewChat();
@@ -136,38 +139,58 @@ public class UserDetailsFragment extends Fragment {
             }
         });
 
-        binding.btnPrevious.setOnClickListener(new View.OnClickListener() {
+        mBinding.btnPrevious.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(position>0)
-                    position--;
-                Glide.with(binding.ivPhoto.getContext())
-                        .load(Uri.parse(userImages.get(position)))
-                        .into(binding.ivPhoto);
+                if(mPosition >0)
+                    mPosition--;
+                Glide.with(mBinding.ivPhoto.getContext())
+                        .load(Uri.parse(mUserImages.get(mPosition)))
+                        .into(mBinding.ivPhoto);
             }
         });
 
-        binding.btnNext.setOnClickListener(new View.OnClickListener() {
+        mBinding.btnNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(position<userImages.size()-1)
-                    position++;
-                Glide.with(binding.ivPhoto.getContext())
-                        .load(Uri.parse(userImages.get(position)))
-                        .into(binding.ivPhoto);
+                if(mPosition < mUserImages.size()-1)
+                    mPosition++;
+                Glide.with(mBinding.ivPhoto.getContext())
+                        .load(Uri.parse(mUserImages.get(mPosition)))
+                        .into(mBinding.ivPhoto);
             }
         });
 
-        binding.fab.setOnClickListener(new View.OnClickListener() {
+        mBinding.fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!binding.fab.isSelected()) {
-                    mDatabase.child("likedUserLists").child(currentUserId).child(user.getUserId()).child("likedAt").setValue(System.currentTimeMillis());
-                    binding.fab.setSelected(true);
+                if (!mBinding.fab.isSelected()) {
+                    mDatabase.child("likedUserLists").child(mCurrentUserId).child(mUser.getUserId()).child("likedAt").setValue(System.currentTimeMillis());
+                    mBinding.fab.setSelected(true);
                 }
                 else {
-                    mDatabase.child("likedUserLists").child(currentUserId).child(user.getUserId()).removeValue();
-                    binding.fab.setSelected(false);
+                    mDatabase.child("likedUserLists").child(mCurrentUserId).child(mUser.getUserId()).removeValue();
+                    mBinding.fab.setSelected(false);
+                }
+            }
+        });
+
+        mBinding.fabInstagram.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Uri appUri = Uri.parse("https://instagram.com/_u/" + mUser.getInstagram());
+                Uri browserUri = Uri.parse("https://instagram.com/" + mUser.getInstagram());
+
+                try{ //first try to open in instagram app
+                    Intent appIntent = getActivity().getPackageManager().getLaunchIntentForPackage("com.instagram.android");
+                    if(appIntent != null){
+                        appIntent.setAction(Intent.ACTION_VIEW);
+                        appIntent.setData(appUri);
+                        startActivity(appIntent);
+                    }
+                }catch(Exception e){ //or else open in browser
+                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, browserUri);
+                    startActivity(browserIntent);
                 }
             }
         });
@@ -178,7 +201,7 @@ public class UserDetailsFragment extends Fragment {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // Get Post object and use the values to update the UI
-                vacation = dataSnapshot.getValue(Vacation.class);
+                mVacation = dataSnapshot.getValue(Vacation.class);
                 populateVacationViews();
             }
 
@@ -188,7 +211,7 @@ public class UserDetailsFragment extends Fragment {
                 Log.w(TAG, "load Vacation:onCancelled", databaseError.toException());
             }
         };
-        vacationDetailsReference.addValueEventListener(vacationListener);
+        mVacationDetailsReference.addValueEventListener(vacationListener);
     }
 
 
@@ -197,7 +220,7 @@ public class UserDetailsFragment extends Fragment {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // Get Post object and use the values to update the UI
-                user = dataSnapshot.getValue(User.class);
+                mUser = dataSnapshot.getValue(User.class);
                 populateProfileViews();
             }
 
@@ -207,61 +230,61 @@ public class UserDetailsFragment extends Fragment {
                 Log.w(TAG, "load User profile:onCancelled", databaseError.toException());
             }
         };
-        currentUserNodeReference.addValueEventListener(userListener);
+        mCurrentUserNodeReference.addValueEventListener(userListener);
     }
 
     private void populateProfileViews() {
-        binding.tvNameAge.setText(user.getName() + ", " + user.getAge());
-        binding.tvBio.setText(user.getBio());
-        binding.tvFrom.setText(user.getFrom());
-        binding.tvAdventureLevel.setText(user.getAdventureLevel() + "/5");
+        mBinding.tvNameAge.setText(mUser.getName() + ", " + mUser.getAge());
+        mBinding.tvBio.setText(mUser.getBio());
+        mBinding.tvFrom.setText(mUser.getFrom());
+        mBinding.tvAdventureLevel.setText(mUser.getAdventureLevel() + "/5");
         populateImageList();
     }
 
 
     private void populateVacationViews() {
-        if (!vacation.getDestination().equals("")) {
-            binding.tvLocationDate.setText(vacation.getDestination() + "   |   " + vacation.getStartDate() + " - " + vacation.getEndDate());
+        if (!mVacation.getDestination().equals("")) {
+            mBinding.tvLocationDate.setText(mVacation.getDestination() + "   |   " + mVacation.getStartDate() + " - " + mVacation.getEndDate());
         }
-        binding.tvVacationNotes.setText(vacation.getNotes());
+        mBinding.tvVacationNotes.setText(mVacation.getNotes());
     }
 
 
     private void populateImageList() {
-        userImages.clear();
-        userImages.add(user.getImage1());
-        userImages.add(user.getImage2());
-        userImages.add(user.getImage3());
+        mUserImages.clear();
+        mUserImages.add(mUser.getImage1());
+        mUserImages.add(mUser.getImage2());
+        mUserImages.add(mUser.getImage3());
         populateImageView();
     }
 
 
     private void populateImageView() {
-        if (user.getImage1() == null) {
-            binding.ivPhoto.setImageResource(R.drawable.add_image);
+        if (mUser.getImage1() == null) {
+            mBinding.ivPhoto.setImageResource(R.drawable.add_image);
         }
         else {
-            position = 0;
-            Glide.with(binding.ivPhoto.getContext())
-                    .load(Uri.parse(userImages.get(position)))
-                    .into(binding.ivPhoto);
+            mPosition = 0;
+            Glide.with(mBinding.ivPhoto.getContext())
+                    .load(Uri.parse(mUserImages.get(mPosition)))
+                    .into(mBinding.ivPhoto);
         }
     }
 
     private void setUpNewChat() {
-        if (currentUserId.compareTo(user.getUserId()) < 0)
-            chatId = currentUserId + user.getUserId();
-        else chatId =  user.getUserId() + currentUserId;
+        if (mCurrentUserId.compareTo(mUser.getUserId()) < 0)
+            mChatId = mCurrentUserId + mUser.getUserId();
+        else mChatId =  mUser.getUserId() + mCurrentUserId;
 
-        Chat chat = new Chat(chatId, user.getName(), user.getUserId(), currentUserId);
-        mDatabase.child("userChatLists").child(currentUserId).child(chatId).child("chatId").setValue(chatId);
-        mDatabase.child("userChatLists").child(currentUserId).child(chatId).child("currentUserId").setValue(currentUserId);
-        mDatabase.child("userChatLists").child(currentUserId).child(chatId).child("otherUserId").setValue(user.getUserId());
-        mDatabase.child("userChatLists").child(currentUserId).child(chatId).child("otherUserName").setValue(user.getName());
-        mDatabase.child("userChatLists").child(user.getUserId()).child(chatId).child("chatId").setValue(chatId);
-        mDatabase.child("userChatLists").child(user.getUserId()).child(chatId).child("currentUserId").setValue(user.getUserId());
-        mDatabase.child("userChatLists").child(user.getUserId()).child(chatId).child("otherUserId").setValue(currentUserId);
-        mDatabase.child("userChatLists").child(user.getUserId()).child(chatId).child("otherUserName").setValue(currentUserName)
+        Chat chat = new Chat(mChatId, mUser.getName(), mUser.getUserId(), mCurrentUserId);
+        mDatabase.child("userChatLists").child(mCurrentUserId).child(mChatId).child("chatId").setValue(mChatId);
+        mDatabase.child("userChatLists").child(mCurrentUserId).child(mChatId).child("currentUserId").setValue(mCurrentUserId);
+        mDatabase.child("userChatLists").child(mCurrentUserId).child(mChatId).child("otherUserId").setValue(mUser.getUserId());
+        mDatabase.child("userChatLists").child(mCurrentUserId).child(mChatId).child("otherUserName").setValue(mUser.getName());
+        mDatabase.child("userChatLists").child(mUser.getUserId()).child(mChatId).child("chatId").setValue(mChatId);
+        mDatabase.child("userChatLists").child(mUser.getUserId()).child(mChatId).child("currentUserId").setValue(mUser.getUserId());
+        mDatabase.child("userChatLists").child(mUser.getUserId()).child(mChatId).child("otherUserId").setValue(mCurrentUserId);
+        mDatabase.child("userChatLists").child(mUser.getUserId()).child(mChatId).child("otherUserName").setValue(mCurrentUserName)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
@@ -279,8 +302,8 @@ public class UserDetailsFragment extends Fragment {
 
     private void goChatDetails() {
             Intent intent = new Intent(getContext(), ChatDetailsActivity.class);
-            intent.putExtra("current user id", currentUserId);
-            intent.putExtra("other user id", user.getUserId());
+            intent.putExtra("current user id", mCurrentUserId);
+            intent.putExtra("other user id", mUser.getUserId());
             intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
             getActivity().startActivity(intent);
     }

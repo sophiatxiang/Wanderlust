@@ -47,7 +47,6 @@ public class LoginActivity extends AppCompatActivity {
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_login);
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
-        FirebaseAuth.getInstance().signOut();
 
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if(currentUser != null){

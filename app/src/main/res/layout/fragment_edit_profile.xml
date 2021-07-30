@@ -72,15 +72,15 @@
 
             <EditText
                 android:id="@+id/etName"
-                android:layout_width="260dp"
+                android:layout_width="250dp"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/line1"
                 android:layout_alignParentEnd="true"
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="20dp"
                 android:ems="10"
-                android:inputType="textPersonName"
                 android:hint="Name"
+                android:inputType="textPersonName"
                 android:text="Sophia Xiang" />
 
             <TextView
@@ -97,14 +97,14 @@
 
             <EditText
                 android:id="@+id/etAge"
-                android:layout_width="260dp"
+                android:layout_width="250dp"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/etName"
                 android:layout_alignParentEnd="true"
                 android:layout_marginEnd="20dp"
                 android:ems="10"
-                android:inputType="number"
                 android:hint="Age"
+                android:inputType="number"
                 android:text="19" />
 
             <TextView
@@ -127,17 +127,17 @@
                 android:layout_alignParentEnd="true"
                 android:layout_marginTop="2dp"
                 android:layout_marginEnd="10dp"
-                android:backgroundTint="@color/dark_periwinkle"/>
+                android:backgroundTint="@color/turquoise" />
 
             <View
                 android:id="@+id/line2"
-                android:layout_width="253dp"
+                android:layout_width="242dp"
                 android:layout_height="1dp"
                 android:layout_below="@id/spinnerGender"
                 android:layout_alignParentEnd="true"
                 android:layout_marginTop="-5dp"
                 android:layout_marginEnd="24dp"
-                android:background="@color/grey"/>
+                android:background="@color/grey" />
 
 
             <TextView
@@ -154,12 +154,12 @@
 
             <EditText
                 android:id="@+id/etFrom"
-                android:layout_width="260dp"
+                android:layout_width="250dp"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/line2"
                 android:layout_alignParentEnd="true"
-                android:layout_marginEnd="20dp"
                 android:layout_marginTop="5dp"
+                android:layout_marginEnd="20dp"
                 android:ems="10"
                 android:hint="Hometown"
                 android:text="Orange County, CA" />
@@ -178,15 +178,15 @@
 
             <EditText
                 android:id="@+id/etBio"
-                android:layout_width="260dp"
+                android:layout_width="250dp"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/etFrom"
                 android:layout_alignParentEnd="true"
                 android:layout_marginEnd="20dp"
                 android:ems="10"
+                android:gravity="start|top"
                 android:hint="Bio"
-                android:text="here is a sample bio!!!"
-                android:gravity="start|top"/>
+                android:text="here is a sample bio!!!" />
 
             <TextView
                 android:id="@+id/textView9"
@@ -200,23 +200,9 @@
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="@color/black" />
 
-            <EditText
-                android:id="@+id/etAdventureLevel"
-                android:layout_width="260dp"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/etBio"
-                android:layout_alignParentEnd="true"
-                android:layout_marginEnd="20dp"
-                android:layout_marginTop="5dp"
-                android:ems="10"
-                android:hint="Adventure Level Out of 5"
-                android:text="4/5"
-                android:visibility="invisible"/>
-
-
             <com.google.android.material.slider.Slider
                 android:id="@+id/sliderAdventureLevel"
-                android:layout_width="240dp"
+                android:layout_width="225dp"
                 android:layout_height="wrap_content"
                 android:layout_alignBottom="@id/textView9"
                 android:layout_alignParentEnd="true"
@@ -229,12 +215,35 @@
                 app:tickVisible="false"
                 app:trackColor="@color/light_grey" />
 
+            <TextView
+                android:id="@+id/textView11"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/textView9"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="20dp"
+                android:text="Instagram:"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="@color/black" />
+
+            <EditText
+                android:id="@+id/etInstagram"
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@id/textView11"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="-10dp"
+                android:ems="10"
+                android:hint="Instagram Username" />
+
 
             <TextView
                 android:id="@+id/textView10"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/textView9"
+                android:layout_below="@+id/textView11"
                 android:layout_alignParentStart="true"
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="30dp"

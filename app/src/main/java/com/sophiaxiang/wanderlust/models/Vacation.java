@@ -60,14 +60,6 @@ public class Vacation implements Serializable {
         this.endDate = endDate;
     }
 
-    public String getLocation() {
-        return destination;
-    }
-
-    public void setLocation(String location) {
-        this.destination = location;
-    }
-
     public String getDestination() {
         return destination;
     }

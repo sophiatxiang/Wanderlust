@@ -133,7 +133,7 @@ public class EditProfileFragment extends Fragment {
         mBinding.etAge.setText("" + mCurrentUser.getAge());
         mBinding.etFrom.setText(mCurrentUser.getFrom());
         mBinding.etBio.setText(mCurrentUser.getBio());
-        mBinding.etAdventureLevel.setText(mCurrentUser.getAdventureLevel() + "/5");
+        mBinding.etInstagram.setText("@" + mCurrentUser.getInstagram());
     }
 
 
@@ -217,7 +217,8 @@ public class EditProfileFragment extends Fragment {
         String image2 = mCurrentUser.getImage2();
         String image3 = mCurrentUser.getImage3();
         String profilePhoto = mCurrentUser.getProfilePhoto();
-        User user = new User(mFirebaseUser.getUid(), name , age, gender, from, bio, adventureLevel, image1, image2, image3, profilePhoto, mCurrentUser.getVacation());
+        String instagram = mBinding.etInstagram.getText().toString().substring(1);
+        User user = new User(mFirebaseUser.getUid(), name , age, gender, from, bio, adventureLevel, image1, image2, image3, profilePhoto, mCurrentUser.getVacation(), instagram);
         mDatabase.child("users").child(mFirebaseUser.getUid()).setValue(user)
             .addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override

@@ -22,16 +22,18 @@ public class User implements Serializable {
     private List<String> imageList;
     private List<String> likedUserIds;
     private Vacation vacation;
+    private String instagram;
 
     public User(String userId) {
         this.userId = userId;
         this.gender = "";
         adventureLevel = 1;
+        instagram = "";
     }
 
     public User(String userId, String name, int age, String gender,
                 String from, String bio, int adventureLevel, String image1,
-                String image2, String image3, String profilePhoto, Vacation vacation) {
+                String image2, String image3, String profilePhoto, Vacation vacation, String instagram) {
         this.userId = userId;
         this.name = name;
         this.age = age;
@@ -44,6 +46,7 @@ public class User implements Serializable {
         this.image3 = image3;
         this.profilePhoto = profilePhoto;
         this.vacation = vacation;
+        this.instagram = instagram;
     }
 
     public User() {
@@ -160,5 +163,13 @@ public class User implements Serializable {
 
     public void setLikedUserIds(List<String> likedUserIds) {
         this.likedUserIds = likedUserIds;
+    }
+
+    public String getInstagram() {
+        return instagram;
+    }
+
+    public void setInstagram(String instagram) {
+        this.instagram = instagram;
     }
 }

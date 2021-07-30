@@ -59,12 +59,35 @@
                    android:scaleType="centerCrop"
                    tools:srcCompat="@tools:sample/avatars" />
 
+               <RelativeLayout
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:layout_below="@+id/ivPhoto"
+                   android:layout_marginTop="-50dp">
+
+                   <com.google.android.material.floatingactionbutton.FloatingActionButton
+                       android:id="@+id/fabInstagram"
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       android:layout_alignParentEnd="true"
+                       android:layout_marginTop="20dp"
+                       android:layout_marginEnd="20dp"
+                       android:layout_marginBottom="20dp"
+                       android:backgroundTint="@color/white"
+                       android:src="@drawable/instagram_glyph"
+                       app:borderWidth="0dp"
+                       app:fabSize="auto" />
+               </RelativeLayout>
+
+
+
                <TextView
                    android:id="@+id/tvNameAge"
                    android:layout_width="wrap_content"
                    android:layout_height="wrap_content"
                    android:layout_below="@id/ivPhoto"
-                   android:layout_centerHorizontal="true"
+                   android:layout_centerHorizontal="false"
+                   android:layout_marginStart="20dp"
                    android:layout_marginTop="15dp"
                    android:text="Sophia"
                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
@@ -76,9 +99,11 @@
                    android:layout_width="wrap_content"
                    android:layout_height="wrap_content"
                    android:layout_below="@+id/tvNameAge"
-                   android:layout_centerHorizontal="true"
+                   android:layout_centerHorizontal="false"
+                   android:layout_marginStart="20dp"
                    android:layout_marginTop="10dp"
                    android:text="Reykjavic, Iceland  |  7/12/21-7/28/21"
+                   android:textColor="@color/black"
                    android:textStyle="bold" />
 
                <TextView
@@ -86,7 +111,8 @@
                    android:layout_width="360dp"
                    android:layout_height="wrap_content"
                    android:layout_below="@+id/tvLocationDate"
-                   android:layout_centerHorizontal="true"
+                   android:layout_centerHorizontal="false"
+                   android:layout_marginStart="20dp"
                    android:layout_marginTop="15dp"
                    android:text="Here is a sample bio!!! Test test test test test test test test test test test test test" />
 
@@ -96,9 +122,10 @@
                    android:layout_height="wrap_content"
                    android:layout_below="@+id/tvBio"
                    android:layout_alignParentStart="true"
-                   android:layout_marginStart="15dp"
+                   android:layout_marginStart="20dp"
                    android:layout_marginTop="15dp"
                    android:text="From:"
+                   android:textColor="@color/black"
                    android:textStyle="bold" />
 
                <TextView
@@ -116,9 +143,10 @@
                    android:layout_height="wrap_content"
                    android:layout_below="@+id/textView13"
                    android:layout_alignParentStart="true"
-                   android:layout_marginStart="15dp"
+                   android:layout_marginStart="20dp"
                    android:layout_marginTop="10dp"
                    android:text="Adventure Level:"
+                   android:textColor="@color/black"
                    android:textStyle="bold" />
 
                <TextView
@@ -145,9 +173,10 @@
                    android:layout_height="wrap_content"
                    android:layout_below="@+id/textView14"
                    android:layout_alignParentStart="true"
-                   android:layout_marginStart="15dp"
+                   android:layout_marginStart="20dp"
                    android:layout_marginTop="10dp"
                    android:text="Vacation Notes: "
+                   android:textColor="@color/black"
                    android:textStyle="bold" />
 
                <TextView
@@ -156,7 +185,7 @@
                    android:layout_height="wrap_content"
                    android:layout_below="@id/textView15"
                    android:layout_alignParentStart="true"
-                   android:layout_marginStart="15dp"
+                   android:layout_marginStart="20dp"
                    android:layout_marginTop="5dp"
                    android:text="put your vacation notes here! test test test test test " />
 
