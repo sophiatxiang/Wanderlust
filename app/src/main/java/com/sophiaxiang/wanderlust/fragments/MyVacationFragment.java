@@ -1,6 +1,5 @@
 package com.sophiaxiang.wanderlust.fragments;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -17,7 +16,6 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.google.android.gms.common.api.Status;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.AutocompleteSessionToken;
 import com.google.android.libraries.places.api.model.Place;
@@ -46,14 +44,14 @@ import static android.app.Activity.RESULT_OK;
 public class MyVacationFragment extends Fragment {
 
     public static final String TAG = "MyVacationFragment";
-    private FragmentMyVacationBinding binding;
+    private static final int AUTOCOMPLETE_REQUEST_CODE = 1;
+    private FragmentMyVacationBinding mBinding;
     private DatabaseReference mDatabase;
-    private FirebaseUser firebaseUser;
-    private Vacation vacation;
-    private PlacesClient placesClient;
-    private static int AUTOCOMPLETE_REQUEST_CODE = 1;
-    private Double latitude;
-    private Double longitude;
+    private FirebaseUser mFirebaseUser;
+    private Vacation mVacation;
+    private PlacesClient mPlacesClient;
+    private Double mLatitude;
+    private Double mLongitude;
 
 
     public MyVacationFragment() {
@@ -64,32 +62,30 @@ public class MyVacationFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_my_vacation, container, false);
-        return binding.getRoot();
+        mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_my_vacation, container, false);
+        return mBinding.getRoot();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // Initialize the SDK
+        // Initialize the SDK and create a new PlacesClient instance
         Places.initialize(getContext(), "AIzaSyDtWeLjyQ4g1uU9oow9HDjBX7T0AjPc9pQ");
-        // Create a new PlacesClient instance
-        placesClient = Places.createClient(getContext());
+        mPlacesClient = Places.createClient(getContext());
 
         Bundle bundle = getArguments();
-        vacation = (Vacation) bundle.getSerializable("vacation");
-        latitude = vacation.getLatitude();
-        longitude = vacation.getLongitude();
+        mVacation = (Vacation) bundle.getSerializable("vacation");
+        mLatitude = mVacation.getLatitude();
+        mLongitude = mVacation.getLongitude();
 
-        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        mFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
         populateViews();
         setUpDatePicker();
 
-
-        binding.btnSave.setOnClickListener(new View.OnClickListener() {
+        mBinding.btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 updateDatabaseVacation();
@@ -97,7 +93,7 @@ public class MyVacationFragment extends Fragment {
             }
         });
 
-        binding.tvEditDestination.setOnClickListener(new View.OnClickListener() {
+        mBinding.tvEditDestination.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 AutocompleteSessionToken.newInstance();
@@ -118,11 +114,10 @@ public class MyVacationFragment extends Fragment {
             if (resultCode == RESULT_OK) {
                 Place place = Autocomplete.getPlaceFromIntent(data);
                 Log.i(TAG, "Place: " + place.getName());
-                binding.tvDestination.setText(place.getAddress());
-                latitude = place.getLatLng().latitude;
-                longitude = place.getLatLng().longitude;
+                mBinding.tvDestination.setText(place.getAddress());
+                mLatitude = place.getLatLng().latitude;
+                mLongitude = place.getLatLng().longitude;
             } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
-                // TODO: Handle the error.
                 Status status = Autocomplete.getStatusFromIntent(data);
                 Log.i(TAG, status.getStatusMessage());
             } else if (resultCode == RESULT_CANCELED) {
@@ -136,23 +131,19 @@ public class MyVacationFragment extends Fragment {
     private void setUpDatePicker() {
         MaterialDatePicker.Builder<androidx.core.util.Pair<Long, Long>> materialDateBuilder = MaterialDatePicker.Builder.dateRangePicker();
         materialDateBuilder.setTitleText("SELECT A DATE");
-
         MaterialDatePicker<androidx.core.util.Pair<Long, Long>> materialDatePicker = materialDateBuilder.build();
-
-        binding.tvStartDate.setOnClickListener(
+        mBinding.tvStartDate.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-
                         materialDatePicker.show(getActivity().getSupportFragmentManager(), "MATERIAL_DATE_PICKER");
                     }
                 });
 
-        binding.tvEndDate.setOnClickListener(
+        mBinding.tvEndDate.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-
                         materialDatePicker.show(getActivity().getSupportFragmentManager(), "MATERIAL_DATE_PICKER");
                     }
                 });
@@ -162,31 +153,30 @@ public class MyVacationFragment extends Fragment {
             public void onPositiveButtonClick(Pair<Long, Long> selection) {
                 String startDate = new SimpleDateFormat("MM/dd/yyyy").format(new Date(selection.first));
                 String endDate = new SimpleDateFormat("MM/dd/yyyy").format(new Date(selection.second));
-
-                binding.tvStartDate.setText(startDate);
-                binding.tvEndDate.setText(endDate);
+                mBinding.tvStartDate.setText(startDate);
+                mBinding.tvEndDate.setText(endDate);
             }
         });
     }
 
     private void populateViews() {
-        binding.tvDestination.setText(vacation.getDestination());
-        binding.tvStartDate.setText(vacation.getStartDate());
-        binding.tvEndDate.setText(vacation.getEndDate());
-        binding.etNotes.setText(vacation.getNotes());
+        mBinding.tvDestination.setText(mVacation.getDestination());
+        mBinding.tvStartDate.setText(mVacation.getStartDate());
+        mBinding.tvEndDate.setText(mVacation.getEndDate());
+        mBinding.etNotes.setText(mVacation.getNotes());
     }
 
     private void updateDatabaseVacation() {
-        if (binding.tvDestination.getText().toString().equals("")) {
+        if (mBinding.tvDestination.getText().toString().equals("")) {
             Toast.makeText(getContext(), "Please enter a destination!", Toast.LENGTH_SHORT).show();
             return;
         }
-        String destination = binding.tvDestination.getText().toString();
-        String startDate = binding.tvStartDate.getText().toString();
-        String endDate = binding.tvEndDate.getText().toString();
-        String notes = binding.etNotes.getText().toString();
-        Vacation vacation = new Vacation(firebaseUser.getUid(), destination, startDate, endDate, notes, latitude, longitude);
-        mDatabase.child("users").child(firebaseUser.getUid()).child("vacation").setValue(vacation);
+        String destination = mBinding.tvDestination.getText().toString();
+        String startDate = mBinding.tvStartDate.getText().toString();
+        String endDate = mBinding.tvEndDate.getText().toString();
+        String notes = mBinding.etNotes.getText().toString();
+        Vacation vacation = new Vacation(mFirebaseUser.getUid(), destination, startDate, endDate, notes, mLatitude, mLongitude);
+        mDatabase.child("users").child(mFirebaseUser.getUid()).child("vacation").setValue(vacation);
         Toast.makeText(getContext(), "Vacation details saved!", Toast.LENGTH_SHORT).show();
     }
 }

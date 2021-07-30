@@ -29,7 +29,6 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.sophiaxiang.wanderlust.R;
 import com.sophiaxiang.wanderlust.adapters.LikedUserAdapter;
-import com.sophiaxiang.wanderlust.databinding.FragmentLikesBinding;
 import com.sophiaxiang.wanderlust.databinding.FragmentSearchBinding;
 
 import java.util.ArrayList;
@@ -40,7 +39,7 @@ public class LikesSearchFragment extends Fragment {
     private FragmentSearchBinding mBinding;
     private LikedUserAdapter mAdapter;
     private DatabaseReference mDatabase;
-    private String currentUserId;
+    private String mCurrentUserId;
     private List<String> mLikedUserIds;
 
     public LikesSearchFragment() {
@@ -60,13 +59,12 @@ public class LikesSearchFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-
         mDatabase = FirebaseDatabase.getInstance().getReference();
         Bundle bundle = getArguments();
-        currentUserId = (String) bundle.getSerializable("current user id");
+        mCurrentUserId = (String) bundle.getSerializable("current user id");
 
         mLikedUserIds = new ArrayList<>();
-        mAdapter = new LikedUserAdapter(getContext(), mLikedUserIds, currentUserId);
+        mAdapter = new LikedUserAdapter(getContext(), mLikedUserIds, mCurrentUserId);
         mBinding.rvSearches.setAdapter(mAdapter);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
@@ -112,9 +110,8 @@ public class LikesSearchFragment extends Fragment {
         ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
     }
 
-
     private void queryLikes(String query) {
-        Query recentLikesQuery = mDatabase.child("likedUserLists").child(currentUserId).orderByChild("likedAt");;
+        Query recentLikesQuery = mDatabase.child("likedUserLists").child(mCurrentUserId).orderByChild("likedAt");;
         recentLikesQuery.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -128,7 +125,7 @@ public class LikesSearchFragment extends Fragment {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                Log.w(TAG, "loadChats:onCancelled", databaseError.toException());
+                Log.w(TAG, "loadLikes:onCancelled", databaseError.toException());
             }
         });
     }

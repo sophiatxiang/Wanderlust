@@ -34,13 +34,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ChatSearchFragment extends Fragment {
-
     public static final String TAG = "ChatSearchFragment";
     private FragmentSearchBinding mBinding;
     private ChatAdapter mAdapter;
     private DatabaseReference mDatabase;
-    private List<Chat> allChats;
-    private String currentUserId;
+    private List<Chat> mChats;
+    private String mCurrentUserId;
 
     public ChatSearchFragment() {
         // Required empty public constructor
@@ -61,10 +60,10 @@ public class ChatSearchFragment extends Fragment {
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
         Bundle bundle = getArguments();
-        currentUserId = (String) bundle.getSerializable("current user id");
+        mCurrentUserId = (String) bundle.getSerializable("current user id");
 
-        allChats = new ArrayList<>();
-        mAdapter = new ChatAdapter(getContext(), allChats);
+        mChats = new ArrayList<>();
+        mAdapter = new ChatAdapter(getContext(), mChats);
         mBinding.rvSearches.setAdapter(mAdapter);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
@@ -80,6 +79,7 @@ public class ChatSearchFragment extends Fragment {
         final MenuItem searchItem = menu.findItem(R.id.action_search);
         final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
         searchItem.expandActionView();
+
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -113,20 +113,20 @@ public class ChatSearchFragment extends Fragment {
     }
 
     private void queryChats(String query) {
-        Query recentChatsQuery = mDatabase.child("userChatLists").child(currentUserId).limitToFirst(40).orderByChild("lastMessageTime");;
+        Query recentChatsQuery = mDatabase.child("userChatLists").child(mCurrentUserId).limitToFirst(40).orderByChild("lastMessageTime");;
         recentChatsQuery.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                allChats.clear();
+                mChats.clear();
                 mBinding.tvNoSearchResults.setVisibility(View.GONE);
                 for (DataSnapshot chatSnapshot: dataSnapshot.getChildren()) {
                     Chat chat = chatSnapshot.getValue(Chat.class);
                     if (chat.getLastMessageTime() != 0 && chat.getOtherUserName().toLowerCase().contains(query.toLowerCase())) {
-                        allChats.add(0, chat);
+                        mChats.add(0, chat);
                     }
                 }
                 mAdapter.notifyDataSetChanged();
-                if (allChats.size() == 0) mBinding.tvNoSearchResults.setVisibility(View.VISIBLE);
+                if (mChats.size() == 0) mBinding.tvNoSearchResults.setVisibility(View.VISIBLE);
             }
 
             @Override

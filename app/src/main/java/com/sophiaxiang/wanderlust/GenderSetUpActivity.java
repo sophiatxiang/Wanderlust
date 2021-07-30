@@ -8,7 +8,6 @@ import androidx.databinding.DataBindingUtil;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -18,33 +17,30 @@ import android.widget.Toast;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.sophiaxiang.wanderlust.databinding.ActivityAgeSetUpBinding;
 import com.sophiaxiang.wanderlust.databinding.ActivityGenderSetUpBinding;
 
 public class GenderSetUpActivity extends AppCompatActivity {
-
     public static final String TAG = "GenderSetUpActivity";
     private static final String[] GENDER_CHOICES = {"select a gender...", "female", "male", "other"};
     private ActivityGenderSetUpBinding mBinding;
     private DatabaseReference mDatabase;
-    private String userId;
-    private String gender;
+    private String mUserId;
+    private String mGender;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_gender_set_up);
 
-        userId = getIntent().getStringExtra("user id");
-
         mDatabase = FirebaseDatabase.getInstance().getReference();
+        mUserId = getIntent().getStringExtra("user id");
 
         setUpSpinner();
 
         mBinding.btnContinue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (gender.equals("")){
+                if (mGender.equals("")){
                     Toast.makeText(GenderSetUpActivity.this, "Please select a gender!", Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -71,7 +67,6 @@ public class GenderSetUpActivity extends AppCompatActivity {
                 return view;
             }
         };
-
         adapter.setDropDownViewResource(R.layout.item_spinner);
         mBinding.spinnerGenderSetUp.setAdapter(adapter);
 
@@ -81,31 +76,31 @@ public class GenderSetUpActivity extends AppCompatActivity {
                 String selectedItemText;
                 switch (position) {
                     case 0:
-                        gender = "";
+                        mGender = "";
                         break;
                     case 1:
                     case 2:
                     case 3:
                         selectedItemText = (String) parent.getItemAtPosition(position);
-                        gender = selectedItemText;
+                        mGender = selectedItemText;
                         break;
                 }
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                gender = "";
+                mGender = "";
             }
         });
     }
 
     private void saveGender() {
-        mDatabase.child("users").child(userId).child("gender").setValue(gender);
+        mDatabase.child("users").child(mUserId).child("gender").setValue(mGender);
     }
 
     private void goHometownSetUp() {
         Intent intent = new Intent(GenderSetUpActivity.this, FromSetUpActivity.class);
-        intent.putExtra("user id", userId);
+        intent.putExtra("user id", mUserId);
         startActivity(intent);
         overridePendingTransition(R.anim.fadein, R.anim.fadeout);
     }

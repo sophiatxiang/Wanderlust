@@ -13,7 +13,6 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
@@ -24,15 +23,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
@@ -48,17 +42,16 @@ import java.io.IOException;
 public class TakePhotoFragment extends Fragment {
     public static final String TAG = "ComposeProfilePicFragment";
     public static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 42;
-    public final static int PICK_PHOTO_CODE = 1046;
-    public static final String KEY_CAMERA_PHOTO = "cameraPhoto";
-    private File photoFile;
-    public String photoFileName = "photo.jpg";
-    private FragmentTakePhotoBinding binding;
-    private FirebaseStorage storage;
-    private StorageReference storageRef;
-    private StorageReference photoLocationRef;
+    public static final int PICK_PHOTO_CODE = 1046;
+    private FragmentTakePhotoBinding mBinding;
     private DatabaseReference mDatabase;
-    private String currentUserId;
-    private String imageNumber;
+    private FirebaseStorage mStorage;
+    private StorageReference mStorageRef;
+    private StorageReference mPhotoLocationRef;
+    private File mPhotoFile;
+    public String mPhotoFileName = "photo.jpg";
+    private String mCurrentUserId;
+    private String mImageNumber;
 
     public TakePhotoFragment() {
         // Required empty public constructor
@@ -67,8 +60,8 @@ public class TakePhotoFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_take_photo, container, false);
-        return binding.getRoot();
+        mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_take_photo, container, false);
+        return mBinding.getRoot();
     }
 
 
@@ -76,23 +69,26 @@ public class TakePhotoFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        currentUserId = getArguments().getString("current user id");
-        imageNumber = getArguments().getString("image number");
+        mCurrentUserId = getArguments().getString("current user id");
+        mImageNumber = getArguments().getString("image number");
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
-        storage = FirebaseStorage.getInstance();
-        storageRef = storage.getReference();
-        photoLocationRef = storageRef.child(currentUserId).child(imageNumber + ".jpg");
+        mStorage = FirebaseStorage.getInstance();
+        mStorageRef = mStorage.getReference();
+        mPhotoLocationRef = mStorageRef.child(mCurrentUserId).child(mImageNumber + ".jpg");
 
+        setUpButtons();
+    }
 
-        binding.btnCaptureImage.setOnClickListener(new View.OnClickListener() {
+    private void setUpButtons() {
+        mBinding.btnCaptureImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 launchCamera();
             }
         });
 
-        binding.btnImportPhoto.setOnClickListener(new View.OnClickListener() {
+        mBinding.btnImportPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 launchGallery();
@@ -100,10 +96,10 @@ public class TakePhotoFragment extends Fragment {
         });
 
         // if button is clicked, attempt to save image
-        binding.btnSubmitPhoto.setOnClickListener(new View.OnClickListener() {
+        mBinding.btnSubmitPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (binding.ivCameraPhoto.getDrawable() == null) {
+                if (mBinding.ivCameraPhoto.getDrawable() == null) {
                     Toast.makeText(getContext(), "There is no image!", Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -117,12 +113,11 @@ public class TakePhotoFragment extends Fragment {
         // create Intent to take a picture and return control to the calling application
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         // Create a File reference for future access
-        photoFile = getPhotoFileUri(photoFileName);
-
+        mPhotoFile = getPhotoFileUri(mPhotoFileName);
         // wrap File object into a content provider
         // required for API >= 24
         // See https://guides.codepath.com/android/Sharing-Content-with-Intents#sharing-files-with-api-24-or-higher
-        Uri fileProvider = FileProvider.getUriForFile(getContext(), "com.codepath.fileprovider", photoFile);
+        Uri fileProvider = FileProvider.getUriForFile(getContext(), "com.codepath.fileprovider", mPhotoFile);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, fileProvider);
 
         if (intent.resolveActivity(getContext().getPackageManager()) != null) {
@@ -150,10 +145,10 @@ public class TakePhotoFragment extends Fragment {
         if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
                 // by this point we have the camera photo on disk
-                Bitmap takenImage = BitmapFactory.decodeFile(photoFile.getAbsolutePath());
+                Bitmap takenImage = BitmapFactory.decodeFile(mPhotoFile.getAbsolutePath());
                 // Load the taken image into a preview
-                binding.ivCameraPhoto.setImageBitmap(getSquareCropBitmap(takenImage));
-                binding.btnSubmitPhoto.setVisibility(View.VISIBLE);
+                mBinding.ivCameraPhoto.setImageBitmap(getSquareCropBitmap(takenImage));
+                mBinding.btnSubmitPhoto.setVisibility(View.VISIBLE);
             } else { // Result was a failure
                 Toast.makeText(getContext(), "Picture wasn't taken!", Toast.LENGTH_SHORT).show();
             }
@@ -165,8 +160,8 @@ public class TakePhotoFragment extends Fragment {
             // Load the image located at photoUri into selectedImage
             Bitmap selectedImage = loadFromUri(photoUri);
             // Load the selected image into a preview
-            binding.ivCameraPhoto.setImageBitmap(getSquareCropBitmap(selectedImage));
-            binding.btnSubmitPhoto.setVisibility(View.VISIBLE);
+            mBinding.ivCameraPhoto.setImageBitmap(getSquareCropBitmap(selectedImage));
+            mBinding.btnSubmitPhoto.setVisibility(View.VISIBLE);
         }
     }
 
@@ -209,12 +204,12 @@ public class TakePhotoFragment extends Fragment {
     // save image to Firebase Storage
     private void saveImage(){
         // Get the data from an ImageView as bytes
-        Bitmap bitmap = ((BitmapDrawable) binding.ivCameraPhoto.getDrawable()).getBitmap();
+        Bitmap bitmap = ((BitmapDrawable) mBinding.ivCameraPhoto.getDrawable()).getBitmap();
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
         byte[] data = baos.toByteArray();
 
-        UploadTask uploadTask = photoLocationRef.putBytes(data);
+        UploadTask uploadTask = mPhotoLocationRef.putBytes(data);
         uploadTask.addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception exception) {
@@ -225,7 +220,6 @@ public class TakePhotoFragment extends Fragment {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
-                // ...
                 Toast.makeText(getContext(), "Success saving image!", Toast.LENGTH_SHORT).show();
                 downloadImageUri();
             }
@@ -234,11 +228,11 @@ public class TakePhotoFragment extends Fragment {
 
     // after saving image to Firebase Storage, download image Uri and save to Realtime Database
     private void downloadImageUri() {
-        photoLocationRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+        mPhotoLocationRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
                 // Got the download URL for 'users/me/profile.png'
-                mDatabase.child("users").child(currentUserId).child(imageNumber).setValue(uri.toString());
+                mDatabase.child("users").child(mCurrentUserId).child(mImageNumber).setValue(uri.toString());
                 Log.i(TAG, "successfully downloaded image Uri: " + uri.toString());
                 getActivity().getSupportFragmentManager().popBackStack();
             }

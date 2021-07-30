@@ -32,7 +32,6 @@ import com.sophiaxiang.wanderlust.models.User;
 import com.sophiaxiang.wanderlust.models.Vacation;
 
 public class LoginActivity extends AppCompatActivity {
-
     public static final String TAG = "LoginActivity";
     public static final int RC_SIGN_IN = 1;
     private FirebaseAuth mAuth;
@@ -49,10 +48,11 @@ public class LoginActivity extends AppCompatActivity {
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        if(currentUser != null){
+        if(currentUser != null) {
             goMainActivity();
         }
 
+        // set up Google Sign In
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken("821336921939-b2p7bdcqbf7bkmbmm3rctpf5cji9qrab.apps.googleusercontent.com")
                 .requestEmail()
@@ -63,11 +63,9 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void setUpButtons() {
-
         mBinding.btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.i(TAG, "onClick login button");
                 String email = mBinding.etEmail.getText().toString();
                 String password = mBinding.etPassword.getText().toString();
                 logInUser(email, password);
@@ -105,8 +103,7 @@ public class LoginActivity extends AppCompatActivity {
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.e(TAG, "signInWithEmail:failure", task.getException());
-                            Toast.makeText(LoginActivity.this, "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
+                            Toast.makeText(LoginActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
                             return;
                         }
                     }
@@ -131,7 +128,7 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    //get an ID token from the GoogleSignInAccount object, exchange it for a Firebase credential, and authenticate with Firebase using the Firebase credential
+    // get an ID token from the GoogleSignInAccount object, exchange it for a Firebase credential, and authenticate with Firebase using the Firebase credential
     private void firebaseAuthWithGoogle(String idToken) {
         AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
         mAuth.signInWithCredential(credential)
@@ -165,7 +162,6 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
-
 
     private void createDatabaseUserProfile(String userId) {
         User user = new User(userId);
@@ -201,7 +197,6 @@ public class LoginActivity extends AppCompatActivity {
                 });
     }
 
-
     private void goNameSetUpActivity() {
         Intent intent = new Intent(LoginActivity.this, NameSetUpActivity.class);
         intent.putExtra("user id", mFirebaseUser.getUid());
@@ -210,7 +205,6 @@ public class LoginActivity extends AppCompatActivity {
         finish();
     }
 
-    // go to main activity and close/finish login activity
     private void goMainActivity() {
         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
         startActivity(intent);

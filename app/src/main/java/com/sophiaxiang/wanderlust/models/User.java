@@ -26,9 +26,9 @@ public class User implements Serializable {
 
     public User(String userId) {
         this.userId = userId;
+        this.adventureLevel = 1;
         this.gender = "";
-        adventureLevel = 1;
-        instagram = "";
+        this.instagram = "";
     }
 
     public User(String userId, String name, int age, String gender,

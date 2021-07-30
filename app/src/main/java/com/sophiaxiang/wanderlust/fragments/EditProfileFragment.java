@@ -38,7 +38,6 @@ import com.sophiaxiang.wanderlust.databinding.FragmentEditProfileBinding;
 import com.sophiaxiang.wanderlust.models.User;
 
 public class EditProfileFragment extends Fragment {
-
     public static final String TAG = "EditProfileFragment";
     private static final String[] GENDER_CHOICES = {"select a gender...", "female", "male", "other"};
     private FragmentEditProfileBinding mBinding;
@@ -141,13 +140,13 @@ public class EditProfileFragment extends Fragment {
         ValueEventListener userListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                // Get Post object and use the values to update the UI
+                // Get user object and use the values to update the UI
                 mCurrentUser = dataSnapshot.getValue(User.class);
                 populateImageViews();
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                // Getting Post failed, log a message
+                // Getting user failed, log a message
                 Log.w(TAG, "load User profile:onCancelled", databaseError.toException());
             }
         };
@@ -156,11 +155,10 @@ public class EditProfileFragment extends Fragment {
 
 
     private void populateImageViews() {
-        // populate user photos
+        // populate user's images
         if (mCurrentUser.getImage1() == null) {
             mBinding.ivImage1.setImageResource(R.drawable.add_image);
-        }
-        else {
+        } else {
             Glide.with(mBinding.ivImage1.getContext())
                     .load(Uri.parse(mCurrentUser.getImage1()))
                     .placeholder(R.drawable.add_image)
@@ -169,17 +167,16 @@ public class EditProfileFragment extends Fragment {
 
         if (mCurrentUser.getImage2() == null) {
             mBinding.ivImage2.setImageResource(R.drawable.add_image);
-        }
-        else {
+        } else {
             Glide.with(mBinding.ivImage2.getContext())
                     .load(Uri.parse(mCurrentUser.getImage2()))
                     .placeholder(R.drawable.add_image)
                     .into(mBinding.ivImage2);
         }
+
         if (mCurrentUser.getImage3() == null) {
             mBinding.ivImage3.setImageResource(R.drawable.add_image);
-        }
-        else {
+        } else {
             Glide.with(mBinding.ivImage3.getContext())
                     .load(Uri.parse(mCurrentUser.getImage3()))
                     .placeholder(R.drawable.add_image)
@@ -192,8 +189,7 @@ public class EditProfileFragment extends Fragment {
                     .load(R.drawable.no_profile_pic)
                     .circleCrop()
                     .into(mBinding.ivProfilePhoto);
-        }
-        else {
+        } else {
             Glide.with(mBinding.ivProfilePhoto.getContext())
                     .load(Uri.parse(mCurrentUser.getProfilePhoto()))
                     .circleCrop()
@@ -207,6 +203,24 @@ public class EditProfileFragment extends Fragment {
             Toast.makeText(getContext(), "Please enter an age!", Toast.LENGTH_SHORT).show();
             return;
         }
+        User user = getEditedValues();
+        mDatabase.child("users").child(mFirebaseUser.getUid()).setValue(user)
+            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    Toast.makeText(getContext(), "Save successful!", Toast.LENGTH_SHORT).show();
+                    getActivity().getSupportFragmentManager().popBackStack();
+                }
+            })
+            .addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Log.e(TAG, "failure to update profile: ", e);
+                }
+            });
+    }
+
+    private User getEditedValues() {
         String name = mBinding.etName.getText().toString();
         Integer age = Integer.parseInt(mBinding.etAge.getText().toString());
         String gender = mCurrentUser.getGender();
@@ -218,21 +232,9 @@ public class EditProfileFragment extends Fragment {
         String image3 = mCurrentUser.getImage3();
         String profilePhoto = mCurrentUser.getProfilePhoto();
         String instagram = mBinding.etInstagram.getText().toString().substring(1);
-        User user = new User(mFirebaseUser.getUid(), name , age, gender, from, bio, adventureLevel, image1, image2, image3, profilePhoto, mCurrentUser.getVacation(), instagram);
-        mDatabase.child("users").child(mFirebaseUser.getUid()).setValue(user)
-            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                @Override
-                public void onSuccess(Void aVoid) {
-                    Toast.makeText(getContext(), "save successful!", Toast.LENGTH_SHORT).show();
-                    getActivity().getSupportFragmentManager().popBackStack();
-                }
-            })
-            .addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Log.e(TAG, "failure to update profile: ", e);
-                }
-            });
+
+        return new User(mFirebaseUser.getUid(), name , age, gender, from, bio,
+                adventureLevel, image1, image2, image3, profilePhoto, mCurrentUser.getVacation(), instagram);
     }
 
 

@@ -12,23 +12,21 @@ import android.widget.Toast;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.sophiaxiang.wanderlust.databinding.ActivityAgeSetUpBinding;
-import com.sophiaxiang.wanderlust.databinding.ActivityNameSetUpBinding;
 
 public class AgeSetUpActivity extends AppCompatActivity {
 
     public static final String TAG = "AgeSetUpActivity";
     private ActivityAgeSetUpBinding mBinding;
     private DatabaseReference mDatabase;
-    private String userId;
+    private String mUserId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_age_set_up);
 
-        userId = getIntent().getStringExtra("user id");
-
         mDatabase = FirebaseDatabase.getInstance().getReference();
+        mUserId = getIntent().getStringExtra("user id");
 
         mBinding.btnContinue.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -44,12 +42,12 @@ public class AgeSetUpActivity extends AppCompatActivity {
     }
 
     private void saveAge() {
-        mDatabase.child("users").child(userId).child("age").setValue(Integer.parseInt(mBinding.etAgeSetUp.getText().toString()));
+        mDatabase.child("users").child(mUserId).child("age").setValue(Integer.parseInt(mBinding.etAgeSetUp.getText().toString()));
     }
 
     private void goGenderSetUp() {
         Intent intent = new Intent(AgeSetUpActivity.this, GenderSetUpActivity.class);
-        intent.putExtra("user id", userId);
+        intent.putExtra("user id", mUserId);
         startActivity(intent);
         overridePendingTransition(R.anim.fadein, R.anim.fadeout);
     }

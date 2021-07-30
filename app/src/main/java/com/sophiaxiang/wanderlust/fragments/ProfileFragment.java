@@ -1,7 +1,6 @@
 package com.sophiaxiang.wanderlust.fragments;
 
 import android.content.Intent;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -10,30 +9,20 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.Toast;
-import android.widget.ViewSwitcher;
 
 import com.bumptech.glide.Glide;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.sophiaxiang.wanderlust.ChatDetailsActivity;
-import com.sophiaxiang.wanderlust.MainActivity;
 import com.sophiaxiang.wanderlust.R;
 import com.sophiaxiang.wanderlust.databinding.FragmentProfileBinding;
 import com.sophiaxiang.wanderlust.models.User;
@@ -45,15 +34,15 @@ import java.util.List;
 public class ProfileFragment extends Fragment {
 
     public static final String TAG = "ProfileFragment";
-    private FragmentProfileBinding binding;
+    private FragmentProfileBinding mBinding;
     private DatabaseReference mDatabase;
-    private DatabaseReference currentUserNodeReference;
-    private DatabaseReference vacationDetailsReference;
+    private DatabaseReference mCurrentUserNodeReference;
+    private DatabaseReference mVacationDetailsReference;
     private String currentUserId;
-    private User user;
-    private Vacation vacation;
-    private List<String> currentUserImages;
-    private int position = 0;
+    private User mCurrentUser;
+    private Vacation mVacation;
+    private List<String> mCurrentUserImages;
+    private int mPosition;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -63,8 +52,8 @@ public class ProfileFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_profile, container, false);
-        return binding.getRoot();
+        mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_profile, container, false);
+        return mBinding.getRoot();
     }
 
     @Override
@@ -73,20 +62,23 @@ public class ProfileFragment extends Fragment {
 
         currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         mDatabase = FirebaseDatabase.getInstance().getReference();
-        currentUserNodeReference = mDatabase.child("users").child(currentUserId);
-        vacationDetailsReference = mDatabase.child("users").child(currentUserId).child("vacation");
+        mCurrentUserNodeReference = mDatabase.child("users").child(currentUserId);
+        mVacationDetailsReference = mDatabase.child("users").child(currentUserId).child("vacation");
 
         Bundle bundle = getArguments();
-        user = (User) bundle.getSerializable("current user");
-        vacation = (Vacation) bundle.getSerializable("vacation");
+        mCurrentUser = (User) bundle.getSerializable("current user");
+        mVacation = (Vacation) bundle.getSerializable("vacation");
 
-        currentUserImages = new ArrayList<>();
+        mCurrentUserImages = new ArrayList<>();
+        mPosition = 0;
         populateImageList();
 
         setUpToolBar(view);
         setUpButtons();
+
         populateProfileViews();
         populateVacationViews();
+
         setProfileInfoListener();
         setVacationInfoListener();
     }
@@ -98,64 +90,62 @@ public class ProfileFragment extends Fragment {
     }
 
     private void setUpButtons() {
-        binding.btnEditProfile.setOnClickListener(new View.OnClickListener() {
+        mBinding.btnEditProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 goEditProfileFrag();
             }
         });
 
-        binding.btnEditVacation.setOnClickListener(new View.OnClickListener() {
+        mBinding.btnEditVacation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 goEditVacationFrag();
             }
         });
 
-        binding.btnPrevious.setOnClickListener(new View.OnClickListener() {
+        mBinding.btnPrevious.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(position>0)
-                    position--;
-                if (currentUserImages.get(position) != null) {
-                    Glide.with(binding.ivPhoto.getContext())
-                            .load(Uri.parse(currentUserImages.get(position)))
-                            .into(binding.ivPhoto);
+                if(mPosition >0) mPosition--;
+                if (mCurrentUserImages.get(mPosition) != null) {
+                    Glide.with(mBinding.ivPhoto.getContext())
+                            .load(Uri.parse(mCurrentUserImages.get(mPosition)))
+                            .into(mBinding.ivPhoto);
                 }
             }
         });
 
-        binding.btnNext.setOnClickListener(new View.OnClickListener() {
+        mBinding.btnNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(position<currentUserImages.size()-1)
-                    position++;
-                if (currentUserImages.get(position) != null) {
-                    Glide.with(binding.ivPhoto.getContext())
-                            .load(Uri.parse(currentUserImages.get(position)))
-                            .into(binding.ivPhoto);
+                if(mPosition < mCurrentUserImages.size()-1) mPosition++;
+                if (mCurrentUserImages.get(mPosition) != null) {
+                    Glide.with(mBinding.ivPhoto.getContext())
+                            .load(Uri.parse(mCurrentUserImages.get(mPosition)))
+                            .into(mBinding.ivPhoto);
                 }
             }
         });
 
-        binding.fabInstagram.setOnClickListener(new View.OnClickListener() {
+        mBinding.fabInstagram.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (user.getInstagram().equals("")) {
-                    Toast.makeText(getContext(), "Please provide you Instagram username!", Toast.LENGTH_SHORT).show();
+                if (mCurrentUser.getInstagram().equals("")) {
+                    Toast.makeText(getContext(), "Please provide youR Instagram username!", Toast.LENGTH_SHORT).show();
                 }
                 else {
-                    Uri appUri = Uri.parse("https://instagram.com/_u/" + user.getInstagram());
-                    Uri browserUri = Uri.parse("https://instagram.com/" + user.getInstagram());
+                    Uri appUri = Uri.parse("https://instagram.com/_u/" + mCurrentUser.getInstagram());
+                    Uri browserUri = Uri.parse("https://instagram.com/" + mCurrentUser.getInstagram());
 
-                    try{ //first try to open in instagram app
+                    try { //first try to open in instagram app
                         Intent appIntent = getActivity().getPackageManager().getLaunchIntentForPackage("com.instagram.android");
                         if(appIntent != null){
                             appIntent.setAction(Intent.ACTION_VIEW);
                             appIntent.setData(appUri);
                             startActivity(appIntent);
                         }
-                    }catch(Exception e){ //or else open in browser
+                    } catch(Exception e){ //or else open in browser
                         Intent browserIntent = new Intent(Intent.ACTION_VIEW, browserUri);
                         startActivity(browserIntent);
                     }
@@ -169,18 +159,18 @@ public class ProfileFragment extends Fragment {
         ValueEventListener vacationListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                // Get Post object and use the values to update the UI
-                vacation = dataSnapshot.getValue(Vacation.class);
+                // Get Vacation object and use the values to update the UI
+                mVacation = dataSnapshot.getValue(Vacation.class);
                 populateVacationViews();
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                // Getting Post failed, log a message
+                // Getting Vacation failed, log a message
                 Log.w(TAG, "load Vacation:onCancelled", databaseError.toException());
             }
         };
-        vacationDetailsReference.addValueEventListener(vacationListener);
+        mVacationDetailsReference.addValueEventListener(vacationListener);
     }
 
 
@@ -188,65 +178,62 @@ public class ProfileFragment extends Fragment {
         ValueEventListener userListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                // Get Post object and use the values to update the UI
-                user = dataSnapshot.getValue(User.class);
+                // Get User object and use the values to update the UI
+                mCurrentUser = dataSnapshot.getValue(User.class);
                 populateProfileViews();
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                // Getting Post failed, log a message
+                // Getting User failed, log a message
                 Log.w(TAG, "load User profile:onCancelled", databaseError.toException());
             }
         };
-        currentUserNodeReference.addValueEventListener(userListener);
+        mCurrentUserNodeReference.addValueEventListener(userListener);
     }
 
+
     private void populateProfileViews() {
-        binding.tvNameAge.setText(user.getName() + ", " + user.getAge());
-        binding.tvBio.setText(user.getBio());
-        binding.tvFrom.setText(user.getFrom());
-        binding.tvAdventureLevel.setText(user.getAdventureLevel() + "/5");
+        mBinding.tvNameAge.setText(mCurrentUser.getName() + ", " + mCurrentUser.getAge());
+        mBinding.tvBio.setText(mCurrentUser.getBio());
+        mBinding.tvFrom.setText(mCurrentUser.getFrom());
+        mBinding.tvAdventureLevel.setText(mCurrentUser.getAdventureLevel() + "/5");
         populateImageList();
     }
 
-
     private void populateVacationViews() {
-        if (!vacation.getDestination().equals("")) {
-            binding.tvLocationDate.setText(vacation.getDestination() + "   |   " + vacation.getStartDate() + " - " + vacation.getEndDate());
+        if (!mVacation.getDestination().equals("")) {
+            mBinding.tvLocationDate.setText(mVacation.getDestination() + "   |   " + mVacation.getStartDate() + " - " + mVacation.getEndDate());
         }
-        else binding.tvLocationDate.setText("No vacation details yet");
-        binding.tvVacationNotes.setText(vacation.getNotes());
+        else mBinding.tvLocationDate.setText("No vacation details yet");
+        mBinding.tvVacationNotes.setText(mVacation.getNotes());
     }
 
-
+    // fills ArrayList with Uri's for the user's images
     private void populateImageList() {
-        currentUserImages.clear();
-        currentUserImages.add(user.getImage1());
-        currentUserImages.add(user.getImage2());
-        currentUserImages.add(user.getImage3());
+        mCurrentUserImages.clear();
+        mCurrentUserImages.add(mCurrentUser.getImage1());
+        mCurrentUserImages.add(mCurrentUser.getImage2());
+        mCurrentUserImages.add(mCurrentUser.getImage3());
         populateImageView();
     }
 
-
     private void populateImageView() {
-        if (user.getImage1() == null){
-            binding.ivPhoto.setImageResource(R.drawable.add_image);
-        }
-        else {
-            position = 0;
-            Glide.with(binding.ivPhoto.getContext())
-                    .load(Uri.parse(currentUserImages.get(position)))
-                    .into(binding.ivPhoto);
+        if (mCurrentUser.getImage1() == null){
+            mBinding.ivPhoto.setImageResource(R.drawable.add_image);
+        } else {
+            mPosition = 0;
+            Glide.with(mBinding.ivPhoto.getContext())
+                    .load(Uri.parse(mCurrentUserImages.get(mPosition)))
+                    .into(mBinding.ivPhoto);
         }
     }
 
-    // launch edit Profile Fragment
     private void goEditProfileFrag() {
         AppCompatActivity activity = (AppCompatActivity) getContext();
         Fragment fragment = new EditProfileFragment();
         Bundle bundle = new Bundle();
-        bundle.putSerializable("current user", user);
+        bundle.putSerializable("current user", mCurrentUser);
         fragment.setArguments(bundle);
         activity.getSupportFragmentManager().beginTransaction()
                 .replace(R.id.flContainer, fragment)
@@ -254,12 +241,11 @@ public class ProfileFragment extends Fragment {
                 .commit();
     }
 
-    // launch Edit Vacation Fragment
     private void goEditVacationFrag() {
         AppCompatActivity activity = (AppCompatActivity) getContext();
         Fragment fragment = new MyVacationFragment();
         Bundle bundle = new Bundle();
-        bundle.putSerializable("vacation", vacation);
+        bundle.putSerializable("vacation", mVacation);
         fragment.setArguments(bundle);
         activity.getSupportFragmentManager().beginTransaction()
                 .replace(R.id.flContainer, fragment)

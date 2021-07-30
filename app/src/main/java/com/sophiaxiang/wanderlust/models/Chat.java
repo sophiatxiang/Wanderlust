@@ -17,9 +17,7 @@ public class Chat {
         this.currentUserId = currentUserId;
     }
 
-    public Chat() {
-
-    }
+    public Chat() {}
 
     @Override
     public boolean equals(Object o) {

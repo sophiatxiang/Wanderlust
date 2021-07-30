@@ -13,7 +13,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -27,7 +26,6 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.sophiaxiang.wanderlust.databinding.ActivityMainBinding;
 import com.sophiaxiang.wanderlust.fragments.ChatFragment;
-import com.sophiaxiang.wanderlust.fragments.ChatSearchFragment;
 import com.sophiaxiang.wanderlust.fragments.FeedFragment;
 import com.sophiaxiang.wanderlust.fragments.LikesFragment;
 import com.sophiaxiang.wanderlust.fragments.ProfileFragment;
@@ -36,21 +34,21 @@ import com.sophiaxiang.wanderlust.models.Vacation;
 
 public class MainActivity extends AppCompatActivity {
 
-    public static final String TAG = "MainActivity";
-    private User currentUser;
-    public Vacation currentUserVacation;
-    public String currentUserId;
-    public DatabaseReference mDatabase;
-    public StorageReference mStorage;
-    private ActivityMainBinding binding;
-    final FragmentManager fragmentManager = getSupportFragmentManager();
+    private static final String TAG = "MainActivity";
+    private final FragmentManager fragmentManager = getSupportFragmentManager();
+    private ActivityMainBinding mBinding;
+    private DatabaseReference mDatabase;
+    private StorageReference mStorage;
+    private User mCurrentUser;
+    private Vacation mCurrentUserVacation;
+    private String mCurrentUserId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
 
-        currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        mCurrentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         mDatabase = FirebaseDatabase.getInstance().getReference();
         mStorage = FirebaseStorage.getInstance().getReference();
 
@@ -86,17 +84,16 @@ public class MainActivity extends AppCompatActivity {
                 goLoginActivity();
             }
         });
-
         bottomSheetDialog.show();
     }
 
     private void getCurrentUserVacation() {
-        DatabaseReference vacationDetailsReference = mDatabase.child("users").child(currentUserId).child("vacation");
+        DatabaseReference vacationDetailsReference = mDatabase.child("users").child(mCurrentUserId).child("vacation");
         ValueEventListener vacationListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                // Get Post object and use the values to update the UI
-                currentUserVacation = dataSnapshot.getValue(Vacation.class);
+                // Get Vacation object and use the values to update the UI
+                mCurrentUserVacation = dataSnapshot.getValue(Vacation.class);
             }
 
             @Override
@@ -108,17 +105,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void getCurrentUser() {
-        DatabaseReference currentUserReference = mDatabase.child("users").child(currentUserId);
+        DatabaseReference currentUserReference = mDatabase.child("users").child(mCurrentUserId);
         ValueEventListener userListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                // Get Post object and use the values to update the UI
-                currentUser = dataSnapshot.getValue(User.class);
+                // Get User object and use the values to update the UI
+                mCurrentUser = dataSnapshot.getValue(User.class);
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                // Getting Post failed, log a message
                 Log.w(TAG, "load User profile:onCancelled", databaseError.toException());
             }
         };
@@ -126,37 +122,33 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setUpBottomNavigation() {
-        binding.bottomNavigation.setOnItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+        mBinding.bottomNavigation.setOnItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull  MenuItem menuItem) {
                 Fragment fragment;
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("current user id", mCurrentUserId);
                 switch (menuItem.getItemId()) {
                     case R.id.action_home:
                         fragment = new FeedFragment();
-                        Bundle feedBundle = new Bundle();
-                        feedBundle.putSerializable("current user id", currentUserId);
-                        fragment.setArguments(feedBundle);
+                        fragment.setArguments(bundle);
                         fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).addToBackStack(null).commit();
                         break;
                     case R.id.action_likes:
                         fragment = new LikesFragment();
-                        Bundle likesBundle = new Bundle();
-                        likesBundle.putSerializable("current user id", currentUserId);
-                        fragment.setArguments(likesBundle);
+                        fragment.setArguments(bundle);
                         fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).addToBackStack(null).commit();
                         break;
                     case R.id.action_chat:
                         fragment = new ChatFragment();
-                        Bundle chatBundle = new Bundle();
-                        chatBundle.putSerializable("current user id", currentUserId);
-                        fragment.setArguments(chatBundle);
+                        fragment.setArguments(bundle);
                         fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).addToBackStack(null).commit();
                         break;
                     case R.id.action_profile:
                         fragment = new ProfileFragment();
                         Bundle profileBundle = new Bundle();
-                        profileBundle.putSerializable("current user", currentUser);
-                        profileBundle.putSerializable("vacation", currentUserVacation);
+                        profileBundle.putSerializable("current user", mCurrentUser);
+                        profileBundle.putSerializable("vacation", mCurrentUserVacation);
                         fragment.setArguments(profileBundle);
                         fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).addToBackStack(null).commit();
                         break;
@@ -164,7 +156,7 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
-        binding.bottomNavigation.setSelectedItemId(R.id.action_home);
+        mBinding.bottomNavigation.setSelectedItemId(R.id.action_home);
     }
 
     public void goLoginActivity () {

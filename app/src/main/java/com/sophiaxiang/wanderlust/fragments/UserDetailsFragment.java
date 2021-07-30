@@ -78,11 +78,11 @@ public class UserDetailsFragment extends Fragment {
         mUserImages = new ArrayList<>();
         populateImageList();
 
+        setUpButtons();
         getCurrentUserName();
         checkIfUserLiked();
         checkIfHasInstagram();
 
-        setUpButtons();
         populateProfileViews();
         populateVacationViews();
 
@@ -104,24 +104,22 @@ public class UserDetailsFragment extends Fragment {
         });
     }
 
-
     private void checkIfUserLiked() {
        mDatabase.child("likedUserLists").child(mCurrentUserId).child(mUser.getUserId()).addValueEventListener(new ValueEventListener() {
            @Override
            public void onDataChange(@NonNull DataSnapshot snapshot) {
                if (snapshot.exists()) {
-                   mBinding.fab.setSelected(true);
+                   mBinding.fabLike.setSelected(true);
                } else {
-                   mBinding.fab.setSelected(false);
+                   mBinding.fabLike.setSelected(false);
                }
            }
 
            @Override
            public void onCancelled(@NonNull DatabaseError error) {
-
+               Log.d(TAG, "onCancelled checkIfUserLiked");
            }
        });
-
     }
 
     private void checkIfHasInstagram() {
@@ -142,35 +140,40 @@ public class UserDetailsFragment extends Fragment {
         mBinding.btnPrevious.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mPosition >0)
+                if(mPosition >0) {
                     mPosition--;
-                Glide.with(mBinding.ivPhoto.getContext())
-                        .load(Uri.parse(mUserImages.get(mPosition)))
-                        .into(mBinding.ivPhoto);
+                }
+                if (mUserImages.get(mPosition) != null) {
+                    Glide.with(mBinding.ivPhoto.getContext())
+                            .load(Uri.parse(mUserImages.get(mPosition)))
+                            .into(mBinding.ivPhoto);
+                }
             }
         });
 
         mBinding.btnNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mPosition < mUserImages.size()-1)
+                if (mPosition < mUserImages.size() - 1) {
                     mPosition++;
-                Glide.with(mBinding.ivPhoto.getContext())
-                        .load(Uri.parse(mUserImages.get(mPosition)))
-                        .into(mBinding.ivPhoto);
+                }
+                if (mUserImages.get(mPosition) != null) {
+                    Glide.with(mBinding.ivPhoto.getContext())
+                            .load(Uri.parse(mUserImages.get(mPosition)))
+                            .into(mBinding.ivPhoto);
+                }
             }
         });
 
-        mBinding.fab.setOnClickListener(new View.OnClickListener() {
+        mBinding.fabLike.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!mBinding.fab.isSelected()) {
+                if (!mBinding.fabLike.isSelected()) {
                     mDatabase.child("likedUserLists").child(mCurrentUserId).child(mUser.getUserId()).child("likedAt").setValue(System.currentTimeMillis());
-                    mBinding.fab.setSelected(true);
-                }
-                else {
+                    mBinding.fabLike.setSelected(true);
+                } else {
                     mDatabase.child("likedUserLists").child(mCurrentUserId).child(mUser.getUserId()).removeValue();
-                    mBinding.fab.setSelected(false);
+                    mBinding.fabLike.setSelected(false);
                 }
             }
         });
@@ -200,14 +203,13 @@ public class UserDetailsFragment extends Fragment {
         ValueEventListener vacationListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                // Get Post object and use the values to update the UI
+                // Get Vacation object and use the values to update the UI
                 mVacation = dataSnapshot.getValue(Vacation.class);
                 populateVacationViews();
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                // Getting Post failed, log a message
                 Log.w(TAG, "load Vacation:onCancelled", databaseError.toException());
             }
         };
@@ -219,14 +221,13 @@ public class UserDetailsFragment extends Fragment {
         ValueEventListener userListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                // Get Post object and use the values to update the UI
+                // Get User object and use the values to update the UI
                 mUser = dataSnapshot.getValue(User.class);
                 populateProfileViews();
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                // Getting Post failed, log a message
                 Log.w(TAG, "load User profile:onCancelled", databaseError.toException());
             }
         };
@@ -241,7 +242,6 @@ public class UserDetailsFragment extends Fragment {
         populateImageList();
     }
 
-
     private void populateVacationViews() {
         if (!mVacation.getDestination().equals("")) {
             mBinding.tvLocationDate.setText(mVacation.getDestination() + "   |   " + mVacation.getStartDate() + " - " + mVacation.getEndDate());
@@ -249,7 +249,7 @@ public class UserDetailsFragment extends Fragment {
         mBinding.tvVacationNotes.setText(mVacation.getNotes());
     }
 
-
+    // fills ArrayList with Uri's for the user's images
     private void populateImageList() {
         mUserImages.clear();
         mUserImages.add(mUser.getImage1());
@@ -258,12 +258,10 @@ public class UserDetailsFragment extends Fragment {
         populateImageView();
     }
 
-
     private void populateImageView() {
         if (mUser.getImage1() == null) {
             mBinding.ivPhoto.setImageResource(R.drawable.add_image);
-        }
-        else {
+        } else {
             mPosition = 0;
             Glide.with(mBinding.ivPhoto.getContext())
                     .load(Uri.parse(mUserImages.get(mPosition)))
@@ -276,7 +274,6 @@ public class UserDetailsFragment extends Fragment {
             mChatId = mCurrentUserId + mUser.getUserId();
         else mChatId =  mUser.getUserId() + mCurrentUserId;
 
-        Chat chat = new Chat(mChatId, mUser.getName(), mUser.getUserId(), mCurrentUserId);
         mDatabase.child("userChatLists").child(mCurrentUserId).child(mChatId).child("chatId").setValue(mChatId);
         mDatabase.child("userChatLists").child(mCurrentUserId).child(mChatId).child("currentUserId").setValue(mCurrentUserId);
         mDatabase.child("userChatLists").child(mCurrentUserId).child(mChatId).child("otherUserId").setValue(mUser.getUserId());
@@ -294,11 +291,10 @@ public class UserDetailsFragment extends Fragment {
         .addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Log.e(TAG, "update userChatLists onFailure", e);
+                Log.e(TAG, "setUpNewChat onFailure", e);
             }
         });
     }
-
 
     private void goChatDetails() {
             Intent intent = new Intent(getContext(), ChatDetailsActivity.class);

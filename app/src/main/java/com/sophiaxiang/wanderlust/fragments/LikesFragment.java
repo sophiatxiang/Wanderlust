@@ -24,11 +24,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.sophiaxiang.wanderlust.R;
-import com.sophiaxiang.wanderlust.adapters.ChatAdapter;
 import com.sophiaxiang.wanderlust.adapters.LikedUserAdapter;
-import com.sophiaxiang.wanderlust.databinding.FragmentChatBinding;
 import com.sophiaxiang.wanderlust.databinding.FragmentLikesBinding;
-import com.sophiaxiang.wanderlust.models.Chat;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +35,7 @@ public class LikesFragment extends Fragment {
     private FragmentLikesBinding mBinding;
     private LikedUserAdapter mAdapter;
     private DatabaseReference mDatabase;
-    private String currentUserId;
+    private String mCurrentUserId;
     private List<String> mLikedUserIds;
 
     public LikesFragment() {
@@ -58,13 +55,12 @@ public class LikesFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-
         mDatabase = FirebaseDatabase.getInstance().getReference();
         Bundle bundle = getArguments();
-        currentUserId = (String) bundle.getSerializable("current user id");
+        mCurrentUserId = (String) bundle.getSerializable("current user id");
 
         mLikedUserIds = new ArrayList<>();
-        mAdapter = new LikedUserAdapter(getContext(), mLikedUserIds, currentUserId);
+        mAdapter = new LikedUserAdapter(getContext(), mLikedUserIds, mCurrentUserId);
         mBinding.rvLikes.setAdapter(mAdapter);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
@@ -81,19 +77,10 @@ public class LikesFragment extends Fragment {
         search.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                AppCompatActivity activity = (AppCompatActivity) getContext();
-                Fragment fragment = new LikesSearchFragment();
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("current user id", currentUserId);
-                fragment.setArguments(bundle);
-                activity.getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.flContainer, fragment)
-                        .addToBackStack(null)
-                        .commit();
+                goLikesSearchFrag();
                 return true;
             }
         });
-
         MenuItem settings = menu.findItem(R.id.action_settings);
         settings.setVisible(false);
     }
@@ -105,9 +92,8 @@ public class LikesFragment extends Fragment {
         ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
     }
 
-
     private void queryLikes() {
-        Query recentLikesQuery = mDatabase.child("likedUserLists").child(currentUserId).orderByChild("likedAt");;
+        Query recentLikesQuery = mDatabase.child("likedUserLists").child(mCurrentUserId).orderByChild("likedAt");;
         recentLikesQuery.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -125,5 +111,17 @@ public class LikesFragment extends Fragment {
                 Log.w(TAG, "loadChats:onCancelled", databaseError.toException());
             }
         });
+    }
+
+    private void goLikesSearchFrag() {
+        AppCompatActivity activity = (AppCompatActivity) getContext();
+        Fragment fragment = new LikesSearchFragment();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("current user id", mCurrentUserId);
+        fragment.setArguments(bundle);
+        activity.getSupportFragmentManager().beginTransaction()
+                .replace(R.id.flContainer, fragment)
+                .addToBackStack(null)
+                .commit();
     }
 }

@@ -9,7 +9,7 @@ import android.os.Handler;
 
 public class SplashScreenActivity extends AppCompatActivity {
 
-    private final int SPLASH_DISPLAY_LENGTH = 800;
+    private final int SPLASH_DISPLAY_LENGTH = 700;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,7 +18,6 @@ public class SplashScreenActivity extends AppCompatActivity {
         new Handler().postDelayed(new Runnable(){
             @Override
             public void run() {
-                /* Create an Intent that will start the Menu-Activity. */
                 startActivity(new Intent(SplashScreenActivity.this, LoginActivity.class));
                 finish();
             }
