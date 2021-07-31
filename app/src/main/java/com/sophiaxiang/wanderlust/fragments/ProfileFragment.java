@@ -14,6 +14,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -29,6 +31,7 @@ import com.sophiaxiang.wanderlust.models.User;
 import com.sophiaxiang.wanderlust.models.Vacation;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class ProfileFragment extends Fragment {
@@ -43,6 +46,8 @@ public class ProfileFragment extends Fragment {
     private Vacation mVacation;
     private List<String> mCurrentUserImages;
     private int mPosition;
+    private List<TextView> mAttractionViews;
+    private List<ImageView> mBullets;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -68,6 +73,11 @@ public class ProfileFragment extends Fragment {
         Bundle bundle = getArguments();
         mCurrentUser = (User) bundle.getSerializable("current user");
         mVacation = (Vacation) bundle.getSerializable("vacation");
+
+        mAttractionViews = Arrays.asList(mBinding.tvAttraction1, mBinding.tvAttraction2,
+                mBinding.tvAttraction3, mBinding.tvAttraction4, mBinding.tvAttraction5);
+        mBullets = Arrays.asList(mBinding.ivBullet1, mBinding.ivBullet2, mBinding.ivBullet3,
+                mBinding.ivBullet4, mBinding.ivBullet5);
 
         mCurrentUserImages = new ArrayList<>();
         mPosition = 0;
@@ -207,6 +217,29 @@ public class ProfileFragment extends Fragment {
         }
         else mBinding.tvLocationDate.setText("No vacation details yet");
         mBinding.tvVacationNotes.setText(mVacation.getNotes());
+
+        if (mVacation.getAttraction1() != null) {
+            mBinding.tvAttractionsHeader.setVisibility(View.VISIBLE);
+            displayAttraction(0, mVacation.getAttraction1());
+        }
+        if (mVacation.getAttraction2() != null) {
+            displayAttraction(1, mVacation.getAttraction2());
+        }
+        if (mVacation.getAttraction3() != null) {
+            displayAttraction(2, mVacation.getAttraction3());
+        }
+        if (mVacation.getAttraction4() != null) {
+            displayAttraction(3, mVacation.getAttraction4());
+        }
+        if (mVacation.getAttraction5() != null) {
+            displayAttraction(4, mVacation.getAttraction5());
+        }
+    }
+
+    private void displayAttraction(int i, String attraction) {
+        mBullets.get(i).setVisibility(View.VISIBLE);
+        mAttractionViews.get(i).setVisibility(View.VISIBLE);
+        mAttractionViews.get(i).setText(attraction);
     }
 
     // fills ArrayList with Uri's for the user's images

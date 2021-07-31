@@ -11,6 +11,11 @@ public class Vacation implements Serializable {
     String notes;
     Double latitude;
     Double longitude;
+    String attraction1;
+    String attraction2;
+    String attraction3;
+    String attraction4;
+    String attraction5;
 
     public Vacation(String userId, String destination, String startDate, String endDate, String notes, Double latitude, Double longitude) {
         this.userId = userId;
@@ -90,5 +95,45 @@ public class Vacation implements Serializable {
 
     public void setLongitude(Double longitude) {
         this.longitude = longitude;
+    }
+
+    public String getAttraction1() {
+        return attraction1;
+    }
+
+    public void setAttraction1(String attraction1) {
+        this.attraction1 = attraction1;
+    }
+
+    public String getAttraction2() {
+        return attraction2;
+    }
+
+    public void setAttraction2(String attraction2) {
+        this.attraction2 = attraction2;
+    }
+
+    public String getAttraction3() {
+        return attraction3;
+    }
+
+    public void setAttraction3(String attraction3) {
+        this.attraction3 = attraction3;
+    }
+
+    public String getAttraction4() {
+        return attraction4;
+    }
+
+    public void setAttraction4(String attraction4) {
+        this.attraction4 = attraction4;
+    }
+
+    public String getAttraction5() {
+        return attraction5;
+    }
+
+    public void setAttraction5(String attraction5) {
+        this.attraction5 = attraction5;
     }
 }

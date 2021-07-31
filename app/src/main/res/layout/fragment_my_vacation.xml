@@ -6,171 +6,188 @@
     <data>
 
     </data>
-    <ScrollView
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".fragments.MyVacationFragment">
-        <RelativeLayout
+        android:layout_height="match_parent">
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-
-            <Button
-                android:id="@+id/btnSave"
-                android:layout_width="300dp"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/etNotes"
-                android:layout_alignParentBottom="true"
-                android:layout_marginTop="20dp"
-                android:layout_centerHorizontal="true"
-                android:backgroundTint="@color/periwinkle"
-                android:text="Save" />
-
-            <View
-                android:id="@+id/line1"
+            android:layout_height="match_parent"
+            tools:context=".fragments.MyVacationFragment">
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_below="@id/tvEditDestination"
-                android:layout_marginTop="10dp"
-                android:background="@color/light_grey"/>
+                android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/textView4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/line1"
-                android:layout_alignParentStart="true"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="20dp"
-                android:text="Start Date:"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textColor="@color/black" />
+                <View
+                    android:id="@+id/line1"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_below="@id/tvEditDestination"
+                    android:layout_marginTop="10dp"
+                    android:background="@color/light_grey"/>
 
-            <TextView
-                android:id="@+id/textView5"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/textView4"
-                android:layout_alignParentStart="true"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="20dp"
-                android:text="End Date:"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textColor="@color/black" />
+                <TextView
+                    android:id="@+id/textView4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/line1"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="20dp"
+                    android:text="Start Date:"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    android:textColor="@color/black" />
 
-            <TextView
-                android:id="@+id/textView6"
-                android:layout_width="100dp"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/textView5"
-                android:layout_alignParentStart="true"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="20dp"
-                android:text="Activities + Attractions:"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textColor="@color/black" />
+                <TextView
+                    android:id="@+id/textView5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/textView4"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="20dp"
+                    android:text="End Date:"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    android:textColor="@color/black" />
 
-            <EditText
-                android:id="@+id/etActivities"
-                android:layout_width="250dp"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/tvEndDate"
-                android:layout_alignParentEnd="true"
-                android:layout_marginTop="15dp"
-                android:layout_marginEnd="20dp"
-                android:ems="10"
-                android:hint="list activities and attractions" />
+                <TextView
+                    android:id="@+id/textView6"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/etNotes"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="15dp"
+                    android:text="Activities + Attractions:"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    android:textColor="@color/black" />
 
-            <TextView
-                android:id="@+id/textView7"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/textView6"
-                android:layout_alignParentStart="true"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="20dp"
-                android:text="Notes:"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textColor="@color/black" />
+                <EditText
+                    android:id="@+id/etAttractions"
+                    android:layout_width="300dp"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/textView6"
+                    android:layout_marginStart="17dp"
+                    android:ems="10"
+                    android:hint="list activities and attractions"
+                    android:maxLength="40"
+                    android:maxLines="1" />
 
-            <EditText
-                android:id="@+id/etNotes"
-                android:layout_width="250dp"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/etActivities"
-                android:layout_alignBaseline="@id/textView7"
-                android:layout_alignLeft="@id/etActivities"
-                android:layout_alignParentEnd="true"
-                android:layout_marginEnd="20dp"
-                android:layout_toEndOf="@+id/textView7"
-                android:ems="10"
-                android:hint="enter any notes or further details about your trip!" />
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvAttractions"
+                    android:layout_width="342dp"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/etAttractions"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="3dp" />
+                <TextView
+                    android:id="@+id/textView7"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_below="@id/textView5"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="20dp"
+                    android:text="Notes:"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    android:textColor="@color/black" />
 
-            <TextView
-                android:id="@+id/tvDestination"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="30dp"
-                android:gravity="center"
-                android:hint="Vacation Destination"
-                android:textColor="@color/black"
-                android:textSize="28sp" />
+                <EditText
+                    android:id="@+id/etNotes"
+                    android:layout_width="260dp"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tvEndDate"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginEnd="20dp"
+                    android:ems="10"
+                    android:hint="enter any notes or further details about your trip!" />
 
-            <TextView
-                android:id="@+id/tvEditDestination"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/tvDestination"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="5dp"
-                android:textColor="@color/dark_periwinkle"
-                android:text="Edit Destination" />
+                <TextView
+                    android:id="@+id/tvDestination"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="30dp"
+                    android:gravity="center"
+                    android:hint="Vacation Destination"
+                    android:textColor="@color/black"
+                    android:textSize="28sp" />
 
-            <TextView
-                android:id="@+id/tvStartDate"
-                android:layout_width="245dp"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/line1"
-                android:layout_alignParentEnd="true"
-                android:layout_marginTop="15dp"
-                android:layout_marginEnd="20dp"
-                android:textColor="@color/black"
-                android:hint="start date"
-                android:textSize="20dp" />
+                <TextView
+                    android:id="@+id/tvEditDestination"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tvDestination"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="5dp"
+                    android:textColor="@color/turquoise"
+                    android:text="Edit Destination" />
 
-            <View
-                android:layout_width="240dp"
-                android:layout_height="1dp"
-                android:layout_below="@id/tvStartDate"
-                android:layout_alignParentEnd="true"
-                android:layout_marginEnd="25dp"
-                android:layout_marginTop="5dp"
-                android:background="@color/grey"/>
+                <TextView
+                    android:id="@+id/tvStartDate"
+                    android:layout_width="255dp"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/line1"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginEnd="20dp"
+                    android:hint="start date"
+                    android:textColor="@color/black"
+                    android:textSize="20dp" />
 
-            <TextView
-                android:id="@+id/tvEndDate"
-                android:layout_width="245dp"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/tvStartDate"
-                android:layout_alignParentEnd="true"
-                android:layout_marginTop="15dp"
-                android:layout_marginEnd="20dp"
-                android:textColor="@color/black"
-                android:hint="end date"
-                android:textSize="20dp" />
+                <View
+                    android:layout_width="251dp"
+                    android:layout_height="1dp"
+                    android:layout_below="@id/tvStartDate"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginEnd="25dp"
+                    android:background="@color/grey" />
 
-            <View
-                android:layout_width="240dp"
-                android:layout_height="1dp"
-                android:layout_below="@id/tvEndDate"
-                android:layout_alignParentEnd="true"
-                android:layout_marginEnd="25dp"
-                android:layout_marginTop="5dp"
-                android:background="@color/grey"/>
+                <TextView
+                    android:id="@+id/tvEndDate"
+                    android:layout_width="255dp"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tvStartDate"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginEnd="20dp"
+                    android:hint="end date"
+                    android:textColor="@color/black"
+                    android:textSize="20dp" />
 
+                <View
+                    android:layout_width="251dp"
+                    android:layout_height="1dp"
+                    android:layout_below="@id/tvEndDate"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginEnd="25dp"
+                    android:background="@color/grey" />
 
-        </RelativeLayout>
-    </ScrollView>
+                <ImageButton
+                    android:id="@+id/ibAddAttraction"
+                    android:layout_width="40dp"
+                    android:layout_height="35dp"
+                    android:layout_alignBottom="@id/etAttractions"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginEnd="20dp"
+                    android:layout_marginBottom="7dp"
+                    android:background="@color/turquoise"
+                    app:srcCompat="@drawable/add_icon" />
+
+            </RelativeLayout>
+        </ScrollView>
+
+        <Button
+            android:id="@+id/btnSave"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="20dp"
+            android:text="Save" />
+
+    </RelativeLayout>
 </layout>

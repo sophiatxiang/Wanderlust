@@ -13,6 +13,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -33,6 +35,7 @@ import com.sophiaxiang.wanderlust.models.User;
 import com.sophiaxiang.wanderlust.models.Vacation;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class UserDetailsFragment extends Fragment {
@@ -49,6 +52,8 @@ public class UserDetailsFragment extends Fragment {
     private String mCurrentUserName;
     private int mPosition = 0;
     private String mChatId;
+    private List<TextView> mAttractionViews;
+    private List<ImageView> mBullets;
 
     public UserDetailsFragment() {
         // Required empty public constructor
@@ -74,6 +79,11 @@ public class UserDetailsFragment extends Fragment {
         mDatabase = FirebaseDatabase.getInstance().getReference();
         mCurrentUserNodeReference = mDatabase.child("users").child(mUser.getUserId());
         mVacationDetailsReference = mDatabase.child("users").child(mUser.getUserId()).child("vacation");
+
+        mAttractionViews = Arrays.asList(mBinding.tvAttraction1, mBinding.tvAttraction2,
+                mBinding.tvAttraction3, mBinding.tvAttraction4, mBinding.tvAttraction5);
+        mBullets = Arrays.asList(mBinding.ivBullet1, mBinding.ivBullet2, mBinding.ivBullet3,
+                mBinding.ivBullet4, mBinding.ivBullet5);
 
         mUserImages = new ArrayList<>();
         populateImageList();
@@ -247,6 +257,29 @@ public class UserDetailsFragment extends Fragment {
             mBinding.tvLocationDate.setText(mVacation.getDestination() + "   |   " + mVacation.getStartDate() + " - " + mVacation.getEndDate());
         }
         mBinding.tvVacationNotes.setText(mVacation.getNotes());
+
+        if (mVacation.getAttraction1() != null) {
+            mBinding.tvAttractionsHeader.setVisibility(View.VISIBLE);
+            displayAttraction(0, mVacation.getAttraction1());
+        }
+        if (mVacation.getAttraction2() != null) {
+            displayAttraction(1, mVacation.getAttraction2());
+        }
+        if (mVacation.getAttraction3() != null) {
+            displayAttraction(2, mVacation.getAttraction3());
+        }
+        if (mVacation.getAttraction4() != null) {
+            displayAttraction(3, mVacation.getAttraction4());
+        }
+        if (mVacation.getAttraction5() != null) {
+            displayAttraction(4, mVacation.getAttraction5());
+        }
+    }
+
+    private void displayAttraction(int i, String attraction) {
+        mBullets.get(i).setVisibility(View.VISIBLE);
+        mAttractionViews.get(i).setVisibility(View.VISIBLE);
+        mAttractionViews.get(i).setText(attraction);
     }
 
     // fills ArrayList with Uri's for the user's images

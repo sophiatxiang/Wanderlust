@@ -29,7 +29,8 @@
         <activity android:name=".FilterActivity" />
         <activity android:name=".ChatDetailsActivity" />
         <activity android:name=".CreateAccActivity" />
-        <activity android:name=".MainActivity" />
+        <activity android:name=".MainActivity"
+            android:windowSoftInputMode="adjustNothing"/>
         <activity android:name=".LoginActivity" />
 
         <provider

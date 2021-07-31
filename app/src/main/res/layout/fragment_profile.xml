@@ -20,6 +20,7 @@
        <ScrollView
            android:layout_width="match_parent"
            android:layout_height="match_parent"
+           android:layout_marginBottom="20dp"
            android:layout_below="@id/toolbar">
 
            <RelativeLayout
@@ -188,6 +189,130 @@
                    android:layout_marginStart="20dp"
                    android:layout_marginTop="5dp"
                    android:text="put your vacation notes here! test test test test test " />
+
+               <TextView
+                   android:id="@+id/tvAttractionsHeader"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:layout_below="@+id/tvVacationNotes"
+                   android:layout_alignParentStart="true"
+                   android:layout_marginStart="20dp"
+                   android:layout_marginTop="10dp"
+                   android:text="Activities/Attractions: "
+                   android:textColor="@color/black"
+                   android:textStyle="bold" />
+
+               <ImageView
+                   android:id="@+id/ivBullet1"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:layout_below="@id/tvAttractionsHeader"
+                   android:layout_alignParentStart="true"
+                   android:layout_marginStart="50dp"
+                   android:layout_marginTop="13dp"
+                   android:visibility="gone"
+                   app:srcCompat="@drawable/circle" />
+
+               <TextView
+                   android:id="@+id/tvAttraction1"
+                   android:layout_width="140dp"
+                   android:layout_height="wrap_content"
+                   android:layout_below="@id/tvAttractionsHeader"
+                   android:layout_marginStart="10dp"
+                   android:layout_marginTop="8dp"
+                   android:layout_toRightOf="@id/ivBullet1"
+                   android:text="london eye"
+                   android:visibility="gone" />
+
+               <ImageView
+                   android:id="@+id/ivBullet2"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:layout_below="@id/ivBullet1"
+                   android:layout_alignParentStart="true"
+                   android:layout_marginStart="50dp"
+                   android:layout_marginTop="15dp"
+                   android:visibility="gone"
+                   app:srcCompat="@drawable/circle" />
+
+               <TextView
+                   android:id="@+id/tvAttraction2"
+                   android:layout_width="140dp"
+                   android:layout_height="wrap_content"
+                   android:layout_below="@id/tvAttraction1"
+                   android:layout_marginStart="10dp"
+                   android:layout_marginTop="5dp"
+                   android:layout_toRightOf="@id/ivBullet2"
+                   android:text="london eye"
+                   android:visibility="gone" />
+
+               <ImageView
+                   android:id="@+id/ivBullet3"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:layout_below="@id/ivBullet2"
+                   android:layout_alignParentStart="true"
+                   android:layout_marginStart="50dp"
+                   android:layout_marginTop="15dp"
+                   android:visibility="gone"
+                   app:srcCompat="@drawable/circle" />
+
+               <TextView
+                   android:id="@+id/tvAttraction3"
+                   android:layout_width="140dp"
+                   android:layout_height="wrap_content"
+                   android:layout_below="@id/tvAttraction2"
+                   android:layout_marginStart="10dp"
+                   android:layout_marginTop="5dp"
+                   android:layout_toRightOf="@id/ivBullet3"
+                   android:text="london eye"
+                   android:visibility="gone" />
+
+
+               <ImageView
+                   android:id="@+id/ivBullet4"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:layout_below="@id/ivBullet3"
+                   android:layout_alignParentStart="true"
+                   android:layout_marginStart="50dp"
+                   android:layout_marginTop="15dp"
+                   android:visibility="gone"
+                   app:srcCompat="@drawable/circle" />
+
+               <TextView
+                   android:id="@+id/tvAttraction4"
+                   android:layout_width="140dp"
+                   android:layout_height="wrap_content"
+                   android:layout_below="@id/tvAttraction3"
+                   android:layout_marginStart="10dp"
+                   android:layout_marginTop="5dp"
+                   android:layout_toRightOf="@id/ivBullet4"
+                   android:text="london eye"
+                   android:visibility="gone" />
+
+
+               <ImageView
+                   android:id="@+id/ivBullet5"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:layout_below="@id/ivBullet4"
+                   android:layout_alignParentStart="true"
+                   android:layout_marginStart="50dp"
+                   android:layout_marginTop="15dp"
+                   android:visibility="gone"
+                   app:srcCompat="@drawable/circle" />
+
+               <TextView
+                   android:id="@+id/tvAttraction5"
+                   android:layout_width="140dp"
+                   android:layout_height="wrap_content"
+                   android:layout_below="@id/tvAttraction4"
+                   android:layout_marginStart="10dp"
+                   android:layout_marginTop="6dp"
+                   android:layout_toRightOf="@id/ivBullet5"
+                   android:text="london eye"
+                   android:visibility="gone" />
 
            </RelativeLayout>
        </ScrollView>
