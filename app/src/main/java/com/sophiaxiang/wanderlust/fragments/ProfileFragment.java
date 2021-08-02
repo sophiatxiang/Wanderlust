@@ -9,6 +9,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,6 +20,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -79,12 +85,14 @@ public class ProfileFragment extends Fragment {
         mBullets = Arrays.asList(mBinding.ivBullet1, mBinding.ivBullet2, mBinding.ivBullet3,
                 mBinding.ivBullet4, mBinding.ivBullet5);
 
+
         mCurrentUserImages = new ArrayList<>();
         mPosition = 0;
         populateImageList();
 
         setUpToolBar(view);
         setUpButtons();
+        setUpMap();
 
         populateProfileViews();
         populateVacationViews();
@@ -148,22 +156,33 @@ public class ProfileFragment extends Fragment {
                     Uri appUri = Uri.parse("https://instagram.com/_u/" + mCurrentUser.getInstagram());
                     Uri browserUri = Uri.parse("https://instagram.com/" + mCurrentUser.getInstagram());
 
-                    try { //first try to open in instagram app
-                        Intent appIntent = getActivity().getPackageManager().getLaunchIntentForPackage("com.instagram.android");
-                        if(appIntent != null){
-                            appIntent.setAction(Intent.ACTION_VIEW);
-                            appIntent.setData(appUri);
-                            startActivity(appIntent);
-                        }
-                    } catch(Exception e){ //or else open in browser
+                    Intent appIntent = getActivity().getPackageManager().getLaunchIntentForPackage("com.instagram.android");
+                    if (appIntent != null) {
+                        appIntent.setAction(Intent.ACTION_VIEW);
+                        appIntent.setData(appUri);
+                        startActivity(appIntent);
+                    }
+                    else{
                         Intent browserIntent = new Intent(Intent.ACTION_VIEW, browserUri);
                         startActivity(browserIntent);
                     }
                 }
             }
         });
+
+        mBinding.ivMap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showMapDialog();
+            }
+        });
     }
 
+    private void setUpMap() {
+        String url = "https://maps.googleapis.com/maps/api/staticmap?center=" + mCurrentUser.getVacation().getLatitude() + "," +
+                mCurrentUser.getVacation().getLongitude() + "&zoom=14&size=363x220&scale=2&markers=color:red%7Clabel:%7C11211%7C11206%7C11222&key=AIzaSyDtWeLjyQ4g1uU9oow9HDjBX7T0AjPc9pQ";
+        Glide.with(getContext()).load(url).centerCrop().into(mBinding.ivMap);
+    }
 
     private void setVacationInfoListener() {
         ValueEventListener vacationListener = new ValueEventListener() {
@@ -214,11 +233,14 @@ public class ProfileFragment extends Fragment {
     private void populateVacationViews() {
         if (!mVacation.getDestination().equals("")) {
             mBinding.tvLocationDate.setText(mVacation.getDestination() + "   |   " + mVacation.getStartDate() + " - " + mVacation.getEndDate());
-        }
-        else mBinding.tvLocationDate.setText("No vacation details yet");
-        mBinding.tvVacationNotes.setText(mVacation.getNotes());
+        } else mBinding.tvLocationDate.setText("No vacation details yet");
+
+        if (!mVacation.getNotes().equals("")) {
+            mBinding.tvVacationNotes.setText(mVacation.getNotes());
+        } else mBinding.tvVacationNotes.setText("None");
 
         if (mVacation.getAttraction1() != null) {
+            mBinding.tvAttractionsHeader.setVisibility(View.VISIBLE);
             mBinding.tvAttractionsHeader.setVisibility(View.VISIBLE);
             displayAttraction(0, mVacation.getAttraction1());
         }
@@ -284,5 +306,11 @@ public class ProfileFragment extends Fragment {
                 .replace(R.id.flContainer, fragment)
                 .addToBackStack(null)
                 .commit();
+    }
+
+    private void showMapDialog() {
+        FragmentManager fm = getChildFragmentManager();
+        MapDialogFragment mapDialog = MapDialogFragment.newInstance(mCurrentUser.getVacation().getDestination(), mCurrentUser.getVacation().getLatitude(), mCurrentUser.getVacation().getLongitude());
+        mapDialog.show(fm, "fragment_map_dialog");
     }
 }

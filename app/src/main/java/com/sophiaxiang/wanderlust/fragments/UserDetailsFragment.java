@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -89,6 +90,8 @@ public class UserDetailsFragment extends Fragment {
         populateImageList();
 
         setUpButtons();
+        setUpMap();
+
         getCurrentUserName();
         checkIfUserLiked();
         checkIfHasInstagram();
@@ -207,6 +210,13 @@ public class UserDetailsFragment extends Fragment {
                 }
             }
         });
+
+        mBinding.ivMap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showMapDialog();
+            }
+        });
     }
 
     private void setVacationInfoListener() {
@@ -255,8 +265,11 @@ public class UserDetailsFragment extends Fragment {
     private void populateVacationViews() {
         if (!mVacation.getDestination().equals("")) {
             mBinding.tvLocationDate.setText(mVacation.getDestination() + "   |   " + mVacation.getStartDate() + " - " + mVacation.getEndDate());
-        }
-        mBinding.tvVacationNotes.setText(mVacation.getNotes());
+        } else mBinding.tvLocationDate.setText("No vacation details yet");
+
+        if (!mVacation.getNotes().equals("")) {
+            mBinding.tvVacationNotes.setText(mVacation.getNotes());
+        } else mBinding.tvVacationNotes.setText("None");
 
         if (mVacation.getAttraction1() != null) {
             mBinding.tvAttractionsHeader.setVisibility(View.VISIBLE);
@@ -335,5 +348,17 @@ public class UserDetailsFragment extends Fragment {
             intent.putExtra("other user id", mUser.getUserId());
             intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
             getActivity().startActivity(intent);
+    }
+
+    private void setUpMap() {
+        String url = "https://maps.googleapis.com/maps/api/staticmap?center=" + mUser.getVacation().getLatitude() + "," +
+                mUser.getVacation().getLongitude() + "&zoom=14&size=363x220&scale=2&key=AIzaSyDtWeLjyQ4g1uU9oow9HDjBX7T0AjPc9pQ";
+        Glide.with(getContext()).load(url).centerCrop().into(mBinding.ivMap);
+    }
+
+    private void showMapDialog() {
+        FragmentManager fm = getChildFragmentManager();
+        MapDialogFragment mapDialog = MapDialogFragment.newInstance(mUser.getVacation().getDestination(), mUser.getVacation().getLatitude(), mUser.getVacation().getLongitude());
+        mapDialog.show(fm, "fragment_map_dialog");
     }
 }

@@ -54,7 +54,6 @@ public class MainActivity extends AppCompatActivity {
         mStorage = FirebaseStorage.getInstance().getReference();
 
         getCurrentUser();
-        getCurrentUserVacation();
 
         setUpBottomNavigation();
 //
@@ -98,6 +97,7 @@ public class MainActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // Get Vacation object and use the values to update the UI
                 mCurrentUserVacation = dataSnapshot.getValue(Vacation.class);
+                mCurrentUser.setVacation(mCurrentUserVacation);
             }
 
             @Override
@@ -115,6 +115,7 @@ public class MainActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // Get User object and use the values to update the UI
                 mCurrentUser = dataSnapshot.getValue(User.class);
+                getCurrentUserVacation();
             }
 
             @Override
