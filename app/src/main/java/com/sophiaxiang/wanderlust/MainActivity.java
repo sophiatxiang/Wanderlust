@@ -26,6 +26,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.sophiaxiang.wanderlust.databinding.ActivityMainBinding;
 import com.sophiaxiang.wanderlust.fragments.ChatFragment;
+import com.sophiaxiang.wanderlust.fragments.EditSpotifySongFragment;
 import com.sophiaxiang.wanderlust.fragments.FeedFragment;
 import com.sophiaxiang.wanderlust.fragments.LikesFragment;
 import com.sophiaxiang.wanderlust.fragments.ProfileFragment;
@@ -56,6 +57,9 @@ public class MainActivity extends AppCompatActivity {
         getCurrentUserVacation();
 
         setUpBottomNavigation();
+//
+//        Fragment fragment = new EditSpotifySongFragment();
+//        fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).addToBackStack(null).commit();
     }
 
     @Override
