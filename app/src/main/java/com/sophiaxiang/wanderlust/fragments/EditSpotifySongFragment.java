@@ -107,7 +107,8 @@ public class EditSpotifySongFragment extends Fragment {
 
     private void setUpToolBar(View view) {
         androidx.appcompat.widget.Toolbar toolbar = view.findViewById(R.id.toolbar);
-        toolbar.setTitle("Edit Profile");
+        toolbar.setTitle("Set Spotify Song");
+        toolbar.findViewById(R.id.title).setVisibility(View.GONE);
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
     }
 
