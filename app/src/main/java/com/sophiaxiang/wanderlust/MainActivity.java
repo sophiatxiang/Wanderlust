@@ -56,9 +56,6 @@ public class MainActivity extends AppCompatActivity {
         getCurrentUser();
 
         setUpBottomNavigation();
-//
-//        Fragment fragment = new EditSpotifySongFragment();
-//        fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).addToBackStack(null).commit();
     }
 
     @Override

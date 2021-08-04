@@ -46,7 +46,6 @@ public class EditProfileFragment extends Fragment {
     private FirebaseUser mFirebaseUser;
     private User mCurrentUser;
 
-
     public EditProfileFragment() {
         // Required empty public constructor
     }
@@ -72,9 +71,11 @@ public class EditProfileFragment extends Fragment {
 
         setUpToolBar(view);
         setUpButtons();
+
         populateEditTextViews();
         updateImageViews();
         populateImageViews();
+
         setUpGenderSpinner();
         setUpAdventureLevelSlider();
     }
@@ -126,7 +127,6 @@ public class EditProfileFragment extends Fragment {
         });
     }
 
-
     private void populateEditTextViews() {
         mBinding.etName.setText(mCurrentUser.getName());
         mBinding.etAge.setText("" + mCurrentUser.getAge());
@@ -134,7 +134,6 @@ public class EditProfileFragment extends Fragment {
         mBinding.etBio.setText(mCurrentUser.getBio());
         mBinding.etInstagram.setText("@" + mCurrentUser.getInstagram());
     }
-
 
     private void updateImageViews() {
         ValueEventListener userListener = new ValueEventListener() {
@@ -152,7 +151,6 @@ public class EditProfileFragment extends Fragment {
         };
         mCurrentUserNodeReference.addValueEventListener(userListener);
     }
-
 
     private void populateImageViews() {
         // populate user's images
@@ -197,7 +195,6 @@ public class EditProfileFragment extends Fragment {
         }
     }
 
-
     private void updateDatabaseUserProfile() {
         if (TextUtils.isEmpty(mBinding.etAge.toString())){
             Toast.makeText(getContext(), "Please enter an age!", Toast.LENGTH_SHORT).show();
@@ -232,11 +229,15 @@ public class EditProfileFragment extends Fragment {
         String image3 = mCurrentUser.getImage3();
         String profilePhoto = mCurrentUser.getProfilePhoto();
         String instagram = mBinding.etInstagram.getText().toString().substring(1);
+        String songAlbumCover = mCurrentUser.getSongAlbumCover();
+        String songName = mCurrentUser.getSongName();
+        String songArtist = mCurrentUser.getSongArtist();
+        String songPreviewUrl = mCurrentUser.getSongPreviewUrl();
 
         return new User(mFirebaseUser.getUid(), name , age, gender, from, bio,
-                adventureLevel, image1, image2, image3, profilePhoto, mCurrentUser.getVacation(), instagram);
+                adventureLevel, image1, image2, image3, profilePhoto, mCurrentUser.getVacation(),
+                instagram, songAlbumCover, songName, songArtist, songPreviewUrl);
     }
-
 
     private void goTakePhotoFragment(String imageNumber){
         Fragment fragment = new TakePhotoFragment();
@@ -249,7 +250,6 @@ public class EditProfileFragment extends Fragment {
                 .addToBackStack(null)
                 .commit();
     }
-
 
     private void setUpGenderSpinner() {
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
@@ -299,7 +299,6 @@ public class EditProfileFragment extends Fragment {
             }
         });
     }
-
 
     private void setUpAdventureLevelSlider() {
         mBinding.sliderAdventureLevel.setValue(mCurrentUser.getAdventureLevel());

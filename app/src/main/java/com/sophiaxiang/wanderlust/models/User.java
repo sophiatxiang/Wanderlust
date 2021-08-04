@@ -23,6 +23,10 @@ public class User implements Serializable {
     private List<String> likedUserIds;
     private Vacation vacation;
     private String instagram;
+    private String songAlbumCover;
+    private String songName;
+    private String songArtist;
+    private String songPreviewUrl;
 
     public User(String userId) {
         this.userId = userId;
@@ -33,7 +37,8 @@ public class User implements Serializable {
 
     public User(String userId, String name, int age, String gender,
                 String from, String bio, int adventureLevel, String image1,
-                String image2, String image3, String profilePhoto, Vacation vacation, String instagram) {
+                String image2, String image3, String profilePhoto, Vacation vacation, String instagram,
+                String songAlbumCover, String songName, String songArtist, String songPreviewUrl) {
         this.userId = userId;
         this.name = name;
         this.age = age;
@@ -47,6 +52,10 @@ public class User implements Serializable {
         this.profilePhoto = profilePhoto;
         this.vacation = vacation;
         this.instagram = instagram;
+        this.songAlbumCover = songAlbumCover;
+        this.songName = songName;
+        this.songArtist = songArtist;
+        this.songPreviewUrl = songPreviewUrl;
     }
 
     public User() {
@@ -171,5 +180,37 @@ public class User implements Serializable {
 
     public void setInstagram(String instagram) {
         this.instagram = instagram;
+    }
+
+    public String getSongAlbumCover() {
+        return songAlbumCover;
+    }
+
+    public void setSongAlbumCover(String songAlbumCover) {
+        this.songAlbumCover = songAlbumCover;
+    }
+
+    public String getSongName() {
+        return songName;
+    }
+
+    public void setSongName(String songName) {
+        this.songName = songName;
+    }
+
+    public String getSongArtist() {
+        return songArtist;
+    }
+
+    public void setSongArtist(String songArtist) {
+        this.songArtist = songArtist;
+    }
+
+    public String getSongPreviewUrl() {
+        return songPreviewUrl;
+    }
+
+    public void setSongPreviewUrl(String songPreviewUrl) {
+        this.songPreviewUrl = songPreviewUrl;
     }
 }

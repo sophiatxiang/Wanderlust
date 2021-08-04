@@ -1,6 +1,7 @@
 package com.sophiaxiang.wanderlust.fragments;
 
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -16,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -35,6 +37,7 @@ import com.sophiaxiang.wanderlust.models.Chat;
 import com.sophiaxiang.wanderlust.models.User;
 import com.sophiaxiang.wanderlust.models.Vacation;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -55,6 +58,7 @@ public class UserDetailsFragment extends Fragment {
     private String mChatId;
     private List<TextView> mAttractionViews;
     private List<ImageView> mBullets;
+    private MediaPlayer mMediaPlayer;
 
     public UserDetailsFragment() {
         // Required empty public constructor
@@ -91,6 +95,7 @@ public class UserDetailsFragment extends Fragment {
 
         setUpButtons();
         setUpMap();
+        setUpMediaPlayer();
 
         getCurrentUserName();
         checkIfUserLiked();
@@ -98,9 +103,19 @@ public class UserDetailsFragment extends Fragment {
 
         populateProfileViews();
         populateVacationViews();
+        populateMusicViews();
 
         setProfileInfoListener();
         setVacationInfoListener();
+    }
+
+    @Override
+    public void onPause() {
+        if (mMediaPlayer != null && mMediaPlayer.isPlaying()) {
+            mMediaPlayer.stop();
+            mMediaPlayer.reset();
+        }
+        super.onPause();
     }
 
     private void getCurrentUserName() {
@@ -109,30 +124,29 @@ public class UserDetailsFragment extends Fragment {
             public void onComplete(@NonNull Task<DataSnapshot> task) {
                 if (!task.isSuccessful()) {
                     Log.e("firebase", "Error getting data", task.getException());
-                }
-                else {
-                   mCurrentUserName = String.valueOf(task.getResult().getValue());
+                } else {
+                    mCurrentUserName = String.valueOf(task.getResult().getValue());
                 }
             }
         });
     }
 
     private void checkIfUserLiked() {
-       mDatabase.child("likedUserLists").child(mCurrentUserId).child(mUser.getUserId()).addValueEventListener(new ValueEventListener() {
-           @Override
-           public void onDataChange(@NonNull DataSnapshot snapshot) {
-               if (snapshot.exists()) {
-                   mBinding.fabLike.setSelected(true);
-               } else {
-                   mBinding.fabLike.setSelected(false);
-               }
-           }
+        mDatabase.child("likedUserLists").child(mCurrentUserId).child(mUser.getUserId()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    mBinding.fabLike.setSelected(true);
+                } else {
+                    mBinding.fabLike.setSelected(false);
+                }
+            }
 
-           @Override
-           public void onCancelled(@NonNull DatabaseError error) {
-               Log.d(TAG, "onCancelled checkIfUserLiked");
-           }
-       });
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.d(TAG, "onCancelled checkIfUserLiked");
+            }
+        });
     }
 
     private void checkIfHasInstagram() {
@@ -153,7 +167,7 @@ public class UserDetailsFragment extends Fragment {
         mBinding.btnPrevious.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mPosition >0) {
+                if (mPosition > 0) {
                     mPosition--;
                 }
                 if (mUserImages.get(mPosition) != null) {
@@ -197,14 +211,14 @@ public class UserDetailsFragment extends Fragment {
                 Uri appUri = Uri.parse("https://instagram.com/_u/" + mUser.getInstagram());
                 Uri browserUri = Uri.parse("https://instagram.com/" + mUser.getInstagram());
 
-                try{ //first try to open in instagram app
+                try { //first try to open in instagram app
                     Intent appIntent = getActivity().getPackageManager().getLaunchIntentForPackage("com.instagram.android");
-                    if(appIntent != null){
+                    if (appIntent != null) {
                         appIntent.setAction(Intent.ACTION_VIEW);
                         appIntent.setData(appUri);
                         startActivity(appIntent);
                     }
-                }catch(Exception e){ //or else open in browser
+                } catch (Exception e) { //or else open in browser
                     Intent browserIntent = new Intent(Intent.ACTION_VIEW, browserUri);
                     startActivity(browserIntent);
                 }
@@ -215,6 +229,28 @@ public class UserDetailsFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 showMapDialog();
+            }
+        });
+
+        mBinding.ivAlbumCover.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mMediaPlayer.isPlaying()) {
+                    mMediaPlayer.stop();
+                    mMediaPlayer.reset();
+                } else {
+                    playAudio();
+                }
+            }
+        });
+    }
+
+    private void setUpMediaPlayer() {
+        mMediaPlayer = new MediaPlayer();
+        mMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                mMediaPlayer.reset();
             }
         });
     }
@@ -289,6 +325,16 @@ public class UserDetailsFragment extends Fragment {
         }
     }
 
+    private void populateMusicViews() {
+        if (mUser.getSongName() == null) {
+            mBinding.rlMusic.setVisibility(View.GONE);
+            return;
+        }
+        mBinding.tvSongName.setText(mUser.getSongName());
+        mBinding.tvSongArtist.setText(mUser.getSongArtist());
+        Glide.with(getContext()).load(mUser.getSongAlbumCover()).placeholder(R.drawable.album_placeholder).into(mBinding.ivAlbumCover);
+    }
+
     private void displayAttraction(int i, String attraction) {
         mBullets.get(i).setVisibility(View.VISIBLE);
         mAttractionViews.get(i).setVisibility(View.VISIBLE);
@@ -318,7 +364,7 @@ public class UserDetailsFragment extends Fragment {
     private void setUpNewChat() {
         if (mCurrentUserId.compareTo(mUser.getUserId()) < 0)
             mChatId = mCurrentUserId + mUser.getUserId();
-        else mChatId =  mUser.getUserId() + mCurrentUserId;
+        else mChatId = mUser.getUserId() + mCurrentUserId;
 
         mDatabase.child("userChatLists").child(mCurrentUserId).child(mChatId).child("chatId").setValue(mChatId);
         mDatabase.child("userChatLists").child(mCurrentUserId).child(mChatId).child("currentUserId").setValue(mCurrentUserId);
@@ -329,25 +375,25 @@ public class UserDetailsFragment extends Fragment {
         mDatabase.child("userChatLists").child(mUser.getUserId()).child(mChatId).child("otherUserId").setValue(mCurrentUserId);
         mDatabase.child("userChatLists").child(mUser.getUserId()).child(mChatId).child("otherUserName").setValue(mCurrentUserName)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void unused) {
-                goChatDetails();
-            }
-        })
-        .addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.e(TAG, "setUpNewChat onFailure", e);
-            }
-        });
+                    @Override
+                    public void onSuccess(Void unused) {
+                        goChatDetails();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e(TAG, "setUpNewChat onFailure", e);
+                    }
+                });
     }
 
     private void goChatDetails() {
-            Intent intent = new Intent(getContext(), ChatDetailsActivity.class);
-            intent.putExtra("current user id", mCurrentUserId);
-            intent.putExtra("other user id", mUser.getUserId());
-            intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            getActivity().startActivity(intent);
+        Intent intent = new Intent(getContext(), ChatDetailsActivity.class);
+        intent.putExtra("current user id", mCurrentUserId);
+        intent.putExtra("other user id", mUser.getUserId());
+        intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        getActivity().startActivity(intent);
     }
 
     private void setUpMap() {
@@ -360,5 +406,19 @@ public class UserDetailsFragment extends Fragment {
         FragmentManager fm = getChildFragmentManager();
         MapDialogFragment mapDialog = MapDialogFragment.newInstance(mUser.getVacation().getDestination(), mUser.getVacation().getLatitude(), mUser.getVacation().getLongitude());
         mapDialog.show(fm, "fragment_map_dialog");
+    }
+
+    private void playAudio() {
+        try {
+            if (mUser.getSongPreviewUrl() == null) {
+                Toast.makeText(getContext(), "This song does not have a preview", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            mMediaPlayer.setDataSource(mUser.getSongPreviewUrl());
+            mMediaPlayer.prepare();
+            mMediaPlayer.start();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
