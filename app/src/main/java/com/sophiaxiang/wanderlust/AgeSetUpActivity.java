@@ -31,7 +31,7 @@ public class AgeSetUpActivity extends AppCompatActivity {
         mBinding.btnContinue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (TextUtils.isEmpty(mBinding.etAgeSetUp.toString())){
+                if (TextUtils.isEmpty(mBinding.etAgeSetUp.toString())) {
                     Toast.makeText(AgeSetUpActivity.this, "Please enter your age!", Toast.LENGTH_SHORT).show();
                     return;
                 }

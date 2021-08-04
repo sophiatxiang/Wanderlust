@@ -83,7 +83,7 @@ public class EditProfileFragment extends Fragment {
     private void setUpToolBar(View view) {
         androidx.appcompat.widget.Toolbar toolbar = view.findViewById(R.id.toolbar);
         toolbar.setTitle("Edit Profile");
-        ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
+        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
     }
 
     private void setUpButtons() {
@@ -143,6 +143,7 @@ public class EditProfileFragment extends Fragment {
                 mCurrentUser = dataSnapshot.getValue(User.class);
                 populateImageViews();
             }
+
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 // Getting user failed, log a message
@@ -182,7 +183,7 @@ public class EditProfileFragment extends Fragment {
         }
 
         // populate profile pic
-        if (mCurrentUser.getProfilePhoto() == null){
+        if (mCurrentUser.getProfilePhoto() == null) {
             Glide.with(mBinding.ivProfilePhoto.getContext())
                     .load(R.drawable.no_profile_pic)
                     .circleCrop()
@@ -196,25 +197,25 @@ public class EditProfileFragment extends Fragment {
     }
 
     private void updateDatabaseUserProfile() {
-        if (TextUtils.isEmpty(mBinding.etAge.toString())){
+        if (TextUtils.isEmpty(mBinding.etAge.toString())) {
             Toast.makeText(getContext(), "Please enter an age!", Toast.LENGTH_SHORT).show();
             return;
         }
         User user = getEditedValues();
         mDatabase.child("users").child(mFirebaseUser.getUid()).setValue(user)
-            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                @Override
-                public void onSuccess(Void aVoid) {
-                    Toast.makeText(getContext(), "Save successful!", Toast.LENGTH_SHORT).show();
-                    getActivity().getSupportFragmentManager().popBackStack();
-                }
-            })
-            .addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Log.e(TAG, "failure to update profile: ", e);
-                }
-            });
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Toast.makeText(getContext(), "Save successful!", Toast.LENGTH_SHORT).show();
+                        getActivity().getSupportFragmentManager().popBackStack();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e(TAG, "failure to update profile: ", e);
+                    }
+                });
     }
 
     private User getEditedValues() {
@@ -234,12 +235,12 @@ public class EditProfileFragment extends Fragment {
         String songArtist = mCurrentUser.getSongArtist();
         String songPreviewUrl = mCurrentUser.getSongPreviewUrl();
 
-        return new User(mFirebaseUser.getUid(), name , age, gender, from, bio,
+        return new User(mFirebaseUser.getUid(), name, age, gender, from, bio,
                 adventureLevel, image1, image2, image3, profilePhoto, mCurrentUser.getVacation(),
                 instagram, songAlbumCover, songName, songArtist, songPreviewUrl);
     }
 
-    private void goTakePhotoFragment(String imageNumber){
+    private void goTakePhotoFragment(String imageNumber) {
         Fragment fragment = new TakePhotoFragment();
         Bundle args = new Bundle();
         args.putString("current user id", mCurrentUser.getUserId());
@@ -258,11 +259,10 @@ public class EditProfileFragment extends Fragment {
             public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
                 View view = super.getDropDownView(position, convertView, parent);
                 TextView tv = (TextView) view;
-                if(position == 0){
+                if (position == 0) {
                     // Set the hint text color gray
                     tv.setTextColor(Color.GRAY);
-                }
-                else {
+                } else {
                     tv.setTextColor(Color.BLACK);
                 }
                 return view;
@@ -272,7 +272,7 @@ public class EditProfileFragment extends Fragment {
         adapter.setDropDownViewResource(R.layout.item_spinner);
         mBinding.spinnerGender.setAdapter(adapter);
 
-        if (!mCurrentUser.getGender().equals("")){
+        if (!mCurrentUser.getGender().equals("")) {
             int spinnerPosition = adapter.getPosition(mCurrentUser.getGender());
             mBinding.spinnerGender.setSelection(spinnerPosition);
         }

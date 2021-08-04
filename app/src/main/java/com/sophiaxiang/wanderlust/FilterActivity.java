@@ -91,18 +91,15 @@ public class FilterActivity extends AppCompatActivity {
 
     public void onGenderCheckboxClicked(View view) {
         boolean checked = ((CheckBox) view).isChecked();
-        switch(view.getId()) {
+        switch (view.getId()) {
             case R.id.cbFemale:
-                if (checked) mFilterFemale = true;
-                else mFilterFemale = false;
+                mFilterFemale = checked;
                 break;
             case R.id.cbMale:
-                if (checked) mFilterMale = true;
-                else mFilterMale = false;
+                mFilterMale = checked;
                 break;
             case R.id.cbGenderOther:
-                if (checked) mFilterGenderOther = true;
-                else mFilterGenderOther = false;
+                mFilterGenderOther = checked;
                 break;
         }
     }

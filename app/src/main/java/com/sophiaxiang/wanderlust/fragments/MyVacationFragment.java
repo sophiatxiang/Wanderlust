@@ -49,7 +49,6 @@ import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
 
 public class MyVacationFragment extends Fragment {
-
     public static final String TAG = "MyVacationFragment";
     private static final int AUTOCOMPLETE_REQUEST_CODE = 1;
     private FragmentMyVacationBinding mBinding;
@@ -249,7 +248,7 @@ public class MyVacationFragment extends Fragment {
         // save user's attractions to the database
         for (int i = 0; i < mAttractions.size(); i++) {
             mDatabase.child("users").child(mFirebaseUser.getUid())
-                    .child("vacation").child("attraction" + (i+1))
+                    .child("vacation").child("attraction" + (i + 1))
                     .setValue(mAttractions.get(i));
         }
         Toast.makeText(getContext(), "Vacation details saved!", Toast.LENGTH_SHORT).show();

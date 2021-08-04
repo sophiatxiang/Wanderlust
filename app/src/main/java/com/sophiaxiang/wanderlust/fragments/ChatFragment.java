@@ -74,7 +74,7 @@ public class ChatFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        getActivity().getMenuInflater().inflate( R.menu.menu_go_search, menu);
+        getActivity().getMenuInflater().inflate(R.menu.menu_go_search, menu);
         MenuItem search = menu.findItem(R.id.action_launch_search);
         search.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
@@ -105,16 +105,16 @@ public class ChatFragment extends Fragment {
         toolbar.setTitle("Chats");
         // hide app logo title
         toolbar.findViewById(R.id.title).setVisibility(View.GONE);
-        ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
+        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
     }
 
     private void queryChats() {
-        Query recentChatsQuery = mDatabase.child("userChatLists").child(mCurrentUserId).limitToFirst(40).orderByChild("lastMessageTime");;
+        Query recentChatsQuery = mDatabase.child("userChatLists").child(mCurrentUserId).limitToFirst(40).orderByChild("lastMessageTime");
         recentChatsQuery.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 mChats.clear();
-                for (DataSnapshot chatSnapshot: dataSnapshot.getChildren()) {
+                for (DataSnapshot chatSnapshot : dataSnapshot.getChildren()) {
                     Chat chat = chatSnapshot.getValue(Chat.class);
                     if (chat.getLastMessageTime() != 0) {
                         mChats.add(0, chat);

@@ -30,11 +30,6 @@ import com.sophiaxiang.wanderlust.models.SpotifyTrackModels.SpotifyTrack;
 
 import java.io.IOException;
 
-import kaaes.spotify.webapi.android.SpotifyApi;
-import kaaes.spotify.webapi.android.SpotifyService;
-import kaaes.spotify.webapi.android.models.Album;
-import okhttp3.Headers;
-import retrofit.RetrofitError;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -44,8 +39,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class EditSpotifySongFragment extends Fragment {
     public static final String BASE_URL_TOKEN = "https://accounts.spotify.com/";
     public static final String TAG = "EditSpotifySongFragment";
-    private String clientId = "d6dbbace55c040ce944e523f2c970938";
-    private String clientSecret = "5a1329d147dd4e178c8e4ceb2227a743";
+    private final String clientId = "d6dbbace55c040ce944e523f2c970938";
+    private final String clientSecret = "5a1329d147dd4e178c8e4ceb2227a743";
     private FragmentEditSpotifySongBinding mBinding;
     private DatabaseReference mDatabase;
     private FirebaseUser mFirebaseUser;

@@ -31,11 +31,9 @@ import java.util.List;
 
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder> {
     private final DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
-
-    private List<User> mUsers;
-    private Context mContext;
-    private String mCurrentUserId;
-
+    private final List<User> mUsers;
+    private final Context mContext;
+    private final String mCurrentUserId;
 
     public UserAdapter(Context context, List<User> users, String currentUserId) {
         this.mContext = context;
@@ -93,7 +91,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
 
         private void setUpOnTouchListener(View itemView) {
             itemView.setOnTouchListener(new View.OnTouchListener() {
-                private GestureDetector gestureDetector = new GestureDetector(mContext, new GestureDetector.SimpleOnGestureListener() {
+                private final GestureDetector gestureDetector = new GestureDetector(mContext, new GestureDetector.SimpleOnGestureListener() {
                     @Override
                     public boolean onDoubleTap(MotionEvent e) {
                         int position = getAdapterPosition();
@@ -104,13 +102,13 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
                         ivHeart.startAnimation(fadeIn);
                         ivHeart.setVisibility(View.VISIBLE);
 
-                        ivHeart.postDelayed(new Runnable(){
+                        ivHeart.postDelayed(new Runnable() {
                             public void run() {
                                 Animation fadeOut = AnimationUtils.loadAnimation(mContext, R.anim.fadeout);
                                 ivHeart.startAnimation(fadeOut);
                                 ivHeart.setVisibility(View.GONE);
                             }
-                        },1000);
+                        }, 1000);
                         return super.onDoubleTap(e);
                     }
 

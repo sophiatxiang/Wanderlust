@@ -48,9 +48,7 @@ public class LoginActivity extends AppCompatActivity {
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        if(currentUser != null) {
-            goMainActivity();
-        }
+        if (currentUser != null) goMainActivity();
 
         // set up Google Sign In
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -157,8 +155,7 @@ public class LoginActivity extends AppCompatActivity {
                     createDatabaseUserProfile(mFirebaseUser.getUid());
                     createDatabaseUserVacation(mFirebaseUser.getUid());
                     goNameSetUpActivity();
-                }
-                else goMainActivity();
+                } else goMainActivity();
             }
         });
     }

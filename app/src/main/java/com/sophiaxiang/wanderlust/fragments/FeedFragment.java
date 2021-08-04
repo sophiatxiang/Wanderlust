@@ -47,7 +47,7 @@ import static java.time.temporal.ChronoUnit.DAYS;
 public class FeedFragment extends Fragment {
 
     public static final String TAG = "ProfileFragment";
-    private static int FILTER_REQUEST_CODE = 28;
+    private static final int FILTER_REQUEST_CODE = 28;
 
     private FragmentFeedBinding mBinding;
     private DatabaseReference mDatabase;
@@ -63,7 +63,6 @@ public class FeedFragment extends Fragment {
     private int mFilterAgeMin;
     private int mFilterAgeMax;
     private int mFilterVacationOverlap;
-
 
     public FeedFragment() {
         // Required empty public constructor
@@ -127,8 +126,8 @@ public class FeedFragment extends Fragment {
 
     private void setUpToolBar(View view) {
         androidx.appcompat.widget.Toolbar toolbar = view.findViewById(R.id.toolbar);
-        ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
+        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
     }
 
     private void goFilterActivity() {
@@ -149,17 +148,15 @@ public class FeedFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == FILTER_REQUEST_CODE) {
-            if (resultCode == RESULT_OK) {
-                mFilterRadius = data.getIntExtra("filter radius", 100);
-                mFilterFemale = data.getBooleanExtra("filter female", false);
-                mFilterMale = data.getBooleanExtra("filter male", false);
-                mFilterGenderOther = data.getBooleanExtra("filter gender other", false);
-                mFilterAgeMin = data.getIntExtra("filter age min", 18);
-                mFilterAgeMax = data.getIntExtra("filter age max", 120);
-                mFilterVacationOverlap = data.getIntExtra("filter vacation overlap", 1);
-                queryFilteredUsers();
-            }
+        if (requestCode == FILTER_REQUEST_CODE && resultCode == RESULT_OK) {
+            mFilterRadius = data.getIntExtra("filter radius", 100);
+            mFilterFemale = data.getBooleanExtra("filter female", false);
+            mFilterMale = data.getBooleanExtra("filter male", false);
+            mFilterGenderOther = data.getBooleanExtra("filter gender other", false);
+            mFilterAgeMin = data.getIntExtra("filter age min", 18);
+            mFilterAgeMax = data.getIntExtra("filter age max", 120);
+            mFilterVacationOverlap = data.getIntExtra("filter vacation overlap", 1);
+            queryFilteredUsers();
         }
     }
 
@@ -176,15 +173,15 @@ public class FeedFragment extends Fragment {
                 mUsers.clear();
                 mAdapter.notifyDataSetChanged();
                 mBinding.tvNumResults.setText(mUsers.size() + " RESULTS");
-                for (DataSnapshot userSnapshot: snapshot.getChildren()) {
+                for (DataSnapshot userSnapshot : snapshot.getChildren()) {
                     User user = userSnapshot.getValue(User.class);
                     // check if queried user is current user
-                    if (!user.getUserId().equals(mCurrentUserId)) {
-                        if (withinGenderFilter(user))
-                            getFilteredVacation(user, mFilterRadius);
+                    if (!user.getUserId().equals(mCurrentUserId) && withinGenderFilter(user)) {
+                        getFilteredVacation(user, mFilterRadius);
                     }
                 }
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Log.w(TAG, "loadChats:onCancelled", error.toException());
@@ -202,24 +199,24 @@ public class FeedFragment extends Fragment {
     }
 
     private void getFilteredVacation(User user, int radius) {
-        mDatabase.child("users").child(user.getUserId()).child("vacation").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DataSnapshot> task) {
-                if (task.isSuccessful()) {
-                    Vacation vacation = task.getResult().getValue(Vacation.class);
-                    // if vacation passes filters, add the user into the List and notify the adapter
-                    if (withinVacationFilters(vacation, radius)) {
-                        user.setVacation(vacation);
-                        mUsers.add(0, user);
-                        mAdapter.notifyItemInserted(0);
-                        mBinding.tvNumResults.setText(mUsers.size() + " RESULTS");
+        mDatabase.child("users").child(user.getUserId()).child("vacation").get()
+                .addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DataSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            Vacation vacation = task.getResult().getValue(Vacation.class);
+                            // if vacation passes filters, add the user into the List and notify the adapter
+                            if (withinVacationFilters(vacation, radius)) {
+                                user.setVacation(vacation);
+                                mUsers.add(0, user);
+                                mAdapter.notifyItemInserted(0);
+                                mBinding.tvNumResults.setText(mUsers.size() + " RESULTS");
+                            }
+                        } else {
+                            Log.e(TAG, "Error getting vacation data", task.getException());
+                        }
                     }
-                }
-                else {
-                    Log.e(TAG, "Error getting vacation data", task.getException());
-                }
-            }
-        });
+                });
     }
 
     private boolean withinVacationFilters(Vacation vacation, int radius) {
@@ -237,8 +234,7 @@ public class FeedFragment extends Fragment {
         LatLng latLng1 = new LatLng(vacation.getLatitude(), vacation.getLongitude());
         LatLng latLng2 = new LatLng(mCurrentUser.getVacation().getLatitude(), mCurrentUser.getVacation().getLongitude());
         double distanceMiles = SphericalUtil.computeDistanceBetween(latLng1, latLng2) * 0.000621371192;
-        if ((int) distanceMiles <= radius) return true;
-        return false;
+        return (int) distanceMiles <= radius;
     }
 
     private boolean checkVacationOverlap(Vacation vacation) throws ParseException {
@@ -252,9 +248,6 @@ public class FeedFragment extends Fragment {
         if ((otherStartDate.compareTo(myStartDate) <= 0) && (otherEndDate.compareTo(myStartDate.plusDays(mFilterVacationOverlap - 1)) >= 0)) {
             return true;
         }
-        if (otherStartDate.compareTo(myStartDate) > 0 && otherStartDate.compareTo(myEndDate.minusDays(mFilterVacationOverlap - 1)) <= 0) {
-            return true;
-        }
-        return false;
+        return otherStartDate.compareTo(myStartDate) > 0 && otherStartDate.compareTo(myEndDate.minusDays(mFilterVacationOverlap - 1)) <= 0;
     }
 }

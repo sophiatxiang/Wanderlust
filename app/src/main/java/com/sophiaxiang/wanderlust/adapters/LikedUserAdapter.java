@@ -35,10 +35,9 @@ import java.util.List;
 public class LikedUserAdapter extends RecyclerView.Adapter<LikedUserAdapter.LikedUserViewHolder> {
     public static final String TAG = "LikedUserAdapter";
     private final DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
-
-    private Context mContext;
-    private List<String> mLikedUserIds;
-    private String mCurrentUserId;
+    private final Context mContext;
+    private final List<String> mLikedUserIds;
+    private final String mCurrentUserId;
 
     public LikedUserAdapter(Context mContext, List<String> mLikedUserIds, String mCurrentUserId) {
         this.mContext = mContext;
@@ -139,9 +138,11 @@ public class LikedUserAdapter extends RecyclerView.Adapter<LikedUserAdapter.Like
                                 .load(Uri.parse(uri))
                                 .circleCrop()
                                 .into(ivLikedUserImage);
+                    } else {
+                        Glide.with(mContext).load(R.drawable.no_profile_pic).circleCrop().into(ivLikedUserImage);
                     }
-                    else Glide.with(mContext).load(R.drawable.no_profile_pic).circleCrop().into(ivLikedUserImage);
                 }
+
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
                     // Getting Post failed, log a message

@@ -37,9 +37,8 @@ import java.util.List;
 public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder> {
     public static final String TAG = "ChatAdapter";
     private final DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
-
-    private List<Chat> mChats;
-    private Context mContext;
+    private final List<Chat> mChats;
+    private final Context mContext;
 
     public ChatAdapter(Context context, List<Chat> chats) {
         this.mContext = context;
@@ -65,9 +64,9 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder
     }
 
     public class ChatViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        private ImageView ivChatImage;
-        private TextView tvChatName;
-        private TextView tvLastMessage;
+        private final ImageView ivChatImage;
+        private final TextView tvChatName;
+        private final TextView tvLastMessage;
 
         public ChatViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -119,9 +118,11 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder
                                 .load(Uri.parse(uri))
                                 .circleCrop()
                                 .into(ivChatImage);
+                    } else {
+                        Glide.with(mContext).load(R.drawable.no_profile_pic).circleCrop().into(ivChatImage);
                     }
-                    else Glide.with(mContext).load(R.drawable.no_profile_pic).circleCrop().into(ivChatImage);
                 }
+
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
                     // Getting Post failed, log a message

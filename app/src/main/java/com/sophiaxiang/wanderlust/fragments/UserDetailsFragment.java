@@ -135,11 +135,7 @@ public class UserDetailsFragment extends Fragment {
         mDatabase.child("likedUserLists").child(mCurrentUserId).child(mUser.getUserId()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()) {
-                    mBinding.fabLike.setSelected(true);
-                } else {
-                    mBinding.fabLike.setSelected(false);
-                }
+                mBinding.fabLike.setSelected(snapshot.exists());
             }
 
             @Override
@@ -271,7 +267,6 @@ public class UserDetailsFragment extends Fragment {
         };
         mVacationDetailsReference.addValueEventListener(vacationListener);
     }
-
 
     private void setProfileInfoListener() {
         ValueEventListener userListener = new ValueEventListener() {

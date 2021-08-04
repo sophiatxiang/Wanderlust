@@ -15,8 +15,8 @@ import com.sophiaxiang.wanderlust.R;
 import java.util.List;
 
 public class AttractionAdapter extends RecyclerView.Adapter<AttractionAdapter.ActivityViewHolder> {
-    private Context mContext;
-    private List<String> mAttractions;
+    private final Context mContext;
+    private final List<String> mAttractions;
 
     public AttractionAdapter(Context mContext, List<String> mActivities) {
         this.mContext = mContext;

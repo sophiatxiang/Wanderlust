@@ -40,7 +40,7 @@ public class GenderSetUpActivity extends AppCompatActivity {
         mBinding.btnContinue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mGender.equals("")){
+                if (mGender.equals("")) {
                     Toast.makeText(GenderSetUpActivity.this, "Please select a gender!", Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -57,11 +57,10 @@ public class GenderSetUpActivity extends AppCompatActivity {
             public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
                 View view = super.getDropDownView(position, convertView, parent);
                 TextView tv = (TextView) view;
-                if(position == 0){
+                if (position == 0) {
                     // Set the hint text color gray
                     tv.setTextColor(Color.GRAY);
-                }
-                else {
+                } else {
                     tv.setTextColor(Color.BLACK);
                 }
                 return view;

@@ -29,10 +29,9 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.
     private static final int MESSAGE_INCOMING = 321;
     private static final String TAG = "ChatMessageAdapter";
     private final DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
-
-    private List<ChatMessage> mMessages;
-    private Context mContext;
-    private String mCurrentUserId;
+    private final List<ChatMessage> mMessages;
+    private final Context mContext;
+    private final String mCurrentUserId;
 
     public ChatMessageAdapter(Context context, String userId, List<ChatMessage> messages) {
         mMessages = messages;
@@ -115,9 +114,10 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.
                                 .load(Uri.parse(uri))
                                 .circleCrop()
                                 .into(ivProfileOther);
-                    }
-                    else Glide.with(mContext).load(R.drawable.no_profile_pic).circleCrop().into(ivProfileOther);
+                    } else
+                        Glide.with(mContext).load(R.drawable.no_profile_pic).circleCrop().into(ivProfileOther);
                 }
+
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
                     Log.w(TAG, "load incoming message profile image:onCancelled", databaseError.toException());
@@ -152,9 +152,10 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.
                                 .load(Uri.parse(uri))
                                 .circleCrop()
                                 .into(ivProfileMe);
-                    }
-                    else Glide.with(mContext).load(R.drawable.no_profile_pic).circleCrop().into(ivProfileMe);
+                    } else
+                        Glide.with(mContext).load(R.drawable.no_profile_pic).circleCrop().into(ivProfileMe);
                 }
+
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
                     Log.w(TAG, "load outgoing message profile image:onCancelled", databaseError.toException());

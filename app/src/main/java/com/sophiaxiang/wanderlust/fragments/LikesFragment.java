@@ -89,17 +89,17 @@ public class LikesFragment extends Fragment {
         androidx.appcompat.widget.Toolbar toolbar = view.findViewById(R.id.toolbar);
         toolbar.setTitle("Likes");
         toolbar.findViewById(R.id.title).setVisibility(View.GONE);
-        ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
+        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
     }
 
     private void queryLikes() {
-        Query recentLikesQuery = mDatabase.child("likedUserLists").child(mCurrentUserId).orderByChild("likedAt");;
+        Query recentLikesQuery = mDatabase.child("likedUserLists").child(mCurrentUserId).orderByChild("likedAt");
         recentLikesQuery.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 mLikedUserIds.clear();
-                for (DataSnapshot snapshot: dataSnapshot.getChildren()) {
-                    String likedUserId = snapshot.getKey().toString();
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    String likedUserId = snapshot.getKey();
                     mLikedUserIds.add(0, likedUserId);
                 }
                 mAdapter.notifyDataSetChanged();

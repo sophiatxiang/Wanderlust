@@ -38,7 +38,6 @@ public class ChatDetailsActivity extends AppCompatActivity {
     private String mOtherUserName;
     private String mChatId;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,7 +71,7 @@ public class ChatDetailsActivity extends AppCompatActivity {
         if (mCurrentUserId.compareTo(mOtherUserId) < 0) {
             mChatId = mCurrentUserId + mOtherUserId;
         } else {
-            mChatId =  mOtherUserId + mCurrentUserId;
+            mChatId = mOtherUserId + mCurrentUserId;
         }
     }
 
@@ -140,14 +139,14 @@ public class ChatDetailsActivity extends AppCompatActivity {
                     public void onSuccess(Void aVoid) {
                         Toast.makeText(ChatDetailsActivity.this, "Message delivered!",
                                 Toast.LENGTH_SHORT).show();
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Log.e(TAG, "Failed to save message", e);
-                        }
-                    });
+                    }
+                })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.e(TAG, "Failed to save message", e);
+                            }
+                        });
 
                 // update last message contents and time in current and other users' chat lists
                 mDatabase.child("userChatLists").child(mCurrentUserId).child(mChatId).child("lastMessage").setValue(message.getMessageText());

@@ -75,7 +75,7 @@ public class LikesSearchFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        getActivity().getMenuInflater().inflate( R.menu.menu_search, menu);
+        getActivity().getMenuInflater().inflate(R.menu.menu_search, menu);
         final MenuItem cancelItem = menu.findItem(R.id.action_cancel);
         final MenuItem searchItem = menu.findItem(R.id.action_search);
         final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
@@ -87,6 +87,7 @@ public class LikesSearchFragment extends Fragment {
                 queryLikes(query);
                 return true;
             }
+
             @Override
             public boolean onQueryTextChange(String s) {
                 return false;
@@ -107,18 +108,18 @@ public class LikesSearchFragment extends Fragment {
 
     private void setUpToolBar(View view) {
         androidx.appcompat.widget.Toolbar toolbar = view.findViewById(R.id.toolbar);
-        ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
+        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
     }
 
     private void queryLikes(String query) {
-        Query recentLikesQuery = mDatabase.child("likedUserLists").child(mCurrentUserId).orderByChild("likedAt");;
+        Query recentLikesQuery = mDatabase.child("likedUserLists").child(mCurrentUserId).orderByChild("likedAt");
         recentLikesQuery.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 mLikedUserIds.clear();
                 mAdapter.notifyDataSetChanged();
-                for (DataSnapshot snapshot: dataSnapshot.getChildren()) {
-                    String likedUserId = snapshot.getKey().toString();
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    String likedUserId = snapshot.getKey();
                     checkFilter(likedUserId, query);
                 }
             }
@@ -139,8 +140,11 @@ public class LikesSearchFragment extends Fragment {
                     mLikedUserIds.add(0, likedUserId);
                     mAdapter.notifyItemInserted(0);
                 }
-                if (mLikedUserIds.size() == 0) mBinding.tvNoSearchResults.setVisibility(View.VISIBLE);
-                else mBinding.tvNoSearchResults.setVisibility(View.GONE);
+                if (mLikedUserIds.size() == 0) {
+                    mBinding.tvNoSearchResults.setVisibility(View.VISIBLE);
+                } else {
+                    mBinding.tvNoSearchResults.setVisibility(View.GONE);
+                }
             }
         });
     }

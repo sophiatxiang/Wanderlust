@@ -60,8 +60,8 @@ public class MapDialogFragment extends DialogFragment implements OnMapReadyCallb
         mLongitude = getArguments().getDouble("long");
         mDestination = getArguments().getString("destination");
 
-        int width = (int)(getResources().getDisplayMetrics().widthPixels*0.97);
-        int height = (int)(getResources().getDisplayMetrics().heightPixels*0.80);
+        int width = (int) (getResources().getDisplayMetrics().widthPixels * 0.97);
+        int height = (int) (getResources().getDisplayMetrics().heightPixels * 0.80);
         getDialog().getWindow().setLayout(width, height);
 
         mBinding.mapDestination.onCreate(savedInstanceState);

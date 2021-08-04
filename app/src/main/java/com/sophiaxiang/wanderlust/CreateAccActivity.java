@@ -24,7 +24,6 @@ import com.sophiaxiang.wanderlust.models.User;
 import com.sophiaxiang.wanderlust.models.Vacation;
 
 public class CreateAccActivity extends AppCompatActivity {
-
     public static final String TAG = "CreateAccActivity";
     private FirebaseAuth mAuth;
     private ActivityCreateAccBinding mBinding;

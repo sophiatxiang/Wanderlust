@@ -64,7 +64,6 @@ public class TakePhotoFragment extends Fragment {
         return mBinding.getRoot();
     }
 
-
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -136,7 +135,6 @@ public class TakePhotoFragment extends Fragment {
         }
     }
 
-
     // after image is taken/selected, load Bitmap into the image view in Main Activity
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -170,7 +168,7 @@ public class TakePhotoFragment extends Fragment {
         Bitmap image = null;
         try {
             // check version of Android on device
-            if(Build.VERSION.SDK_INT > 27){
+            if (Build.VERSION.SDK_INT > 27) {
                 // on newer versions of Android, use the new decodeBitmap method
                 ImageDecoder.Source source = ImageDecoder.createSource(getActivity().getContentResolver(), photoUri);
                 image = ImageDecoder.decodeBitmap(source);
@@ -184,7 +182,6 @@ public class TakePhotoFragment extends Fragment {
         return image;
     }
 
-
     // Returns the File for a photo stored on disk given the fileName
     public File getPhotoFileUri(String fileName) {
         // Get safe storage directory for photos
@@ -193,7 +190,7 @@ public class TakePhotoFragment extends Fragment {
         File mediaStorageDir = new File(getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES), TAG);
 
         // Create the storage directory if it does not exist
-        if (!mediaStorageDir.exists() && !mediaStorageDir.mkdirs()){
+        if (!mediaStorageDir.exists() && !mediaStorageDir.mkdirs()) {
             Log.d(TAG, "failed to create directory");
         }
 
@@ -202,7 +199,7 @@ public class TakePhotoFragment extends Fragment {
     }
 
     // save image to Firebase Storage
-    private void saveImage(){
+    private void saveImage() {
         // Get the data from an ImageView as bytes
         Bitmap bitmap = ((BitmapDrawable) mBinding.ivCameraPhoto.getDrawable()).getBitmap();
         ByteArrayOutputStream baos = new ByteArrayOutputStream();

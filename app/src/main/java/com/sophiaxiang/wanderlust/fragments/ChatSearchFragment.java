@@ -74,7 +74,7 @@ public class ChatSearchFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        getActivity().getMenuInflater().inflate( R.menu.menu_search, menu);
+        getActivity().getMenuInflater().inflate(R.menu.menu_search, menu);
         final MenuItem cancelItem = menu.findItem(R.id.action_cancel);
         final MenuItem searchItem = menu.findItem(R.id.action_search);
         final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
@@ -87,6 +87,7 @@ public class ChatSearchFragment extends Fragment {
                 queryChats(query);
                 return true;
             }
+
             @Override
             public boolean onQueryTextChange(String s) {
                 return false;
@@ -107,19 +108,19 @@ public class ChatSearchFragment extends Fragment {
 
     private void setUpToolBar(View view) {
         androidx.appcompat.widget.Toolbar toolbar = view.findViewById(R.id.toolbar);
-        ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         toolbar.setNavigationIcon(null);
     }
 
     private void queryChats(String query) {
-        Query recentChatsQuery = mDatabase.child("userChatLists").child(mCurrentUserId).limitToFirst(40).orderByChild("lastMessageTime");;
+        Query recentChatsQuery = mDatabase.child("userChatLists").child(mCurrentUserId).limitToFirst(40).orderByChild("lastMessageTime");
         recentChatsQuery.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 mChats.clear();
                 mBinding.tvNoSearchResults.setVisibility(View.GONE);
-                for (DataSnapshot chatSnapshot: dataSnapshot.getChildren()) {
+                for (DataSnapshot chatSnapshot : dataSnapshot.getChildren()) {
                     Chat chat = chatSnapshot.getValue(Chat.class);
                     if (chat.getLastMessageTime() != 0 && chat.getOtherUserName().toLowerCase().contains(query.toLowerCase())) {
                         mChats.add(0, chat);

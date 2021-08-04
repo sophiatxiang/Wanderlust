@@ -54,7 +54,6 @@ public class MainActivity extends AppCompatActivity {
         mStorage = FirebaseStorage.getInstance().getReference();
 
         getCurrentUser();
-
         setUpBottomNavigation();
     }
 
@@ -126,7 +125,7 @@ public class MainActivity extends AppCompatActivity {
     private void setUpBottomNavigation() {
         mBinding.bottomNavigation.setOnItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
-            public boolean onNavigationItemSelected(@NonNull  MenuItem menuItem) {
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 Fragment fragment;
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("current user id", mCurrentUserId);
@@ -161,7 +160,7 @@ public class MainActivity extends AppCompatActivity {
         mBinding.bottomNavigation.setSelectedItemId(R.id.action_home);
     }
 
-    public void goLoginActivity () {
+    public void goLoginActivity() {
         Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
         finish();
