@@ -1,19 +1,18 @@
 package com.sophiaxiang.wanderlust.fragments;
 
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.databinding.DataBindingUtil;
-import androidx.fragment.app.Fragment;
-
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -27,8 +26,6 @@ import com.sophiaxiang.wanderlust.SpotifyApiEndpoints;
 import com.sophiaxiang.wanderlust.databinding.FragmentEditSpotifySongBinding;
 import com.sophiaxiang.wanderlust.models.AccessToken;
 import com.sophiaxiang.wanderlust.models.SpotifyTrackModels.SpotifyTrack;
-
-import java.io.IOException;
 
 import retrofit2.Call;
 import retrofit2.Callback;

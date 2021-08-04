@@ -1,11 +1,10 @@
 package com.sophiaxiang.wanderlust.models.SpotifyTrackModels;
 
 
-import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.sophiaxiang.wanderlust.models.SpotifyTrackModels.Artist;
-import com.sophiaxiang.wanderlust.models.SpotifyTrackModels.Image;
+
+import java.util.List;
 
 public class Album {
 

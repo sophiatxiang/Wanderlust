@@ -1,6 +1,5 @@
 package com.sophiaxiang.wanderlust.models.SpotifyTrackModels;
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 

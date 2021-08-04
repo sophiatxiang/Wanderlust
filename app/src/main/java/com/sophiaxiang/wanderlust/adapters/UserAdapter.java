@@ -1,6 +1,5 @@
 package com.sophiaxiang.wanderlust.adapters;
 
-import android.animation.LayoutTransition;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;

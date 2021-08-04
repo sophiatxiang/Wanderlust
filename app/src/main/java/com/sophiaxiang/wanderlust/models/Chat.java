@@ -1,7 +1,5 @@
 package com.sophiaxiang.wanderlust.models;
 
-import java.util.List;
-
 public class Chat {
     private String chatId;
     private String otherUserName;
