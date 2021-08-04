@@ -23,7 +23,7 @@ import com.bumptech.glide.Glide;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.sophiaxiang.wanderlust.R;
-import com.sophiaxiang.wanderlust.fragments.UserDetailsFragment;
+import com.sophiaxiang.wanderlust.fragments.UserProfileFragment;
 import com.sophiaxiang.wanderlust.models.User;
 
 import java.util.List;
@@ -116,7 +116,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
                         int position = getAdapterPosition();
                         if (position != RecyclerView.NO_POSITION) {
                             AppCompatActivity activity = (AppCompatActivity) mContext;
-                            Fragment fragment = new UserDetailsFragment();
+                            Fragment fragment = new UserProfileFragment();
                             Bundle bundle = new Bundle();
                             bundle.putSerializable("user", mUsers.get(position));
                             fragment.setArguments(bundle);

@@ -45,7 +45,7 @@ import static java.time.temporal.ChronoUnit.DAYS;
 
 public class FeedFragment extends Fragment {
 
-    public static final String TAG = "ProfileFragment";
+    public static final String TAG = "FeedFragment";
     private static final int FILTER_REQUEST_CODE = 28;
 
     private FragmentFeedBinding mBinding;

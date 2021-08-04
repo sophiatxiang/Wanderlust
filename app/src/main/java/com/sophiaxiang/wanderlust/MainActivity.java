@@ -28,7 +28,7 @@ import com.sophiaxiang.wanderlust.databinding.ActivityMainBinding;
 import com.sophiaxiang.wanderlust.fragments.ChatFragment;
 import com.sophiaxiang.wanderlust.fragments.FeedFragment;
 import com.sophiaxiang.wanderlust.fragments.LikesFragment;
-import com.sophiaxiang.wanderlust.fragments.ProfileFragment;
+import com.sophiaxiang.wanderlust.fragments.MyProfileFragment;
 import com.sophiaxiang.wanderlust.models.User;
 import com.sophiaxiang.wanderlust.models.Vacation;
 
@@ -145,10 +145,9 @@ public class MainActivity extends AppCompatActivity {
                         fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).addToBackStack(null).commit();
                         break;
                     case R.id.action_profile:
-                        fragment = new ProfileFragment();
+                        fragment = new MyProfileFragment();
                         Bundle profileBundle = new Bundle();
-                        profileBundle.putSerializable("current user", mCurrentUser);
-                        profileBundle.putSerializable("vacation", mCurrentUserVacation);
+                        profileBundle.putSerializable("user", mCurrentUser);
                         fragment.setArguments(profileBundle);
                         fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).addToBackStack(null).commit();
                         break;

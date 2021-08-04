@@ -27,7 +27,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.sophiaxiang.wanderlust.ChatDetailsActivity;
 import com.sophiaxiang.wanderlust.R;
-import com.sophiaxiang.wanderlust.fragments.UserDetailsFragment;
+import com.sophiaxiang.wanderlust.fragments.UserProfileFragment;
 import com.sophiaxiang.wanderlust.models.User;
 
 import java.util.List;
@@ -117,7 +117,7 @@ public class LikedUserAdapter extends RecyclerView.Adapter<LikedUserAdapter.Like
 
         private void goUserDetailsFrag(User user) {
             AppCompatActivity activity = (AppCompatActivity) mContext;
-            Fragment fragment = new UserDetailsFragment();
+            Fragment fragment = new UserProfileFragment();
             Bundle bundle = new Bundle();
             bundle.putSerializable("user", user);
             fragment.setArguments(bundle);

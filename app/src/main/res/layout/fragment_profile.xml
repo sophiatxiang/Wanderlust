@@ -10,7 +10,7 @@
        android:id="@+id/relativeLayout"
        android:layout_width="match_parent"
        android:layout_height="match_parent"
-       tools:context=".fragments.ProfileFragment">
+       tools:context=".fragments.MyProfileFragment">
 
        <include
            layout="@layout/toolbar_main"
@@ -37,6 +37,17 @@
                    android:layout_marginTop="15dp"
                    android:layout_marginEnd="25dp"
                    android:text="Edit Profile" />
+
+               <Button
+                   android:id="@+id/btnChat"
+                   android:layout_width="150dp"
+                   android:layout_height="wrap_content"
+                   android:layout_below="@id/tvBio"
+                   android:layout_alignParentEnd="true"
+                   android:layout_marginTop="10dp"
+                   android:layout_marginEnd="25dp"
+                   android:text="Chat"
+                   android:visibility="gone"/>
 
                <Button
                    android:id="@+id/btnPrevious"
@@ -108,9 +119,10 @@
                </RelativeLayout>
 
                <RelativeLayout
-                   android:layout_width="wrap_content"
+                   android:layout_width="200dp"
                    android:layout_height="wrap_content"
                    android:layout_below="@+id/ivPhoto"
+                   android:layout_alignParentEnd="true"
                    android:layout_marginTop="-50dp">
 
                    <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -126,6 +138,32 @@
                        app:borderWidth="0dp"
                        app:fabSize="auto" />
 
+                   <com.google.android.material.floatingactionbutton.FloatingActionButton
+                       android:id="@+id/fabLike"
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       android:layout_alignParentEnd="true"
+                       android:layout_marginTop="20dp"
+                       android:layout_marginEnd="85dp"
+                       android:layout_marginBottom="20dp"
+                       android:backgroundTint="@color/white"
+                       android:src="@drawable/like_icon_selector"
+                       app:borderWidth="0dp"
+                       app:fabSize="auto" />
+
+                   <com.google.android.material.floatingactionbutton.FloatingActionButton
+                       android:id="@+id/fabLikeUserDetails"
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       android:layout_alignParentEnd="true"
+                       android:layout_marginTop="20dp"
+                       android:layout_marginEnd="20dp"
+                       android:layout_marginBottom="20dp"
+                       android:backgroundTint="@color/white"
+                       android:src="@drawable/like_icon_selector"
+                       app:borderWidth="0dp"
+                       app:fabSize="auto"
+                       android:visibility="gone"/>
                </RelativeLayout>
 
 
@@ -271,7 +309,7 @@
 
                        <TextView
                            android:id="@+id/tvAttraction1"
-                           android:layout_width="140dp"
+                           android:layout_width="280dp"
                            android:layout_height="wrap_content"
                            android:layout_marginStart="10dp"
                            android:layout_marginTop="8dp"
@@ -292,7 +330,7 @@
 
                        <TextView
                            android:id="@+id/tvAttraction2"
-                           android:layout_width="140dp"
+                           android:layout_width="280dp"
                            android:layout_height="wrap_content"
                            android:layout_below="@id/tvAttraction1"
                            android:layout_marginStart="10dp"
@@ -314,7 +352,7 @@
 
                        <TextView
                            android:id="@+id/tvAttraction3"
-                           android:layout_width="140dp"
+                           android:layout_width="280dp"
                            android:layout_height="wrap_content"
                            android:layout_below="@id/tvAttraction2"
                            android:layout_marginStart="10dp"
@@ -337,7 +375,7 @@
 
                        <TextView
                            android:id="@+id/tvAttraction4"
-                           android:layout_width="140dp"
+                           android:layout_width="280dp"
                            android:layout_height="wrap_content"
                            android:layout_below="@id/tvAttraction3"
                            android:layout_marginStart="10dp"
@@ -360,7 +398,7 @@
 
                        <TextView
                            android:id="@+id/tvAttraction5"
-                           android:layout_width="140dp"
+                           android:layout_width="280dp"
                            android:layout_height="wrap_content"
                            android:layout_below="@id/tvAttraction4"
                            android:layout_marginStart="10dp"
@@ -382,9 +420,7 @@
                            android:layout_marginTop="20dp"
                            app:srcCompat="@drawable/bg_gradient" />
                    </RelativeLayout>
-
                </LinearLayout>
-
            </RelativeLayout>
        </ScrollView>
    </RelativeLayout>
