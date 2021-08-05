@@ -1,5 +1,6 @@
 package com.sophiaxiang.wanderlust.fragments;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -102,7 +103,10 @@ public class LikesFragment extends Fragment {
                     mLikedUserIds.add(0, likedUserId);
                 }
                 mAdapter.notifyDataSetChanged();
-                if (mLikedUserIds.size() == 0) mBinding.tvNoLikes.setVisibility(View.VISIBLE);
+                if (mLikedUserIds.size() == 0) {
+                    mBinding.tvNoLikes.setVisibility(View.VISIBLE);
+                    mBinding.rvLikes.setBackgroundColor(Color.parseColor("#FFFFFFFF"));
+                }
             }
 
             @Override

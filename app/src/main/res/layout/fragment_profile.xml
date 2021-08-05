@@ -10,7 +10,8 @@
        android:id="@+id/relativeLayout"
        android:layout_width="match_parent"
        android:layout_height="match_parent"
-       tools:context=".fragments.MyProfileFragment">
+       tools:context=".fragments.MyProfileFragment"
+       android:background="@color/white">
 
        <include
            layout="@layout/toolbar_main"
@@ -44,7 +45,7 @@
                    android:layout_height="wrap_content"
                    android:layout_below="@id/tvBio"
                    android:layout_alignParentEnd="true"
-                   android:layout_marginTop="10dp"
+                   android:layout_marginTop="15dp"
                    android:layout_marginEnd="25dp"
                    android:text="Chat"
                    android:visibility="gone"/>
@@ -89,7 +90,7 @@
                        android:layout_height="18dp"
                        android:layout_marginStart="5dp"
                        android:layout_marginTop="8dp"
-                       android:layout_toEndOf="@id/ivAlbumCover"
+                       android:layout_toEndOf="@id/rlAlbumCover"
                        android:text="Exile"
                        android:textColor="@color/black"
                        android:textSize="12dp" />
@@ -101,11 +102,11 @@
                        android:layout_below="@id/tvSongName"
                        android:layout_marginStart="5dp"
                        android:layout_marginBottom="8dp"
-                       android:layout_toEndOf="@id/ivAlbumCover"
+                       android:layout_toEndOf="@id/rlAlbumCover"
                        android:textSize="12dp" />
 
-                   <ImageView
-                       android:id="@+id/ivAlbumCover"
+                   <RelativeLayout
+                       android:id="@+id/rlAlbumCover"
                        android:layout_width="40dp"
                        android:layout_height="40dp"
                        android:layout_alignParentStart="true"
@@ -113,8 +114,22 @@
                        android:layout_marginStart="5dp"
                        android:layout_marginTop="5dp"
                        android:layout_marginEnd="5dp"
-                       android:layout_marginBottom="5dp"
-                       tools:srcCompat="@tools:sample/avatars" />
+                       android:layout_marginBottom="5dp">
+
+                       <ImageView
+                           android:id="@+id/ivAlbumCover"
+                           android:layout_width="match_parent"
+                           android:layout_height="match_parent"
+                           tools:srcCompat="@tools:sample/avatars" />
+
+                       <ImageView
+                           android:id="@+id/ivPlayPause"
+                           android:layout_width="30dp"
+                           android:layout_height="30dp"
+                           android:layout_centerInParent="true"
+                           app:srcCompat="@drawable/play_icon"
+                           android:alpha=".7"/>
+                   </RelativeLayout>
 
                </RelativeLayout>
 
@@ -136,7 +151,7 @@
                        android:backgroundTint="@color/white"
                        android:src="@drawable/instagram_glyph"
                        app:borderWidth="0dp"
-                       app:fabSize="auto" />
+                       app:fabSize="auto"/>
 
                    <com.google.android.material.floatingactionbutton.FloatingActionButton
                        android:id="@+id/fabLike"
@@ -163,7 +178,7 @@
                        android:src="@drawable/like_icon_selector"
                        app:borderWidth="0dp"
                        app:fabSize="auto"
-                       android:visibility="gone"/>
+                       android:visibility="gone" />
                </RelativeLayout>
 
 
@@ -418,7 +433,8 @@
                            android:layout_height="200dp"
                            android:layout_centerHorizontal="true"
                            android:layout_marginTop="20dp"
-                           app:srcCompat="@drawable/bg_gradient" />
+                           android:elevation="5dp"
+                           android:background="@color/black" />
                    </RelativeLayout>
                </LinearLayout>
            </RelativeLayout>

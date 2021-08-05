@@ -44,7 +44,6 @@ public class ChatDetailsActivity extends AppCompatActivity {
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_chat_details);
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
-
         getIntentExtras();
         setUpToolBar();
 

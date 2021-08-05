@@ -7,4 +7,9 @@
     <item
         android:state_enabled="true"
         android:drawable="@drawable/like_icon" />
+    <objectAnimator
+        android:duration="300"
+        android:propertyName=""
+        android:valueFrom="0"
+        android:valueTo="360" />
 </selector>

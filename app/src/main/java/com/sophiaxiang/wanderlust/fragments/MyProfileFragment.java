@@ -67,7 +67,7 @@ public class MyProfileFragment extends AbstractProfileFragment {
 
     private void goEditVacationFrag() {
         AppCompatActivity activity = (AppCompatActivity) getContext();
-        Fragment fragment = new MyVacationFragment();
+        Fragment fragment = new EditVacationFragment();
         Bundle bundle = new Bundle();
         bundle.putSerializable("vacation", mVacation);
         fragment.setArguments(bundle);

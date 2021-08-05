@@ -38,6 +38,7 @@ public class LikedUserAdapter extends RecyclerView.Adapter<LikedUserAdapter.Like
     private final Context mContext;
     private final List<String> mLikedUserIds;
     private final String mCurrentUserId;
+    private String mOtherUserName;
 
     public LikedUserAdapter(Context mContext, List<String> mLikedUserIds, String mCurrentUserId) {
         this.mContext = mContext;
@@ -79,7 +80,16 @@ public class LikedUserAdapter extends RecyclerView.Adapter<LikedUserAdapter.Like
             btnChatInLikesFrag.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    goChatDetailsFrag();
+                    int position = getAdapterPosition();
+                    if (position != RecyclerView.NO_POSITION) {
+                        mDatabase.child("users").child(mLikedUserIds.get(position)).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                                User user = task.getResult().getValue(User.class);
+                                goChatDetailsFrag(user);
+                            }
+                        });
+                    }
                 }
             });
         }
@@ -104,13 +114,13 @@ public class LikedUserAdapter extends RecyclerView.Adapter<LikedUserAdapter.Like
             }
         }
 
-
-        private void goChatDetailsFrag() {
+        private void goChatDetailsFrag(User user) {
             int position = getAdapterPosition();
             if (position != RecyclerView.NO_POSITION) {
                 Intent intent = new Intent(mContext, ChatDetailsActivity.class);
                 intent.putExtra("current user id", mCurrentUserId);
-                intent.putExtra("other user id", mLikedUserIds.get(position));
+                intent.putExtra("other user id", user.getUserId());
+                intent.putExtra("other user name", user.getName());
                 mContext.startActivity(intent);
             }
         }
@@ -156,8 +166,8 @@ public class LikedUserAdapter extends RecyclerView.Adapter<LikedUserAdapter.Like
             mDatabase.child("users").child(otherUserId).child("name").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<DataSnapshot> task) {
-                    String name = (String) task.getResult().getValue();
-                    tvLikedUserName.setText(name);
+                    mOtherUserName = (String) task.getResult().getValue();
+                    tvLikedUserName.setText(mOtherUserName);
                 }
             });
         }

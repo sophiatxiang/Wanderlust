@@ -2,7 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="@color/white">
 
     <ImageView
         android:id="@+id/ivLikedUserImage"
@@ -24,20 +25,20 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         android:textSize="24dp" />
 
-
     <Button
         android:id="@+id/btnChatInLikesFrag"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="110dp"
+        android:layout_height="40dp"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
         android:layout_marginEnd="30dp"
+        android:background="@drawable/round_chat_btn"
         android:text="Chat" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_below="@+id/ivLikedUserImage"
-        android:background="@color/light_grey" />
+        android:background="@color/grey" />
 
 </RelativeLayout>

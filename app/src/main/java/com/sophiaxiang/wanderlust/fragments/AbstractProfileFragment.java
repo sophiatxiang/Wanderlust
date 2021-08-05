@@ -172,9 +172,11 @@ public abstract class AbstractProfileFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (mMediaPlayer.isPlaying()) {
+                    mBinding.ivPlayPause.setImageResource(R.drawable.play_icon);
                     mMediaPlayer.stop();
                     mMediaPlayer.reset();
                 } else {
+                    mBinding.ivPlayPause.setImageResource(R.drawable.pause_icon);
                     playAudio();
                 }
             }

@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.util.Pair;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
@@ -32,7 +33,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.sophiaxiang.wanderlust.R;
 import com.sophiaxiang.wanderlust.adapters.AttractionAdapter;
-import com.sophiaxiang.wanderlust.databinding.FragmentMyVacationBinding;
+import com.sophiaxiang.wanderlust.databinding.FragmentEditVacationBinding;
 import com.sophiaxiang.wanderlust.models.Vacation;
 
 import java.text.SimpleDateFormat;
@@ -44,10 +45,10 @@ import java.util.List;
 import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
 
-public class MyVacationFragment extends Fragment {
-    public static final String TAG = "MyVacationFragment";
+public class EditVacationFragment extends Fragment {
+    public static final String TAG = "EditVacationFragment";
     private static final int AUTOCOMPLETE_REQUEST_CODE = 1;
-    private FragmentMyVacationBinding mBinding;
+    private FragmentEditVacationBinding mBinding;
     private DatabaseReference mDatabase;
     private FirebaseUser mFirebaseUser;
     private Vacation mVacation;
@@ -57,7 +58,7 @@ public class MyVacationFragment extends Fragment {
     private AttractionAdapter mAdapter;
     private List<String> mAttractions;
 
-    public MyVacationFragment() {
+    public EditVacationFragment() {
         // Required empty public constructor
     }
 
@@ -65,7 +66,7 @@ public class MyVacationFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_my_vacation, container, false);
+        mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_edit_vacation, container, false);
         return mBinding.getRoot();
     }
 
@@ -85,10 +86,19 @@ public class MyVacationFragment extends Fragment {
         mFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
-        setUpAttractionsRV();
+        setUpToolbar(view);
         setUpButtons();
+        setUpAttractionsRV();
         populateViews();
         setUpDatePicker();
+    }
+
+    private void setUpToolbar(View view) {
+        androidx.appcompat.widget.Toolbar toolbar = view.findViewById(R.id.toolbar);
+        toolbar.setTitle("Edit Profile");
+        // hide app logo title
+        toolbar.findViewById(R.id.title).setVisibility(View.GONE);
+        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
     }
 
     private void setUpButtons() {

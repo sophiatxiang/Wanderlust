@@ -5,4 +5,5 @@
     android:layout_height="wrap_content"
     android:textSize="18sp"
     android:padding="7dp"
+    android:paddingStart="20dp"
     />

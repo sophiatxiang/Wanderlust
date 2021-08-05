@@ -1,6 +1,7 @@
 package com.sophiaxiang.wanderlust.fragments;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -162,6 +163,7 @@ public class FeedFragment extends Fragment {
     private void queryFilteredUsers() {
         if (mCurrentUser.getVacation().getDestination().equals("") || mCurrentUser.getVacation().getStartDate().equals("")) {
             mBinding.tvNoVacationDetails.setVisibility(View.VISIBLE);
+            mBinding.rvUsers.setBackgroundColor(Color.parseColor("#FFFFFFFF"));
             return;
         }
         // age filter is built into the database query

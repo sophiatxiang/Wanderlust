@@ -80,6 +80,8 @@ public class EditProfileFragment extends Fragment {
     private void setUpToolBar(View view) {
         androidx.appcompat.widget.Toolbar toolbar = view.findViewById(R.id.toolbar);
         toolbar.setTitle("Edit Profile");
+        // hide app logo title
+        toolbar.findViewById(R.id.title).setVisibility(View.GONE);
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
     }
 

@@ -157,6 +157,7 @@ public class UserProfileFragment extends AbstractProfileFragment {
         Intent intent = new Intent(getContext(), ChatDetailsActivity.class);
         intent.putExtra("current user id", mCurrentUserId);
         intent.putExtra("other user id", mUser.getUserId());
+        intent.putExtra("other user name", mUser.getName());
         intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         getActivity().startActivity(intent);
     }

@@ -35,23 +35,25 @@
 
             <EditText
                 android:id="@+id/etMessage"
-                android:layout_toLeftOf="@+id/ibSend"
-                android:layout_alignBottom="@+id/ibSend"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/ibSend"
+                android:layout_marginStart="5dp"
+                android:layout_toLeftOf="@+id/ibSend"
                 android:gravity="top"
-                android:hint="type message here"
-                android:inputType="textShortMessage"
-                android:imeOptions="actionSend" />
+                android:hint="Message..."
+                android:imeOptions="actionSend"
+                android:inputType="textShortMessage" />
 
             <ImageButton
                 android:id="@+id/ibSend"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_marginEnd="5dp"
+                android:contentDescription="send"
                 android:gravity="center"
                 android:paddingRight="10dp"
-                android:layout_alignParentRight="true"
-                android:contentDescription="send"
                 android:src="@drawable/send_message"
                 android:textSize="18sp" />
         </RelativeLayout>

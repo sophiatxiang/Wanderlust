@@ -1,5 +1,6 @@
 package com.sophiaxiang.wanderlust.fragments;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -67,7 +68,7 @@ public class ChatFragment extends Fragment {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         mBinding.rvChats.setLayoutManager(linearLayoutManager);
 
-        setUpToolBar(view);
+        setUpToolbar(view);
         queryChats();
     }
 
@@ -99,7 +100,7 @@ public class ChatFragment extends Fragment {
                 .commit();
     }
 
-    private void setUpToolBar(View view) {
+    private void setUpToolbar(View view) {
         androidx.appcompat.widget.Toolbar toolbar = view.findViewById(R.id.toolbar);
         toolbar.setTitle("Chats");
         // hide app logo title
@@ -120,7 +121,10 @@ public class ChatFragment extends Fragment {
                     }
                 }
                 mAdapter.notifyDataSetChanged();
-                if (mChats.size() == 0) mBinding.tvNoChats.setVisibility(View.VISIBLE);
+                if (mChats.size() == 0) {
+                    mBinding.tvNoChats.setVisibility(View.VISIBLE);
+                    mBinding.rvChats.setBackgroundColor(Color.parseColor("#FFFFFFFF"));
+                }
             }
 
             @Override

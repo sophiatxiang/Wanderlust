@@ -9,10 +9,17 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
+        <include
+            layout="@layout/toolbar_main"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
         <ScrollView
+            android:layout_below="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:context=".fragments.MyVacationFragment">
+            tools:context=".fragments.EditVacationFragment">
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -108,7 +115,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
                     android:layout_centerHorizontal="true"
-                    android:layout_marginTop="30dp"
+                    android:layout_marginTop="20dp"
                     android:gravity="center"
                     android:hint="Vacation Destination"
                     android:textColor="@color/black"
@@ -177,17 +184,16 @@
                     android:background="@color/turquoise"
                     app:srcCompat="@drawable/add_icon" />
 
+                <Button
+                    android:id="@+id/btnSave"
+                    android:layout_width="300dp"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/rvAttractions"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="25dp"
+                    android:text="Save" />
+
             </RelativeLayout>
         </ScrollView>
-
-        <Button
-            android:id="@+id/btnSave"
-            android:layout_width="300dp"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="20dp"
-            android:text="Save" />
-
     </RelativeLayout>
 </layout>

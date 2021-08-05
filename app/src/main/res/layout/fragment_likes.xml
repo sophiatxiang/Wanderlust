@@ -32,7 +32,8 @@
             android:id="@+id/rvLikes"
             android:layout_below="@id/tvNoLikes"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:background="@color/light_grey"/>
 
     </RelativeLayout>
 </layout>
