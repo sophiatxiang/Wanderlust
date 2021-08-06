@@ -17,16 +17,14 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="25dp"
-            android:backgroundTint="@color/periwinkle"
             android:text="Take Photo" />
 
         <Button
             android:id="@+id/btnImportPhoto"
-            android:layout_below="@id/btnCaptureImage"
             android:layout_width="300dp"
             android:layout_height="wrap_content"
+            android:layout_below="@id/btnCaptureImage"
             android:layout_centerHorizontal="true"
-            android:backgroundTint="@color/periwinkle"
             android:text="Import Photo" />
 
         <ImageView
@@ -45,7 +43,6 @@
             android:layout_below="@+id/ivCameraPhoto"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="15dp"
-            android:backgroundTint="@color/periwinkle"
             android:text="Save"
             android:visibility="gone" />
 

@@ -34,12 +34,15 @@
 
         <Button
             android:id="@+id/btnLogin"
-            android:layout_width="340dp"
-            android:layout_height="wrap_content"
+            android:layout_width="330dp"
+            android:layout_height="40dp"
             android:layout_below="@+id/etPassword"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="45dp"
-            android:text="Log in" />
+            android:text="Log in"
+            android:textAllCaps="false"
+            android:background="@drawable/round_btn"
+            android:textStyle="bold"/>
 
         <TextView
             android:id="@+id/tvLogo"

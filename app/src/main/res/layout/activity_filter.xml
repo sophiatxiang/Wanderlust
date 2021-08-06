@@ -78,7 +78,7 @@
             android:valueFrom="1"
             android:valueTo="100"
             app:labelBehavior="gone"
-            app:thumbColor="@color/dark_periwinkle"
+            app:thumbColor="@color/dark_turquoise"
             app:tickVisible="false"
             app:trackColor="@color/light_grey" />
 
@@ -121,7 +121,7 @@
             android:valueFrom="1"
             android:valueTo="100"
             app:labelBehavior="gone"
-            app:thumbColor="@color/dark_periwinkle"
+            app:thumbColor="@color/dark_turquoise"
             app:tickVisible="false"
             app:trackColor="@color/light_grey" />
 
@@ -164,7 +164,7 @@
             android:valueTo="120"
             app:labelBehavior="gone"
             app:minSeparation="5dp"
-            app:thumbColor="@color/dark_periwinkle"
+            app:thumbColor="@color/dark_turquoise"
             app:tickVisible="false"
             app:trackColor="@color/light_grey" />
 

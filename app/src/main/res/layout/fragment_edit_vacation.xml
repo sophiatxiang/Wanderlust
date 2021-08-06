@@ -119,7 +119,8 @@
                     android:gravity="center"
                     android:hint="Vacation Destination"
                     android:textColor="@color/black"
-                    android:textSize="28sp" />
+                    android:textSize="28sp"
+                    android:textStyle="bold"/>
 
                 <TextView
                     android:id="@+id/tvEditDestination"
@@ -187,11 +188,14 @@
                 <Button
                     android:id="@+id/btnSave"
                     android:layout_width="300dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="40dp"
                     android:layout_below="@id/rvAttractions"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="25dp"
-                    android:text="Save" />
+                    android:text="Save"
+                    android:textAllCaps="false"
+                    android:background="@drawable/round_btn"
+                    android:textStyle="bold"/>
 
             </RelativeLayout>
         </ScrollView>

@@ -77,7 +77,7 @@ public class CreateAccActivity extends AppCompatActivity {
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        Toast.makeText(CreateAccActivity.this, "Successfully created user", Toast.LENGTH_SHORT).show();
+                        Log.d(TAG, "user write success");
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -94,7 +94,7 @@ public class CreateAccActivity extends AppCompatActivity {
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        Toast.makeText(CreateAccActivity.this, "Successfully created vacation", Toast.LENGTH_SHORT).show();
+                        Log.d(TAG, "vacation write success");
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {

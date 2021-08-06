@@ -42,15 +42,17 @@
             android:layout_below="@+id/textView12"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="30dp"
-            android:backgroundTint="@color/dark_periwinkle"/>
+            android:backgroundTint="@color/dark_turquoise"/>
 
         <Button
             android:id="@+id/btnContinue"
             android:layout_width="225dp"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             android:layout_below="@+id/spinnerGenderSetUp"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="30dp"
-            android:text="Continue" />
+            android:text="Continue"
+            android:textAllCaps="false"
+            android:background="@drawable/round_btn"/>
     </RelativeLayout>
 </layout>

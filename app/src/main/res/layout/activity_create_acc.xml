@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <RelativeLayout
@@ -9,17 +10,17 @@
 
         <EditText
             android:id="@+id/etEmail"
-            android:layout_width="350dp"
+            android:layout_width="340dp"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tvLogo"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="40dp"
             android:ems="10"
-            android:hint="email" />
+            android:hint="email address" />
 
         <EditText
             android:id="@+id/etPassword"
-            android:layout_width="350dp"
+            android:layout_width="340dp"
             android:layout_height="wrap_content"
             android:layout_below="@id/etEmail"
             android:layout_centerHorizontal="true"
@@ -29,12 +30,15 @@
 
         <Button
             android:id="@+id/btnCreateAcc"
-            android:layout_width="350dp"
-            android:layout_height="wrap_content"
+            android:layout_width="320dp"
+            android:layout_height="40dp"
             android:layout_below="@+id/etPassword"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="45dp"
-            android:text="next" />
+            android:text="next"
+            android:textAllCaps="false"
+            android:background="@drawable/round_btn"
+            android:textStyle="bold"/>
 
         <TextView
             android:id="@+id/tvLogo"
@@ -42,14 +46,23 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="130dp"
+            android:layout_marginTop="150dp"
             android:fontFamily="sans-serif"
             android:gravity="center"
-            android:text="Create Account"
+            android:text="Create your account"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             android:textColor="@color/dark_turquoise"
-            android:textSize="42sp"
+            android:textSize="32sp"
             android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/imageView7"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            app:srcCompat="@drawable/mountain_logo"
+            app:tint="@color/dark_turquoise"/>
 
     </RelativeLayout>
 </layout>

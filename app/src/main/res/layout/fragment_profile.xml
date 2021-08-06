@@ -32,23 +32,29 @@
                <Button
                    android:id="@+id/btnEditProfile"
                    android:layout_width="150dp"
-                   android:layout_height="wrap_content"
+                   android:layout_height="40dp"
                    android:layout_below="@id/tvBio"
                    android:layout_alignParentEnd="true"
-                   android:layout_marginTop="15dp"
+                   android:layout_marginTop="20dp"
                    android:layout_marginEnd="25dp"
-                   android:text="Edit Profile" />
+                   android:background="@drawable/round_btn"
+                   android:text="Edit Profile"
+                   android:textAllCaps="false"
+                   android:textStyle="bold" />
 
                <Button
                    android:id="@+id/btnChat"
                    android:layout_width="150dp"
-                   android:layout_height="wrap_content"
+                   android:layout_height="40dp"
                    android:layout_below="@id/tvBio"
                    android:layout_alignParentEnd="true"
                    android:layout_marginTop="15dp"
                    android:layout_marginEnd="25dp"
                    android:text="Chat"
-                   android:visibility="gone"/>
+                   android:visibility="gone"
+                   android:textAllCaps="false"
+                   android:background="@drawable/round_btn"
+                   android:textStyle="bold"/>
 
                <Button
                    android:id="@+id/btnPrevious"
@@ -261,11 +267,16 @@
                <Button
                    android:id="@+id/btnEditVacation"
                    android:layout_width="150dp"
-                   android:layout_height="wrap_content"
+                   android:layout_height="40dp"
                    android:layout_below="@id/btnEditProfile"
                    android:layout_alignParentEnd="true"
+                   android:layout_marginTop="7dp"
                    android:layout_marginEnd="25dp"
-                   android:text="Edit Vacation" />
+                   android:background="@drawable/round_btn"
+                   android:text="Edit Vacation"
+                   android:textAllCaps="false"
+                   android:textStyle="bold"
+                   android:typeface="normal" />
 
                <TextView
                    android:id="@+id/textView15"

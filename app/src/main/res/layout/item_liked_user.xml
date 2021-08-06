@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/white">
 
     <ImageView
@@ -25,15 +26,19 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         android:textSize="24dp" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btnChatInLikesFrag"
         android:layout_width="110dp"
-        android:layout_height="40dp"
+        android:layout_height="50dp"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
         android:layout_marginEnd="30dp"
-        android:background="@drawable/round_chat_btn"
-        android:text="Chat" />
+        android:text="Chat"
+        android:textStyle="bold"
+        app:strokeColor="@color/dark_turquoise"
+        app:cornerRadius="20dp"
+        style="?attr/materialButtonOutlinedStyle"
+        android:textAllCaps="false"/>
 
     <View
         android:layout_width="match_parent"
