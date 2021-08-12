@@ -14,6 +14,7 @@
     <color name="grey">#adadad</color>
     <color name="text_grey">#6A6C6E</color>
     <color name="dark_grey">#303030</color>
+    <color name="lightest_turquoise">#66d9f7</color>
     <color name="turquoise_light">#00C0F2</color>
     <color name="turquoise">#0083A5</color>
     <color name="dark_turquoise">#005B72</color>
